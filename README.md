@@ -1,6 +1,8 @@
 # Playground
 
-**This is NOT a shared code repository.** The only reason I set it public is because I need it to as a transfer station between computers.
+**This is NOT a shared code repository.**
+
+The only reason I set it public is because I need it to as a transfer station between computers.
 
 All codes in this repository is considered as private, which means that all files here is not open-sourced.
 
