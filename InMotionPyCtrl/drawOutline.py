@@ -6,19 +6,24 @@
 # @GitHub  : https://github.com/hello-roderickwang
 
 import subprocess
+from time import sleep
 
 if __name__ == '__main__':
     movement = []
-    movement.append(subprocess.run(["echo set test_raw_torque 1 | ./crob/shm"], shell=True))
-    sleep(500)
-    movement.append(subprocess.run(["set raw_torque_volts_s 1"], shell=True))#s=1, e=0
-    sleep(1000)
-    movement.append(subprocess.run(["set raw_torque_volts_e 1"], shell=True))#s=1, e=1
-    sleep(1000)
-    movement.append(subprocess.run(["set raw_torque_volts_s 0"], shell=True))#s=0, e=1
-    sleep(1000)
-    movement.append(subprocess.run(["set raw_torque_volts_e 0"], shell=Ture))#s=0, e=0
-    sleep(1000)
-    movement.append(subprocess.run(["ser test_raw_torque 0"], shell=Ture))
-    sleep(500)
-    print(movement)
+    movement.append(subprocess.run(["echo set test_raw_torque 1 | ./shm"], shell=True))
+    sleep(3)
+    movement.append(subprocess.run(["echo set raw_torque_volts_s 1 | ./shm"], shell=True))#s=1, e=0
+    sleep(5)
+    movement.append(subprocess.run(["echo set raw_torque_volts_e 1 | ./shm"], shell=True))#s=1, e=1
+    sleep(5)
+    movement.append(subprocess.run(["echo set raw_torque_volts_s -1 | ./shm"], shell=True))#s=0, e=1
+    sleep(5)
+    movement.append(subprocess.run(["echo set raw_torque_volts_e -1 | ./shm"], shell=True))#s=0, e=0
+    sleep(5)
+    movement.append(subprocess.run(["echo set raw_torque_volts_s 0 | ./shm"], shell=True))#s=0, e=1
+    sleep(5)
+    movement.append(subprocess.run(["echo set raw_torque_volts_e 0 | ./shm"], shell=True))#s=0, e=0
+    sleep(5)
+    movement.append(subprocess.run(["echo set test_raw_torque 0 | ./shm"], shell=True))
+    sleep(3)
+print(movement)
