@@ -1,0 +1,21 @@
+C code is indented using GNU Indent, using: 
+
+--k-and-r-style  
+--procnames-start-lines 
+--no-tabs 
+--comment-indentation50 
+--declaration-comment-column50 
+--honour-newlines 
+--break-before-boolean-operator 
+--line-length90
+-T u8
+-T s8
+-T u16
+-T s16
+-T u32
+-T s32
+-T u64
+-T s64
+-T f64
+-T hrtime_t
+

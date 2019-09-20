@@ -1,0 +1,131 @@
+<html>
+<head>
+<title>Force Transducer</title>
+</head>
+<body>
+
+
+<h1>Force Transducer</h1>
+Wed Sep  1 12:47:50 EDT 2004
+<p>
+An
+<a href="../../docs/hardware/atiftcat2002.pdf">
+ATI Force Transducer</a>
+(FT)
+may be mounted to detect forces at the end of the robot arm.
+This note describes the configuration of this FT.
+
+<h2>FT device </h2>
+The FT device looks like a hockey puck.  
+It is marked along its circumference with +X, +Y, -X, and -Y.
+With the FT is mounted with on the manipulandum (handle)
+at the tip of the robot arm, when you pull the
+handle toward the +X marking, the FT returns a force vector
+pointing toward +X.
+<p>
+The FT is a delicate device that can measure very small changes in
+force and torque.  It is attached to its mounting post by four screws.
+There is a shim between the mounting post plate and the FT, be sure it
+remains there when you reassemble the handle.  The four mounting
+screws are tightened a bit past finger-tight.  If these screws are too
+tight, the FT may become damaged, or it may register downward force
+from the force of the screws.
+
+<h2>FT Data</h2>
+The FT returns a matrix of six data items during each sample iteration.  This
+data is passed through a set of matrix transforms, and this process returns an
+array of six items: force X, Y, Z vectors, and torque X, Y, Z moments.
+The InMotion2 system returns FT moment data values in device space, but moment
+data is not used elsewhere in the robot system.
+
+<p>
+These matrices are provided by the FT manufacturer on a CD uniquely matched
+by serial number
+with each FT.
+IMT provides this data in imt2.cal as ft_cal (a 6x6 matrix, 36 values)
+and ft_scale (6 values).
+
+<p>
+In addition to these calibration parameters, the FT must be biased to account
+for the weight of the manipulandum, mounting hardware, and of the FT itself,
+and whether it is mounted right-side up or upside down.  You can run the
+<b>getftbias</b> program to get ft_bias numbers for the calibration file imt2.cal, or
+you can get FT bias values while your program is running using the Tcl ft_bias
+procedure or something similar.
+
+<h2>FT Hardware Interface Driver Board</h2>
+Earlier versions of the InMotion2 controlled the ATI FT with an ISA
+interface board in the PC system.  These FT's are called ISA FT's.
+<p>
+More recent models (built after
+2001) drive the FT with the same UEI data acquisition board that handles
+the rest of the analog and digital data in the InMotion2 system.
+<p>
+The ISA FT's and the newer FT's are functionally equivalent from the
+user software perspective, but the InMotion2 control software (RTLinux
+or its predecessor), handle the devices differently at the hardware
+level.  To tell the RTLinux robot software how to distinguish between
+the two, if you have an ISA FT, you set the <b>have_isaft</b> flag to
+1 in imt2.cal .  If you have either an old ISA or
+new UEI-driven FT, you set <b>have_ft</b> to 1 in both cases.
+<p>
+
+<h2>Device Orientation</h2>
+In the default InMotion2 system configuration,
+the FT is attached above the "wrist" of the robot arm,
+with the manipulandum attached above FT.
+Oddly, in this "right-side" up case, the printing on the FT is
+upside-down.  When mounted this way, when you push down on the
+top of the manipulandum, the FT registers a -Z force vector.
+<p>
+
+It is also possible to mount the manipulandum below the arm,
+that is, the FT is attached below the "wrist" of the robot arm,
+with the manipulandum attached below the FT.
+It is necessary to invert the FT in this configuration,
+this case is called FT flipped.  If your FT is flipped, you must set
+<b>ft_flip</b> to 1 in imt2.cal.
+<p>
+
+The FT device reports force vectors with respect to itself.  If you
+are pushing on its top, it thinks you are pushing "down" (-Z), it
+doesn't matter which direction down is in world space.  The InMotion2
+system collects this "device-space" data, but it also translates this
+data to "world space" (with respect to the workstation tabletop).
+World space FT data depends on the device space FT data, and also on
+the position of the tip of the manipulandum (which depends on link
+lengths and encoder angles), and also on the offset angle that the FT
+is screwed into its housing, and also whether the FT is flipped.
+<p>
+
+The FT offset angle in radians is set in imt2.cal by a variable called
+<b>ft_offset</b>.  When you
+mount the FT on the tip of the robot arm so that +X on the FT is pointing
+in the same direction as the forearm (away from the elbow), that is an
+ft_offset of 0.0 radians.
+<p>
+
+To mount the FT and manipulandum on the arm, there is a circular
+mounting plate with four hex screws set at corners of a square.  This
+square configuration allows the FT to be rotated at four 90 degree
+angles and still align with the mounting plate.  There are two
+orientation grooves on the handle mounting post that the FT and
+manipulandum slide on to.  The two grooves are offset from each other
+by 135 degrees (3/4 pi radians).  The intention is that you use the
+alignment of these grooves and the four mounting plate set screws to
+point +X in the same direction as the robot's forearm.  If you need
+the FT placed in another orientation, you must set the ft_offset
+calibration value to the angular offset in radians.
+The FT is aligned to the mounting post groove
+with a recessed set-screw, and tightened to the mounting post with
+hand-tightened screw and a snap-ring.
+<p>
+
+To perform and verify this calibration procedure, run the <b>vex</b>
+program and first verify that the FT device space values are reporting
+correctly.  Once this is done, make sure that ft_offset
+and ft_flip are correct.  As is noted above, world space forces depend
+on calibrated encoder values, so the calibrate the encoder angles 
+before the FT offset calibration is done.
+
+</body></html>

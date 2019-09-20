@@ -1,0 +1,10 @@
+#! /bin/bash
+
+# open a thunar window to the cals folder
+# do not also open a window in the current folder
+
+if [[ -z "$DBUS_SESSION_BUS_ADDRESS" ]]; then
+    dbus-launch thunar sftp://imt@${1:-ubdev}/home/imt/cals
+else
+    thunar sftp://imt@${1:-ubdev}/home/imt/cals
+fi

@@ -1,0 +1,33 @@
+#!/usr/bin/tclsh
+# Copyright 2003-2010 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+# send zeros to each motor for 4 minutes, read encoder angles.
+
+global ob
+
+set ob(crobhome) $::env(CROB_HOME)
+
+source $ob(crobhome)/shm.tcl
+
+# start the Linux Kernel Modules, shared memory, and the control loop
+start_rtl
+
+# sleep for .1 sec, gives robot chance to start
+after 100
+
+for {set i 0} {$i < 50} {incr i} {
+	after 20
+	set a($i) [rshm ft_zmoment]
+	# puts $a($i)
+}
+
+set sum 0.0
+for {set i 0} {$i < 50} {incr i} {
+	set sum [expr {$sum + $a($i)}]
+}
+puts "avg: [expr $sum / 50.0]"
+
+stop_rtl

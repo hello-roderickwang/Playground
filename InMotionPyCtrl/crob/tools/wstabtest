@@ -1,0 +1,50 @@
+#!/usr/bin/tclsh
+
+
+set ob(crobhome) $::env(CROB_HOME)
+source $ob(crobhome)/shm.tcl
+global ob
+start_shm
+if {![is_robot_ready]} {
+    puts "robot not running"
+    exit 1
+}
+wshm no_safety_check 1
+
+puts "wshm wrist_diff_gcomp 0"
+puts "wshm wrist_ps_gcomp 0"
+puts "wshm wrist_diff_stiff 20"
+puts "wshm wrist_diff_damp 0.07"
+puts "wshm wrist_ps_stiff 40"
+wshm wrist_diff_gcomp 0
+wshm wrist_ps_gcomp 0
+wshm wrist_diff_stiff 20
+wshm wrist_diff_damp 0.07
+wshm wrist_ps_stiff 40
+
+foreach p [list 0.08 0.10 0.12] {
+    puts "wshm wrist_ps_damp $p"
+    wshm wrist_ps_damp $p
+    puts "make your test now and then hit enter"
+    gets stdin
+}
+
+puts "turn the page"
+
+puts "wshm wrist_ps_stiff 10"
+puts "wshm wrist_ps_damp 0.1"
+wshm wrist_ps_stiff 10
+wshm wrist_ps_damp 0.1
+
+foreach p [list 0.05 0.06 0.07 0.08] k [list 15 20 25 30] {
+    puts "wshm wrist_ps_damp $p"
+    puts "wshm wrist_diff_stiff $k"
+    wshm wrist_ps_damp $p
+    wshm wrist_diff_stiff $k
+    puts "make your test now and then hit enter"
+    gets stdin
+}
+
+puts "all done"
+wshm no_safety_check 0
+

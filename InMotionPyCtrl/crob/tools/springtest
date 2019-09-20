@@ -1,0 +1,207 @@
+#! /usr/bin/tclsh
+
+# springtest
+
+# originally, this could run any or all of e/s/l,
+# but now it does one per run.
+# the code has some vestiges of the old spec
+
+source $::env(CROB_HOME)/shm.tcl
+
+set ob(is_cal) [is_robot_cal_done]
+
+if {!$ob(is_cal)} {
+    error "robot is not yet calibrated."
+    exit
+}
+
+puts "loading robot process."
+
+start_lkm
+start_shm
+start_loop
+
+proc done {} {
+    puts "unloading robot process."
+    catch {eval file delete [glob /tmp/*.$::stime.dat]}
+    catch {exec pkill display}
+    stop_loop
+    stop_shm
+    stop_lkm
+    exit
+
+    puts "done."
+}
+
+proc spring_force {axis ref stiff stime} {
+    global ob
+
+    puts "spring axis $axis ref $ref stiff $stiff"
+    if {$axis == "l"} {
+	set axis s
+    }
+    wshm spring_stiff_e 0.0
+    wshm spring_stiff_s 0.0
+    wshm spring_ref_$axis $ref
+    wshm spring_stiff_$axis $stiff
+}
+
+proc spring_log {axis ref stiff stime} {
+    global ob
+
+    set logfile /tmp/$axis.$stime.dat
+    start_log $logfile $ob(nlog)
+}
+
+proc spring {} {
+    global ob
+
+    exec $::env(CROB_HOME)/tools/display &
+
+    wshm safety_pos 5.0
+    wshm test_raw_torque 1
+    wshm spring_stiff_e 0.0
+    wshm spring_stiff_s 0.0
+    movebox 0 25 {0 1 0} {0 0 0 0} {0 0 0 0} 
+
+    wshm logfnid 16
+
+    set ob(nlog) 7
+    set ::stime [clock format [clock seconds] -format %y%m%d_%H%M%S_%a]
+
+    puts "Type e, s, or l, for elbow, shoulder, or locked test."
+    set ob(whichtest) [gets stdin]
+
+    switch $ob(whichtest) {
+    e test_1
+    s test_2
+    l test_3
+    default {
+	puts "error: Choose only one of e, s, or l."
+	done
+    }
+    }
+    do_plot
+    done
+}
+
+proc test_1 {} {
+    set mode "elbow"
+
+    puts "Test 1: Move handle to set $mode point."
+    puts ""
+    puts "Hit Enter for $mode motor force."
+
+    gets stdin
+
+    set epoint [rshm etheta]
+    spring_force e $epoint 40.0 $::stime
+    puts ""
+
+    puts "Displace $mode link, measure and record spring force with gauge,"
+    puts "checking displacement with display software."
+    puts ""
+    puts "Displace $mode link again, until display reads 6 volts."
+    puts "Then hit Enter to log oscillation,"
+    puts "then release $mode link to oscillate."
+    gets stdin
+
+    spring_log e $epoint 40.0 $::stime
+
+    puts "Hit Enter to stop forces and logging."
+    gets stdin
+
+    stop_log
+    wshm spring_stiff_e 0.0
+    wshm spring_stiff_s 0.0
+}
+
+proc test_2 {} {
+    set mode "shoulder"
+
+    puts "Test 2: Move handle to set $mode point."
+    puts ""
+    puts "Hit Enter for $mode motor force."
+
+    gets stdin
+
+    set spoint [rshm stheta]
+    spring_force s $spoint 40.0 $::stime
+    puts ""
+
+    puts "Displace $mode link, measure and record spring force with gauge,"
+    puts "checking displacement with display software."
+    puts ""
+    puts "Displace $mode link again, until display reads -6 volts."
+    puts "Then hit Enter to log oscillation,"
+    puts "then release $mode link to oscillate."
+    gets stdin
+
+    spring_log s $spoint 40.0 $::stime
+
+    puts "Hit Enter to stop forces and logging."
+    gets stdin
+
+    stop_log
+    wshm spring_stiff_e 0.0
+    wshm spring_stiff_s 0.0
+}
+
+proc test_3 {} {
+    set mode "locked"
+
+    puts "Test 3: Move handle to set $mode point."
+    puts ""
+    puts "Hit Enter for $mode motor force."
+
+    gets stdin
+
+    set spoint [rshm stheta]
+    spring_force l $spoint 40.0 $::stime
+    puts ""
+
+    puts "Displace $mode link, measure and record spring force with gauge,"
+    puts "checking displacement with display software."
+    puts ""
+    puts "Displace $mode link again, until display reads -6 volts."
+    puts "Then hit Enter to log oscillation,"
+    puts "then release $mode link to oscillate."
+    gets stdin
+
+    spring_log l $spoint 40.0 $::stime
+
+    puts "Hit Enter to stop forces and logging."
+    gets stdin
+
+    stop_log
+    wshm spring_stiff_e 0.0
+    wshm spring_stiff_s 0.0
+}
+
+proc do_plot {} {
+    global ob
+
+    puts "Hit Enter to show plot."
+    puts "(Quit from plot with q.)"
+
+    gets stdin ans
+
+    catch {exec $::env(CROB_HOME)/tools/gplot /tmp/e.$::stime.dat 0 3}
+    catch {exec $::env(CROB_HOME)/tools/gplot /tmp/s.$::stime.dat 0 2}
+    catch {exec $::env(CROB_HOME)/tools/gplot /tmp/l.$::stime.dat 0 2}
+
+    puts "Hit Enter to exit and write data file, or q to exit without writing."
+    gets stdin ans
+
+    if {$ans == "q"} {done}
+
+    puts "Writing file..."
+    foreach axis {e s l} {
+	if {[string first $axis $ob(whichtest)] >= 0} {
+	    puts "/tmp/$axis.$::stime.asc"
+	    exec $::env(CROB_HOME)/ta.tcl /tmp/$axis.$::stime.dat > /tmp/$axis.$::stime.asc
+	}
+    }
+}
+
+spring

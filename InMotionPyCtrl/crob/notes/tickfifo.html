@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>Tick Fifo</title>
+</head>
+<body>
+
+<h2>Tick Fifo</h2>
+Thu Feb  3 13:35:50 EST 2005
+<p>
+
+The InMotion2 Linux Kernel Module's (LKM) robot control loop "clock"
+ticks very precisely because it is built on the RTLinux real-time
+system.  In user mode programs, it is sometimes necessary to perform
+periodic tasks, like screen updates or I/O to other devices, and it is
+useful to have access to a timer that ticks precisely.
+
+<p>
+We can use the fact that the robot control loop writes data to its
+fifos during every sample, to provide the precise control loop timer
+capability to user mode processes.
+
+<p>
+There is an InMotion2 LKM fifo called the "tick fifo" that you can
+turn on and off with a shm variable called "ntickfifo" (n tick fifo).
+When ntickfifo is set non-zero, the robot module will write a single
+newline to the tick fifo (/dev/rtf5) once per sample (usually 200
+times per second).  You can set up a loop to read single characters
+(or line buffered reads, since it's a newline) from this fifo with a
+blocking read, and it will read exactly once per sample.
+
+<p>
+Or better, in C, you can set up a "select" system call to check for
+input on this fifo in an event-driven loop, and it will wake up once
+per sample with very precise timing.  (This is even easier to do in
+Tcl, using "fileevent".)
+
+<p>
+When you use ntickfifo, you should be careful to start reading it right
+after you set ntickfifo to non-zero, and to make sure you clear the
+fifo after you set ntickfifo to zero, to make sure that "junk newlines"
+in the tick fifo don't confuse your timings.
+
+</body></html>

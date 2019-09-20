@@ -1,0 +1,24 @@
+#! /bin/bash
+
+# takes optional arg: prod, demo, or shipit for background image type
+# no arg means prod.
+
+OID=/opt/imt/distro
+OIR=/opt/imt/robot
+
+# flow-ui startup
+
+mkdir -p /home/imt/.config/autostart/
+install -m 644 $OID/sys/BionikUI.desktop /home/imt/.config/autostart/
+
+# Suppress file manager window popups when inserting USB drives
+
+xfconf-query -c thunar-volman -p /autobrowse/enabled -s false
+
+# Disable raise_on_click
+
+xfconf-query -c xfwm4 -p /general/raise_on_click -s false
+
+# set background image, no arg means production mode
+
+$OIR/crob/tools/setbg $1

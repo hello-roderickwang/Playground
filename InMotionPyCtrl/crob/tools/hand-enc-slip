@@ -1,0 +1,201 @@
+#!/usr/bin/tclsh
+
+# Copyright 2003-2013 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+# plcal - calibrate planar robot with relative encoders
+
+# with the latest jr3-equipped planar on a standard left-handed robot.
+# (right-handed will be different!)
+
+# method:
+# using open loop control
+# fold links to motors
+# move folded links to left stop
+# zero encoders
+# query encoders
+# move folded links to right stop
+# query encoders
+# compare queries and check for alignment.
+# if the alignment is good, then we assume that the zero was good.
+# if good, switch to closed loop control
+# use controller to move links to 0,0 origin
+# check that we're within 2 cm of 0,0
+
+package require Tk
+
+wm withdraw .
+
+font create default -family Times -size 18
+option add *font default
+
+global ob
+
+proc done {ret} {
+    stop_loop
+    stop_shm
+    stop_lkm
+
+    exit $ret
+}
+
+proc tksleep {time} {
+	after $time set ::tksleep_end 1
+	vwait ::tksleep_end
+}
+
+# send raw voltages to both planar motors
+
+proc plmot {{s 0.0} {e 0.0}} {
+	global ob
+
+	set s [expr {$s * $ob(voltsmult)}]
+	set e [expr {$e * $ob(voltsmult)}]
+
+	wshm raw_torque_volts_s $s
+	wshm raw_torque_volts_e $e
+}
+
+# send raw voltage to hand motor
+
+proc hamot {{h 0.0}} {
+	global ob
+	if {!$ob(have_hand)} {return}
+	wshm hand_test_volts $h
+}
+
+# get radian encoder angles from both axes
+
+proc gtheta {} {
+	set ts [rshm stheta]
+	set te [rshm etheta]
+	return [list $ts $te]
+}
+
+# normalize an angle to between 0 and 2pi radians
+
+proc radnorm {a} {
+	set twopi [expr {atan(1) * 8.}]
+	while {$a > $twopi} {
+		set a [expr {$a - $twopi}]
+	}
+	while {$a < 0.0} {
+		set a [expr {$a + $twopi}]
+	}
+	return $a
+}
+
+# print axis angles
+
+proc prtheta {ts te} {
+	puts "s $ts e $te"
+}
+
+proc checkcal {se rl srl rse hco} {
+	global ob
+	if {abs($srl - $ob(stopspan)) > $ob(slop) } {
+		puts "arm stop span out of range: [format %5.2f $srl]"
+		return 1
+	}
+	if {abs($rse - $ob(linkspan)) > $ob(slop)} {
+		puts "arm link span out of range: [format %5.2f $rse]"
+		return 1
+	}
+	if {abs($se) > ($ob(slop)/2.)} {
+		puts "sediff [format %5.2f $se]"
+		return 1
+	}
+	if {abs($rl) > ($ob(slop)/2.)} {
+		puts "rldiff [format %5.2f $rl]"
+		return 1
+	}
+	if {$ob(have_hand)} {
+		puts "hand robot span: [format %5.3f $hco]"
+		if {abs($hco - $ob(handspan)) > ($ob(handslop))} {
+			puts "hand span out of range"
+			return 1
+		}
+	}
+	return 0
+}
+
+# main prog
+
+# calculate differences:
+
+# srl: rs and ls
+# erl: re and le
+# rse: rs and re
+# lse: ls and le
+
+set ob(crobhome) $::env(CROB_HOME)
+
+source $ob(crobhome)/shm.tcl
+set ob(current_robot) [current_robot]
+
+if {![is_robot_ready]} {
+	tk_messageBox -title Failed -message "The Ready lamp is not lit.\
+Please release all Stop buttons,\
+press the Start button, and try again."
+	exit 1
+}
+
+# start the robot process, shared memory, and the control loop
+# puts "loading robot process"
+if {[is_lkm_loaded]} {
+        puts "lkm already loaded, exiting."
+        exit 1
+} else {
+        start_lkm
+}
+start_shm
+
+# start in open loop mode
+wshm test_raw_torque 1
+# no damping zone
+wshm no_safety_check 1
+
+set ob(have_hand) 0
+set ob(have_hand) [rshm have_hand]
+
+start_loop
+
+# sleep for 0.1 sec, gives robot chance to start
+tksleep 100
+
+set reps 8
+
+for {set i 0} {$i < $reps} {incr i} {
+	hamot -0.5
+	tksleep 500
+	hamot 2.5
+	tksleep 500
+	puts $i
+}
+
+	hamot -0.5
+	tksleep 500
+	puts "closed [rshm hand_pos]"
+	hamot 2.5
+	tksleep 500
+	puts "open [rshm hand_pos]"
+
+for {set i 0} {$i < $reps} {incr i} {
+	hamot -2.5
+	tksleep 500
+	hamot 0.5
+	tksleep 500
+	puts $i
+}
+
+	hamot -2.5
+	tksleep 500
+	puts "closed [rshm hand_pos]"
+	hamot 0.5
+	tksleep 500
+	puts "open [rshm hand_pos]"
+
+stop_rtl
+exit

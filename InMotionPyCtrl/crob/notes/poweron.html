@@ -1,0 +1,306 @@
+<html>
+<head>
+<title>Initial InMotion2 Setup</title>
+</head>
+<body>
+
+<h1>Initial InMotion2 Setup</h1>
+Mon Jun 23 11:54:20 EDT 2003
+<p>
+
+Read this document completely before setting up the robot.
+<p>
+
+When powering up the robot for the first time, or after hardware
+reconfiguration, follow these steps.
+<p>
+<ol>
+<h2>Turning on the Robot hardware</h2>
+<li>Make sure the panel door is closed.
+<li>Be aware of the location of the Stop buttons on the panel
+and/or on the cables.
+<li><b>Turn on the red power switch</b> (in the upper right corner of the panel)
+and check for strange sounds, smoke, and
+so forth.
+<li>If something seems wrong, press the Stop button immediately.
+This applies brakes to the motors, and lights the red Reset lamp.
+ It does not power off the panel.
+<li>If the problem seems severe enough that you want to cut
+power, turn off the red power switch.
+<li>If the robot is not running as expected, call IMT.  After calling
+IMT, you may be able to diagnose your problem by looking at the
+documentation on the
+<a href="panel.html">
+control panel.</a>
+<li>In the normal case, the robot will power up with no trouble.
+You must <b>register the encoders</b> by moving both the shoulder and elbow
+links.  You may do this with a small movement of the manipulandum
+(the handle at the tip of the robot arm).
+As each of the two links registers, you will hear a quiet click.
+The two clicks may be close to simultaneous, so they may sound like one click.
+<p>
+<h2>Running the vex software</h2>
+<li>
+You are now ready to check the basic functioning of the robot.  Before
+performing this check, always press the Stop button to light
+the red Reset lamp and apply the brakes.
+<p>
+
+<p>
+This procedure assumes the following:
+<ul>
+<li>you are logged into the InMotion2 RTLinux PC
+<li>the X Window System is running
+<li>you are running with root permissions in a terminal window
+<li>you are in the directory /home/imt/crob/
+</ul>
+
+<p>
+The InMotion2 software components should be in place.
+ If they are not, this procedure will fail and software
+will print diagnostic warning messages.
+<p>
+Most problems with setting up the robot arm can be fixed by adjusting
+configuration parameters in the calibration file, <b>imt2.cal</b> .
+
+<p>
+<li><b>Run the vex program</b> ( # ./vex ) to display system vectors,
+such as position, velocity, force transducer, and motor forces.
+The vex program will open two
+windows, a text window titled top, and a graphical window titled
+vex.  Until the InMotion2 Linux Kernel Module is loaded and running,
+there will be no active data in either of these windows.
+Numeric text values and graphical vector values are color-coordinated
+between these two windows.
+<li><b>Click the green load button</b>. 
+After a second or two,
+<ul>
+<li>the InMotion2 Linux Kernel Module will load
+<li>the load button turn into a red unload button
+<li>the run button will become activated and will turn from red to green.
+</ul>
+If you want to unload the InMotion2 Linux Kernel Module, click the
+red unload button.
+<p>
+Notes:
+<ul>
+<li>
+This document says "press" for buttons on the hardware control panel,
+and "click" for buttons on the PC display.
+<li>
+The vex program buttons all turn gray when you mouse over them,
+the button colors described here are when the mouse cursor is not
+positioned over them.
+</ul>
+<p>
+<li><b>Click the green run button.</b>
+This starts the InMotion2 RTLinux control loop running.
+<ul>
+<li>the run button will turn into a red pause button.
+<li>the text window (titled top) will display
+system values in numeric text form.
+<li>the other window (titled vex) will
+display vectors and other graphical information.
+</ul>
+If you want to stop the robot control loop, click the red pause button.
+<h2>Check the encoders</h2>
+<li>
+The encoders track the position of the shoulder and elbow links to
+provide the X/Y position of the manipulandum.  The encoders are
+located in the motor housings.
+A yellow dot at the end of a gray line tracks the
+encoder X/Y position on the graphical vex display.  X and Y positions (x, y)
+are shown in millimeters on the text display (the Linux Kernel Module
+reports them in meters, but the vex program multiplies them by 1000).
+
+<li>
+Check to assure that the yellow dot is centered on the vex display
+when the manipulandum is centered correctly (usually in the middle of
+the workstation table, 0.65 meters from the center of the motors).  If
+the yellow dot is off the display, you will usually see a gray line
+pointing to it.  If you move the manipulandum, and the gray line
+moves, that means that either your encoders angles are not calibrated
+or perhaps one or both of the encoder channels may be faulty or
+misconfigured.  The encoder angles are called shoulder_angle_offset
+and elbow_angle_offset , and are expressed in radians.  They are
+measured individually, with each link immobilized and pointing
+in the +X direction with respect to the motor housing.
+<li>
+Check that the yellow dot moves left, right, up, and down,
+corresponding to movements of the manipulandum.  If the yellow dot
+centers properly, X/Y motion is usually working too.  If X/Y motion is
+not working, it's usually a problem with calibration or configuration
+as above.
+
+<p>
+Notes:
+<ul>
+<li>On the vex display, left is -X, right is +X, up is +Y and down is -Y.
+<li>On the workstation tabletop, left is -X, right is +X, toward the robot is +Y and toward the chair is -Y.
+<li>When programming display software, -Y is usually up the screen and
++Y is down, so the software programmer must negate Y
+in to get manipulandum motion to correspond to expected screen motion.
+<li>+X/+Y usually goes down a screen (before negation) and to the right because
+lines of text usually originate 
+in the upper left and move toward lower right.  +X+Y on the robot
+tabletop goes up and to the left because in mathematics, the origin
+of a two-dimensional plane is usually at the center of crossed X and Y
+axes, with the +X/+Y quadrant in the upper right.
+</ul>
+<p>
+
+<h2>Check the Velocity</h2>
+<li>Velocity measurements are shown with a
+green vector on the vex display.
+Velocities (xvel, yvel) are shown in meters per second on the text display.
+If your robot has a tachometer, the
+velocity will display its readings.  If your robot has no tachometer,
+velocity will be calculated as a differential of manipulandum motion
+over time.  The green velocity vector will reflect X/Y motion,
+pointing in the direction of motion, getting longer if you move the
+manipulandum more quickly, and so forth.  If the green vector doesn't
+move correctly, it may indicate a problem with tachometer software
+configuration, or with tachometer hardware.
+<h2>Check the Force Transducer</h2>
+<li>
+The force transducer is a hockey-puck shaped device between
+(or above) the handle of the manipulandum and the "wrist" of the robot arm.
+The vex program displays the force transducer
+measurements in device space (brown) and world space (red).  
+Device space is with respect to the force transducer device,
+which moves with the manipulandum, world space
+is with respect to the stationary workstation table top.
+Force transducer forces (ftf) are shown in Newtons
+on the text display.
+<li>Hold the arm still (gripping the arm by the
+"wrist") and push the manipulandum handle in the various X, Y, and Z
+directions.  If all is well, the thin red vector will track Z
+force (up and down the screen in Y),
+and the thicker red vector will track X and Y force in
+world space.  The thin brown vector will track X and Y force with
+respect to the force transducer device itself.
+<li>
+It is possible that the force transducer may be working almost
+correctly but it has not been properly biased, that it is not
+returning zero readings when there are no forces applied.
+In this case, you may acquire and set the bias readings, and then the
+vectors should be zero length when you are not touching the
+manipulandum.  (There is a slight bit of noise in the force transducer
+readings, so the vectors will wobble a little.)
+<li>
+If the force vectors are wrong, this may indicate incorrect
+configuration of force transducer channels, calibrations, or other
+parameters, or other force transducer problems.  You may start to
+diagnose these problems by working in the device space.  The force
+transducer (a hockey puck shaped device mounted on the manipulandum)
+is marked with +X, -X, +Y, and -Y.  Holding the arm still, you should
+push the manipulandum handle toward each of these directions in turn.
+Pushing toward +Y should cause the thin brown force vector to point
+straight up the display, +X will point right, and so on.
+<li>If the device forces look good and the world forces don't, that means 
+you need to adjust the force transducer's ft_offset in the calibration file.
+ft_offset is a rotational offset expressed in radians.
+If the Z axis is flipped, it means your force transducer is mounted
+upside-down, and you need to change the state of ft_flip.
+<h2>Sending Voltages to the Motors</h2>
+<li>
+The InMotion2 system sends voltages to the motor
+to apply forces to the robot arm.
+Before you actually enable the motors to let the arm move in response to
+power, first a word about what to expect you do that.
+<li>
+The "star" button on the "top" window runs a
+procedure that moves the manipulandum between the center of the
+workspace and the eight compass directions in a "star" configuration.
+For example, number the compass points from 0 to 7, with north
+being 0, northeast 1, east 2, and so forth.  Call the center point C. 
+The sequence is: C0C1C2C3, and so forth, clockwise around the
+display.
+<li>
+<b>Start with the brakes on,</b> so the motors will not receive voltages and
+they  will not move the arm.
+Start with the yellow dot right on the center
+of the vex display.  <b>Click the green "star" button.</b>  The star
+procedure will start a controller that tries to move the manipulandum
+up toward its first target, the north spot.
+As time passes, the controller wants the manipulandum to go closer and
+closer to the target north spot.
+Since the brakes are on
+and the manipulandum is not moving, the controller will try first with
+a gentle push and then harder and harder, to move north.
+The motor force vector is blue.  If you have the yellow X/Y spot 
+well-centered on the display, this blue vector should veer toward its
+destination.
+Motor forces (frc) are shown in Newtons on the text display.
+<li>The duty cycle of the star procedure is 3 seconds of motion and
+two seconds of waiting, in a loop.  Watch the blue arrow move around
+until you understand what it's doing.  As always, you may move the
+manipulandum around and watch all the vectors, including the blue
+motor forces, reacting to the manipulandum position and now, to the
+star controller algorithm.  When you understand the motion of the
+vectors, <b>click the red pause button</b>.
+<h2>Turning on the Motors</h2>
+<li>
+You are about to send forces to the Robot arm.  Please always be aware of
+InMotion2 safety procedures, which include:
+<p>
+<b>
+<ul>
+<li>make sure that the robot is properly calibrated, by following the
+steps above.
+<li>hold on to the manipulandum when disengaging the brakes and
+engaging the motors
+<li>be aware of the location of the Stop button and
+the panel On/Off Switch
+<li>make sure the brakes are engaged (or the arm is powered off)
+before rebooting, halting, or powering off the PC.
+</ul>
+</b>
+<p>
+Neglecting these safety procedures may (will) cause the robot arm
+to swing out of control and may (will) hurt a person or damage the robot.
+<p>
+Note that it is possible for the vectors to show properly
+on the display but the motors and
+other robot hardware might not react as expected.  The
+software code path that sends data to the display diverges from the
+code path that sends data to and from the robot at some point.  So always
+be careful even if the display looks fine until this point.
+<p>
+<li>
+Turn the brakes off (<b>press the Reset button
+and the green Start button on the panel</b>).
+The star controller procedure assumes that the manipulandum is already at the
+center of the workspace (and display) when you click the star button.
+The further away it is from center, the harder it will jerk the
+manipulandum toward that point.  (We should fix this behavior, but it
+is not done yet and should not be a problem in practice).
+<li><b>Move the manipulandum to the center, hold the
+manipulandum firmly, keep the Stop button at hand, and
+click the green star button</b> on the top window.
+If the arm pulls hard or reacts oddly, press the Stop button
+immediately.
+<li>
+If all goes well, the manipulandum will travel gently north, getting
+to the north spot in 3 seconds, wait for 2 seconds, take 3 seconds to
+get back to center, wait 2, then head northeast and so on.  If you
+don't restrict the movement of the manipulandum, it will require
+only a gentle amount of force, which will be shown on the display
+as a small blue vector.
+<li>
+With the star procedure running, you may move the arm around, and the
+physical feedback and vector displays should make sense.
+<li>
+If while running the star procedure, you hold the manipulandum
+centered in the workspace, the blue motor force vector will be equal and
+opposite to the red force transducer vector, because you are holding
+it back with the same force that the motor is trying to push away.
+<li>
+If the forces seem wrong, there may be a problem with motor cabling,
+channels, or calibration, or with the functioning of other robot
+components whose calculations factor into the motor forces.
+<li>When you are done running the star procedure, <b>click the red pause
+button.</b>  When you are done using vex, <b>click the red quit button.</b>
+</ol>
+This completes testing of basic functioning of the InMotion2 robot arm.
+</body></html>

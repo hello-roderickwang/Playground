@@ -1,0 +1,60 @@
+#! /bin/bash
+# check-plc status
+
+if [[ -z $CROB_HOME ]]; then
+        echo "CROB_HOME is not set"
+        exit 1
+fi
+
+cd $CROB_HOME/tools
+
+if [[ ! -r "$IMT_CONFIG/have_no_plc" && ! -r "$IMT_CONFIG/have_plc" ]]; then
+        echo "robot have_plc state is not set, it must be set in imt_config/"
+        exit 1
+fi
+
+if [[ -r "$IMT_CONFIG/have_no_plc" ]]; then
+	echo
+        echo "robot configured with no plc, settings below are false defaults"
+	echo
+fi
+
+
+./plc check-plc
+ret=$?
+[[ $ret -eq 0 ]] && echo plc is running
+[[ $ret -eq 1 ]] && echo plc is stopped
+[[ $ret -eq 2 ]] && echo plc is not responding
+[[ $ret -ne 0 ]] && exit $ret
+
+ ./plc check-ready-lamp 
+ret=$?
+[[ $ret -eq 0 ]] && echo '[y24]' ready lamp is on
+[[ $ret -ne 0 ]] && echo '[y24]' ready lamp is off
+
+ ./plc check-active
+ret=$?
+[[ $ret -eq 0 ]] && echo '[y27]' active lamp is on
+[[ $ret -ne 0 ]] && echo '[y27]' active lamp is off
+
+ ./plc check-cal 
+ret=$?
+[[ $ret -eq 0 ]] && echo '[m04]' robot is calibrated
+[[ $ret -ne 0 ]] && echo '[m04]' robot is not calibrated
+
+ ./plc check-estop
+ret=$?
+[[ $ret -eq 0 ]] && echo '[x25]' estop is not stopped
+[[ $ret -ne 0 ]] && echo '[x25]' estop is stopped
+
+ ./plc check-pwr-pc-5v
+ret=$?
+[[ $ret -eq 0 ]] && echo '[m17]' pc 5v is ok
+[[ $ret -ne 0 ]] && echo '[m17]' pc 5v is not ok
+
+ ./plc check-pwr-24v
+ret=$?
+[[ $ret -eq 0 ]] && echo '[m19]' 24v is ok
+[[ $ret -ne 0 ]] && echo '[m19]' 24v is not ok
+
+exit 0

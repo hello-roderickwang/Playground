@@ -1,0 +1,107 @@
+#! /bin/bash
+
+# stop - stop linux kernel modules at exit
+
+# InMotion2 robot system software 
+
+# Copyright 2003-2010 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+PERSONALITY=$(cat /opt/imt/personality)
+
+CROB_HOME=${CROB_HOME:-"/opt/imt/robot/crob"}
+cd $CROB_HOME
+
+zmsg() {
+    $CROB_HOME/tools/zenity_wrap "$@"
+}
+
+# if we are called as "stop 57", kill the 57 volts too
+if [[ $1 == 57 ]]; then
+    if [[ $PERSONALITY == g2 ]]; then
+	tools/ucplc set-ready-dis
+    fi
+    if [[ $PERSONALITY == ce ]]; then
+	if tools/plc check-plc; then
+	    tools/plc set-pwr-dis; sleep 0.5; tools/plc set-pwr-en
+	fi
+    fi
+fi
+
+# are there user mode procs to kill?
+# these should be killed by the progs that create them
+# but if they are not, kill them here.
+# note: if these procs are stopped in the background (like with ^Z)
+# you may need to fg them or they'll be zombies - should be benign.
+
+# list all procs that have mbuff and rtf open
+
+# kill the usual suspects if they're there.
+
+if [[ $PERSONALITY == ce ]]; then
+    pkill -0 -x shm && pkill -x shm
+
+    # if plc is running, then set-drive-dis
+    # if not, then run rest of stop code anyway.
+    if tools/plc check-plc; then
+	tools/plc set-drive-dis
+    fi
+fi
+
+if [[ $PERSONALITY == g2 ]]; then
+    for i in atinetft mccd shm rtcanrecv rtcansend rtcansendmulti
+    do
+	pkill -x $i
+    done
+    pkill -f notifyerror
+    tools/ucplc -q set-active-dis
+fi
+
+# set quit in the control loop, so it can clean itself up properly.
+
+if pkill -0 -x robot; then
+    echo -e "ok\nset quit 1\nquit\n" | ./shm
+fi
+
+# wait for 2 seconds for control loop to clean up and exit
+
+I=0
+while pkill -0 -x robot; do
+      sleep 0.1
+      if [ $I -gt 20 ]; then
+	  break
+      fi
+      ((I++))
+done
+
+# if setting quit didn't work, try pkill.
+# pkill (with the default SIGTERM) should work as well as sending quit above.
+
+if pkill -0 -x robot; then
+      pkill -x robot
+      echo "stop: sent pkill to robot process."
+      sleep 2
+fi
+
+# last resort, try SIGKILL.
+
+if pkill -0 -x robot; then
+      pkill -9 -x robot
+      echo "stop: sent pkill 9 to robot process."
+      sleep 2
+fi
+
+if pkill -0 -x robot; then
+      zmsg "stop: could not kill robot process." --error
+      exit 1
+fi
+
+# make sure our shmids are cleaned up.
+for i in 1 2 3 4 5
+do
+	ipcrm -M 0x494D543$i > /dev/null 2>&1
+done
+
+echo $(date -u "+%Y-%m-%d %H:%M:%S (%s stop)") >> /var/log/imt/timestamps

@@ -1,0 +1,13 @@
+#! /bin/bash
+
+if [ ! -d "$1" ]; then
+	echo usage: $0 therapist_folder
+	exit 1
+fi
+
+dir=`dirname $0`
+
+date=`date +%Y%m%d_%a_%H%M%S`
+fn=fmt_adap_$date.log
+find $1 -name 'adaptive_*.asc' -print | xargs -n 1  $dir/fmt_adap_1 > $fn
+echo wrote $fn

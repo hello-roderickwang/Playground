@@ -1,0 +1,100 @@
+#! /usr/bin/tclsh
+source $::env(CROB_HOME)/shm.tcl
+
+proc do_start_lkm {} {
+set lkm_start 1
+}
+
+proc do_stop_lkm {} {
+stop_shm
+after 100
+}
+
+proc do_start_loop {} {
+start_loop
+after 100
+}
+
+# moves slowly from the current point to the specified x,y point,
+# usually used for initial placement of the arm.
+proc do_center {} {
+global in
+set x 0.0
+set y 0.0
+foreach {center x y} $in break
+center_arm $x $y
+}
+
+# move from a specified source box to destination box.
+# (with adpative controller 5, it's points and not boxes)
+
+proc do_movebox {} {
+global in
+foreach {movebox id fnid    i term inc    x1 y1 w1 h1    x2 y2 w2 h2} $in break
+movebox $id $fnid [list $i $term $inc] [list $x1 $y1 $w1 $h1] [list $x2 $y2 $w2 $h2]
+}
+
+# set stiffness
+
+proc do_stiff {} {
+global in
+set stiff [lindex $in 1]
+# puts "stiff $stiff"
+wshm stiff $stiff
+wshm side_stiff $stiff
+}
+
+# set damping
+
+proc do_damp {} {
+global in
+set damp [lindex $in 1]
+# puts "damp $damp"
+wshm damp $damp
+}
+
+proc do_stop_shm {} {
+stop_shm
+}
+
+# unload and quit
+proc do_quit {} {
+	if {[is_lkm_loaded]} {
+		stop_loop
+		stop_shm
+		stop_lkm
+	}
+exit
+}
+
+# load robot control loop and start it.
+
+proc do_start {} {
+start_lkm
+start_shm
+start_loop
+}
+
+# print help commands
+
+proc do_help {} {
+	puts commands:
+	regsub -all do_ [info commands do_*] ""    pstring
+	puts $pstring
+	# [join [info commands do_*] \n]
+}
+
+# command loop: read and eval
+
+puts "server"
+while 1 {
+	global in
+	gets stdin in
+	set cmd [lindex $in 0]
+	# puts do_$cmd
+	if {[lsearch -exact [info commands do_*] do_$cmd] == -1} {
+		puts "no such command: $cmd"
+		continue
+	}
+	do_$cmd
+}

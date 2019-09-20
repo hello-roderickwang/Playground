@@ -1,0 +1,4 @@
+# imt note: put changes into effect with:
+#   $ svn propset svn:ignore -F .gitignore .
+#
+refio

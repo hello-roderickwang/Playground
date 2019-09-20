@@ -1,0 +1,218 @@
+<html>
+<head>
+<title>Adding a new game protocol</title>
+</head>
+<body>
+
+<h1>Adding a new game protocol</h1>
+
+The robot game protocols are stored in a directory tree with
+files that contain variables specifying variable elements
+of the different games.  Such variables might indicate whether
+a game sends forces, whether a log file is stored, how long before each
+slot times out, and so forth.
+<p>
+Note that in the current IMT Games implementation, this protocol structure
+is only for the clock game.  The protocol structure can be applied to
+other games.  The other games don't have the variety of protocols
+that require this structure, but the protocol has provisions to accommodate
+other games in the data structure if required.
+<p>
+
+<h2>PROTOCOLS_HOME</h2>
+
+The default set of robot protocols is stored in
+<tt>/opt/imt/robots/protocols,</tt> and this directory name
+is the default value of the <tt>PROTOCOLS_HOME</tt>
+environment variable.  If you want to add your own
+protocols, you need to copy the whole <tt>protocols</tt> directory
+tree into your own directory, and change the value of
+<tt>PROTOCOLS_HOME</tt> in <tt>imt.rc</tt> to point to it.
+(When you change <tt>imt.rc,</tt> you need to log out and
+back in, for the change to take effect.)
+
+<h2>Protocols Directory Structure</h2>
+
+The protocols directory has the following structure:
+<tt>protocols</tt>/<i>robot/game/protocol</i>
+where <tt>protocols</tt> is the name of the base of the directory, and
+<i>robot/game/protocol</i> are three variable directory name elements.
+<p>
+
+For example, the adaptive clock game for the planar robot is in the directory:
+<p>
+
+<tt>protocols/planar/clock/adaptive</tt>
+<p>
+The adaptivegrasp clock game for the planarhand robot is in the directory:
+<p>
+<tt>protocols/planarhand/clock/adaptivegrasp</tt>
+<p>
+If you want to add a bounce protocol to the wrist robot, you would put it in:
+<p>
+<tt>protocols/wrist/clock/bounce</tt>
+
+<h2>Inside a Protocol Directory</h2>
+
+A typical protocol is the planar robot clock adaptive
+protocol.  It lives in the directory
+<tt>protocols/planar/clock/adaptive</tt> .
+This directory contains the following files:
+<p>
+<tt>base/  eval/ therapy/  eval_list  therapy_list</tt>
+<p>
+
+These files specify the details of the protocol,
+and the files must be present, with these names.
+The base directory contains basic description files of the game types,
+which are inherited by other games.  The eval and therapy directories
+have files that describe individual instances of the games.
+
+<p>
+<h3>Protocol List Files</h3>
+The files <tt>eval_list</tt> and <tt>therapy_list</tt> are text files that
+contain a Tcl list with pairs of elements on each line: the first is the file name in this protocol direcory, and the second name is the string that is shown in the games console screen.  For example:
+
+<pre>
+set ob(therapylist) {
+therapy/oneway_rec_1 "One Way Record 1"
+therapy/adaptive_1 "Adaptive 1"
+}
+</pre>
+
+This will put two games in the Therapy List in the clock
+games console.  The first will be called "One Way Record 1"
+in the list, and the protocol description file will be
+<tt>protocols/planar/clock/adaptive/therapy/oneway_rec_1</tt>
+.
+<p>
+In these list files, be careful to notice the position of
+the "quotes" and {curly braces} and make sure you keep them
+properly paired and matched, so that the Tcl program can parse
+them properly.
+<p>
+
+
+<h3>Protocol Variable Directories</h3>
+The other three files, <tt>base,</tt> <tt>eval,</tt> and
+<tt>therapy,</tt> are directories containing files with the
+variable settings that distinguish each game in a protocol.
+The files have in "inheritance structure" that lets you
+say that a new game is almost like an old game, but it might
+have one variable changed.  These files are written with Tcl
+commands, and only two commands are usually used.  One is
+the <tt>source</tt> command, which includes another file (to inherit
+the variables it sets).  The other command is a shorthand
+command called <tt>s</tt> (for set) that is used to set
+variables.
+
+For example, the file <tt>/protocols/planar/clock/adaptive/therapy/oneway_rec_1</tt> looks like this:
+
+<pre>
+source ../base/base_oneway
+s namestr "One Way Record 1"
+s log yes
+s logperslot yes
+</pre>
+
+It gets most of its settings from
+<tt>../base/base_oneway</tt> and sets some other variables
+with the <tt>s</tt> command.
+
+<h3>Inheritance Chain</h3>
+
+If you look at the inheritance chain for oneway_rec_2 in the
+planar adaptive protocol,
+
+<p>
+<tt>therapy/oneway_rec_2</tt> inherits from<br>
+<tt>therapy/oneway_rec_1</tt> inherits from<br>
+<tt>base/base_oneway</tt> inherits from<br>
+<tt>base/base_default</tt> .
+
+<h2>Adding a New Protocol to the Game Configuration</h2>
+After you have placed a new protocol in the PROTOCOLS_HOME
+directory structure, there is a separate database that you
+need to modify to tell the clock games console to show the
+protocol as available to use.
+<p>
+The file that stores that data is
+<tt>$IMT_CONFIG/robots</tt>/<i>robot</i>/<tt>robot.cfg</tt> - for example,
+<tt>imt_config/robots/planar/robot.cfg.</tt>
+
+Its contents might look like this (the end is shortened):
+<pre>
+# this cfg file is usually written by the lgames/config program.
+# you may edit it yourself to add items to the
+# games,list or proto,list entries
+# Mon Jan 19 04:04:39 PM EST 2009
+
+array set cfg {
+planar,clock,proto,list {adaptive playback brh05a brh05b}
+planar,clock,proto,sellist {adaptive playback}
+planar,cs,proto,list default
+planar,cs,proto,sellist default
+...
+}
+</pre>
+
+<p>
+
+Look at the first two lines that start with
+<tt>planar,clock</tt> .  The first is the <tt>list</tt>. the
+second is the <tt>selllist</tt>.  The list is all the
+protocols that are available to be selected, and the sellist
+is the ones that are actually selected.  The protocols that are selected
+are the ones that are displayed in your game Protocols menu, like the one
+in the clock Games Console.
+<p>
+The name of the protocol in these lists (inside the {curly braces}) is the
+name of the protocols above in the <i>robot/game/protocol</i> name structure (for example, <tt>planar/clock/adaptive</tt>).
+<p>
+
+Note that in the example above, some of the lists are called
+"default" without surrounding curly braces.  This is a Tcl
+detail, a one element list (like default) doesn't require
+braces around it.
+<p>
+
+<h2>Choosing a Protocol From Those Available</h2>
+Once you add the new protocol to the robot.cfg file, you
+need a way to "turn the protocols on and off."  There are
+two levels to this.
+<ol>
+<li>Choose which protocols are
+available to the particular game (like clock)
+<li>Choose which one of the available protocols you are using
+for a particular patient.
+</ol>
+<p>
+
+For example, you have three protocols for planar clock,
+called <tt>adaptive,</tt> <tt>playback,</tt> and
+<tt>random.</tt>  You want to make only the
+<tt>adaptive</tt> and <tt>playback</tt> choices available, and then
+you want to choose <tt>adaptive.</tt>
+<p>
+Perform these steps:
+<ol>
+<li>Edit the <tt>robot.cfg</tt> file put all three protocols in the sellist.
+<li>Run the configuration program <tt>$LGAMES_HOME/config/config.tcl</tt>, specifying only <tt>adaptive</tt> and <tt>playback.</tt>
+<li>Then run the clock Games Console and click the Protocols item in the menu, and choose <tt>adaptive</tt> from the two in the list (that comes from the <tt>robot.cfg</tt> sellist).
+</ol>
+
+The purpose of the config.tcl program is to change
+the <tt>sellist</tt> based on the <tt>list.</tt>  We assume that you
+will add new protocols infrequently (which is done in a text editor) but you
+will set up the list of possible choices more frequently, which you do with
+<tt>config.tcl</tt> .
+
+<h2>Summary</h2>
+To add a new protocol, you have to decide what goes into it,
+establish its place in the <tt>protocols</tt> directory
+structure, edit the <tt>robot.cfg</tt> file so that the games console can
+find it, and then choose the protocol from among those available in the
+console.
+
+</body></html>
+

@@ -1,0 +1,26 @@
+#! /bin/bash
+
+# look for peripherals, return yes if present. 
+
+if [[ $# != 1 ]]; then
+    echo "usage: checkboard board"
+    exit 1
+fi
+
+board=$1
+
+case $board in
+    can)
+    lspci -n |grep -q 001c:0008 
+    ;;
+
+    mccaout)
+    ${ROBOT_HOME}/mcc/info > /dev/null
+    ;;
+
+    atift)
+    curl -m 1 -s -o - http://atinetft/netftapi2.xml|grep -q netft
+    ;;
+esac
+
+

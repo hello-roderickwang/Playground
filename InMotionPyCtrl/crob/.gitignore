@@ -1,0 +1,17 @@
+# imt note: put changes into effect with:
+#   $ svn propset svn:ignore -F .gitignore .
+#
+
+cmds.h
+*.E
+shm
+rwarp
+robot
+imt2.cal
+tags
+*.pyc
+*.so
+pyshm.c
+robcanrecv
+atinetft
+rtcansendmulti

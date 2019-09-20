@@ -1,0 +1,47 @@
+#! /bin/sh
+
+# sends commands to the "server" program to move the planar
+# robot handle in a diamond pattern, n,e,s,w.
+
+{
+echo starting... > /dev/tty
+echo start
+sleep 3
+echo stiff 400
+echo damp 5
+sleep .1
+
+n="0 .15 0 0"
+e=".15 0 0 0"
+s="0 -.15 0 0"
+w="-.15 0 0 0"
+
+secs=5
+ticks=`expr $secs \* 200`
+echo secs $secs ticks $ticks > /dev/tty
+
+echo centering to north > /dev/tty
+echo center 0 .15
+sleep 3
+
+echo moving north to east > /dev/tty
+echo movebox 0 5   0 $ticks 1   $n $e
+sleep $secs
+
+echo moving east to south > /dev/tty
+echo movebox 0 5   0 $ticks 1   $e $s
+sleep $secs
+
+echo moving south to west > /dev/tty
+echo movebox 0 5   0 $ticks 1   $s $w
+sleep $secs
+
+echo moving west to north > /dev/tty
+echo movebox 0 5   0 $ticks 1   $w $n
+sleep $secs
+
+echo quit
+
+} | ./server
+
+echo done > /dev/tty

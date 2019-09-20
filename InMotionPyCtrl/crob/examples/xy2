@@ -1,0 +1,50 @@
+#!/usr/bin/tclsh
+
+# script that prints position and velocity once per second
+
+# commands that talk to robot's shared memory buffer
+source $::env(CROB_HOME)/shm.tcl
+
+# load the Linux Kernel Modules, shm, and start
+start_lkm
+start_shm
+start_loop
+
+# sleep for .1 sec, gives robot chance to start.
+after 100
+
+# when there is any activity on stdin, (like a newline)
+# set donevar, which will trigger the vwait below
+# (not necessary in a wish script)
+fileevent stdin readable [list set donevar 1]
+
+# ^C will not cause proper termination, you'll need to ./stop by hand.
+puts "print x,y and vx,vy once per second (1000 ms)"
+puts "type newline to exit"
+
+set donevar 0
+# the loop
+proc once_per_second {} {
+	if {$::donevar} return
+	puts "x=[rshm x], y=[rshm y],\
+		vx=[rshm xvel], vy=[rshm yvel]"
+	after 1000 once_per_second
+}
+
+# print x,y and vx,vy once per second (1000 ms)
+once_per_second
+
+# enter Tcl event loop for "after"
+# (wish does this automatically)
+# stop when variable "donevar" is set.
+vwait donevar
+
+# donevar has been set.
+
+after cancel one_per_second
+
+puts "done"
+
+stop_loop
+stop_shm
+stop_lkm

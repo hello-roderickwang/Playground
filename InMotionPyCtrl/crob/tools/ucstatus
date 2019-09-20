@@ -1,0 +1,218 @@
+#!/usr/bin/python
+
+from __future__ import division, print_function  # Python 3
+from subprocess import check_output, CalledProcessError, STDOUT
+from collections import OrderedDict, defaultdict
+import os
+from os.path import join as pjoin
+from Tkinter import *
+from ttk import *
+import logging
+import tkMessageBox
+from tkintertable.Tables import TableCanvas
+from tkintertable.TableModels import TableModel
+from functools import partial
+
+
+def dictdiffer(current_dict, past_dict):
+    current_keys, past_keys = [set(d.keys()) for d in (current_dict, past_dict)]
+    intersect = current_keys.intersection(past_keys)
+    return set(o for o in intersect if past_dict[o] != current_dict[o])
+
+
+class ObjectWithAttributes(object):
+    pass
+
+
+v_old = {'sensors': {}, 'pins': {}}
+v_new = {'sensors': {}, 'pins': {}}
+changes = {'sensors': set(), 'pins': set()}
+
+GOOD_COLOR = 'green1'
+BAD_COLOR = 'red'
+BLAH_COLOR = 'lightgray'
+CHANGE_COLOR = 'yellow'
+
+
+class UCReadings(OrderedDict):
+    """
+    an ordereddict that handles the check-*-short uc format
+    """
+    def __init__(self, sensors_or_pins, *args, **kwargs):
+        super(UCReadings, self).__init__(*args, **kwargs)
+        self.sensors_or_pins = sensors_or_pins
+        try:
+            readings_str = check_output([UCPLC, 'check-{}'.format(self.sensors_or_pins)]).rstrip()
+            if 'sync' in readings_str:
+                raise IOError
+            for pair in readings_str.split():
+                name, v = pair.split('=')
+                vs = v.split(',')
+                for i, col in enumerate(colnames[self.sensors_or_pins]):
+                    if name not in self:
+                        self[name] = OrderedDict()
+                    self[name]['name'] = name
+                    self[name][col] = vs[i]
+        except (IOError, CalledProcessError):
+            fail()
+
+    def get_readings(self):
+        try:
+            readings = check_output([UCPLC, 'check-{}-short'.format(self.sensors_or_pins)]).rstrip().split()
+            lcd = check_output([UCPLC, 'check-lcd'])
+            lcd = lcd[0:16] + '\n' + lcd[16:]
+            lcd_contents.set(lcd)
+            if 'sync' in readings or 'sync' in lcd_contents.get():
+                raise IOError
+            for i, name in enumerate(self.keys()):
+                val = readings[i]
+                # populate the old/new for changes tracking BEFORE any data munging
+                v_old[self.sensors_or_pins][name] = v_new[self.sensors_or_pins].get(name, -42)
+                v_new[self.sensors_or_pins][name] = val
+                try:
+                    if float(val) in (-1, 0, 1):
+                        val = int(float(val))
+                except ValueError:
+                    pass
+                self[name]['value'] = val
+            changes[self.sensors_or_pins] = dictdiffer(v_new[self.sensors_or_pins], v_old[self.sensors_or_pins])
+                
+        except (IOError, CalledProcessError):
+            fail()
+
+
+def colorize_tables():
+    """
+    for each row, determine whether low <= value <= high
+    if it is, make value's background green; else red
+    UNLESS read = 0, in which case gray
+    """
+    try:
+        cols = {}
+        m = t['sensors'].model
+        for colname in colnames['sensors']:
+            cols[colname] = m.getColumnIndex(colname)
+
+        d = {}
+        for row in range(len(m.data)):
+            for colname in colnames['sensors']:
+                try:
+                    d[colname] = float(m.getValueAt(row, cols[colname]))
+                except ValueError:
+                    d[colname] = 'NA'
+            if d['low'] <= d['value'] <= d['hi']:
+                m.setColorAt(row, cols['value'], GOOD_COLOR)
+            else:
+                m.setColorAt(row, cols['value'], BAD_COLOR)
+            if not d['read']:
+                m.setColorAt(row, cols['value'], BLAH_COLOR)
+            if d['low'] == -1 and d['hi'] == -1:
+                m.setColorAt(row, cols['value'], BLAH_COLOR)
+            if '_dip' in m.getRecName(row):  # this is a dip switch, so int not float
+                try:
+                    m.setValueAt(int(d[colname]), row, cols['value'])
+                except ValueError:
+                    m.setValueAt(d[colname], row, cols['value'])
+            if m.getRecName(row) in changes['sensors'] and '_temp' not in m.getRecName(row) and 'uckhz' not in m.getRecName(row):
+                m.setColorAt(row, cols['value'], CHANGE_COLOR)
+
+        m = t['pins'].model
+        for row in range(len(m.data)):
+            m.setColorAt(row, 1, GOOD_COLOR if float(m.getValueAt(row, 1)) else BAD_COLOR)
+            if 'ABORT' in m.getRecName(row) or 'PWR' in m.getRecName(row) or 'WAS_WARM' in m.getRecName(row):   # these are reversed sense
+                m.setColorAt(row, 1, BAD_COLOR if float(m.getValueAt(row, 1)) else GOOD_COLOR)
+            if m.getRecName(row) in changes['pins']:
+                m.setColorAt(row, 1, CHANGE_COLOR)
+    except IndexError:
+        # row has been filtered out, don't try to colorize it
+        pass
+
+
+def update_table_every():
+    for which in ('pins', 'sensors'):
+        t[which].data.get_readings()
+        colorize_tables()
+        t[which].table.redrawTable()
+
+    try:
+        for i in range(4):
+            gpio[i].set(check_output([UCDOUT, '--get', '--pin', str(i)]).rstrip())
+    except CalledProcessError:
+        fail()
+
+    r.after(1000, update_table_every)
+
+
+def set_value_from_checkbox(pin):
+    try:
+        check_output([UCDOUT, '--pin', str(pin), '--set', str(gpio[pin].get())])
+    except CalledProcessError:
+        fail()
+
+
+def fail():
+    tkMessageBox.showerror('Failed', 'Failed to communicate with the microcontroller.\nExiting.')
+    sys.exit(1)
+
+#########################
+
+CROB_HOME = os.environ['CROB_HOME']
+UCDOUT = pjoin(CROB_HOME, 'tools', 'ucdout')
+UCPLC = pjoin(CROB_HOME, 'tools', 'ucplc')
+
+if "out of sync" in check_output([UCPLC, 'check-version'], stderr=STDOUT).rstrip():
+    raise IOError
+
+colnames = {'sensors': ('read', 'act', 'low', 'hi', 'value'),
+            'pins': ('value',)}
+
+r = Tk()
+r.bind('q', sys.exit)
+
+# build the window
+f = Frame(r)
+f.pack(fill=BOTH, expand=YES)
+ucversion = check_output([UCPLC, 'check-version']).rstrip()
+r.wm_title('UC Status (UC version: ' + ucversion + ')')
+left = Frame(f)
+left.pack(side=LEFT, fill=BOTH, expand=YES)
+
+# sensors and pins tables
+t = defaultdict(ObjectWithAttributes)
+t['sensors'].frame = Labelframe(left, text='Sensors')
+t['sensors'].frame.pack(fill=BOTH, expand=YES)
+t['pins'].frame = Labelframe(f, text='Pins')
+t['pins'].frame.pack(side=RIGHT, fill=Y)
+
+for which in colnames:
+    t[which].model = TableModel()
+    t[which].table = TableCanvas(t[which].frame, align='w', model=t[which].model, rowheaderwidth=150,
+                                 editable=False, showkeynamesinheader=True)
+    t[which].table.createTableFrame()
+    t[which].data = UCReadings(which)
+    t[which].model.importDict(t[which].data)
+    for i in t[which].model.columnNames:
+        t[which].model.columnwidths[i] = 50
+    t[which].table.redrawTable()
+    t[which].table.sortTable(columnName='name')
+    t[which].model.columnwidths['name'] = 0
+
+
+# gpio checkbuttons
+gpioframe = Labelframe(left, text='GPIO')
+gpioframe.pack(side=LEFT)
+gpio = [IntVar(), IntVar(), IntVar(), IntVar()]
+for i in range(4):
+    Checkbutton(gpioframe, text=i, variable=gpio[i], command=partial(set_value_from_checkbox, i)).pack(side=LEFT)
+
+# LCD 
+lcdframe = Labelframe(left, text='LCD')
+lcdframe.pack(side=RIGHT)
+lcd_contents = StringVar()
+lcdlabel = Label(lcdframe, textvariable=lcd_contents, font='Courier')
+lcdlabel.pack(side=LEFT)
+
+
+# start the loop
+update_table_every()
+r.mainloop()

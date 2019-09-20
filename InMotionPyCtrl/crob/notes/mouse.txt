@@ -1,0 +1,31 @@
+This applies only to the older Red Hat Linux distribution, not to Ubuntu.
+
+Mouse setup
+
+Mon Jun 30 18:47:45 EDT 2003
+
+Earlier InMotion2 PCs were delivered with standard 3-button PS2 mice.
+
+Newer InMotion2 PCs are delivered with Keytronic 2MOUSEPS2-451BL PS2
+mice with two normal outside buttons, plus a scroll-wheel/mouse-button
+combo for the middle button.
+
+Linux X Window System sets up mouse support with the mouseconfig tool:
+
+	/usr/sbin/mouseconfig
+
+The standard 3-button mouse is configured as:
+
+	Generic 3 Button Mouse (PS/2)
+
+The Keytronic 2MOUSEPS2-451BL2 mouse is configured as:
+
+	Microsoft IntelliMouse (PS/2)
+
+you must run mouseconfig as root, and you must restart X for the
+settings to take effect.
+
+After configuration, middle-button pasting should work, and the
+scroll-wheel (if present) should be supported by Mozilla,
+gnome-terminal, and other programs that support it.
+

@@ -1,0 +1,50 @@
+Thu Sep 18 17:25:06 EDT 2003
+
+The RedHat 7.3 Linux X Window System comes, by default, running a fancy
+screensaver called xscreensaver.  It runs after the keyboard and mouse
+have been idle for 10 minutes (default) and displays interesting patterns
+on the screen.  These patterns are generated from a palette of dozens
+of graphical programs, some of which make heavy use of the CPU and
+graphics engine on the PC - they assume that the machine isn't busy.
+
+As graphics boards have become faster and faster (so that teenagers
+will buy them to play video games), they may "steal cycles" from the
+PC's I/O bus and CPU.  This works fine for video games and most PC
+applications, but may create problems for a PC like ours that needs
+real-time response.
+
+The graphics driver software in the Linux that IMT delivers should
+already be compiled with RTLinux headers, to make sure its "cli" and
+"sti" directives (which disable and enable hardware interrupts) are
+properly handled by RTLinux, but I'm not familiar enough with graphics
+boards to fully understand these interactions so I am wary of them.
+
+So if you're having jitter problems and you suspect xscreensaver,
+you can stop it:
+
+$ xscreensaver-command -prefs
+
+	"Display Modes"
+	Mode: "Disable Screen Saver"
+	File: Exit
+
+xscreensaver does not usually cause a problem, I'm just suspicious of
+some of the more graphics-intensive displays.  Another problem is that
+sometimes xscreensaver seems to "mess up" the screen a bit.  It looks
+like it mispaints a small (half-inch tall) horizontal row of the
+display, so it looks slightly wrong.  If you see this, you can fix it
+using Linux "console switching" (see: "man console").  To do this,
+move your screen cursor to the background root window, and type:
+CTL-ALT-F1, then CTL-ALT-F7.  CTL-ALT-F1 switches the screen display 
+to the first plain-text console window, and CTL-ALT-F7 switches back
+to the X Window System, redrawing the screen.  There may be other
+"redraw" options in various window managers, but this should work.
+
+Jitter problems may also occur if you write a graphics-intensive GUI
+that controls a real-time robotic task.  It is hard to characterize
+this problem in a specific way, both because such real-time problems
+can be subtle and intermittent, and because hardware changes so
+frequently, with motherboards, graphics boards, and CPUs (and other
+devices too) becoming obsolete several times a year.  It should be
+sufficient to beware of the potential for such problems when designing
+solutions to real-time tasks.

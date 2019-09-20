@@ -1,0 +1,367 @@
+<html>
+<head>
+<title>shm Shared Memory Buffer Program Notes</title>
+</head>
+<body>
+
+<h1>shm Shared Memory Buffer Program Notes</h1>
+Tue Mar  2 12:32:38 EST 2010
+<p>
+shm is a command-line program that lets you get and set data values in the
+control loop for the InMotion2 robot.  This note
+discusses how to use shm, and then how it works.
+
+<h2>Sample Session</h2>
+Here is a sample session of the shm program being run as a diagnostic tool.
+The shm program is usually run by a script rather than by a person, so it does
+not echo a prompt.  You may abbreviate command names to their first letter.  In
+the following examples, user input is shown as <b><tt>bold fixed width text</tt></b>,
+program output is <tt>plain fixed width text</tt>.  <p>
+
+For a list of commands, type help (or h):
+
+<pre>
+# <b>./shm
+h</b>
+set name newval
+get name
+allget [pattern]
+help
+quit
+</pre>
+
+The main commands are set (s) and get (g), but for debugging, we'll
+look at the allget (a) command first.  The allget command takes an
+optional pattern argument, and gets the values of variables whose
+names contain the pattern.  With no pattern, all variables are printed
+(it prints hundreds of lines, so the output is abridged here):
+
+<pre>
+<b>a</b>
+get shoulder_angle_cal 0, -6.282840
+get shoulder_angle_channel 1, 1
+get shoulder_angle_degrees 2, 250.522327
+get shoulder_angle_offset 3, -1.910401
+...
+get errnum 146, 0
+get nerrors 147, 0
+get error0i 148, 0
+get error0code 149, 0
+get error1i 150, 0
+get error1code 151, 0
+</pre>
+The number printed before the comma in the get output is the index of the
+command name in the commands array, the variable's value is after the comma.
+<p>
+
+Get all variables whose names contain the pattern "delta" :
+
+<pre>
+<b>a delta</b>
+get time_delta_call 125, 64
+get time_delta_sample 126, 62304
+get time_delta_tick 127, 5007360
+get time_ns_delta_call 129, 64
+get time_ns_delta_sample 130, 62304
+get time_ns_delta_tick 131, 5007360
+get time_ns_delta_sample_thresh 133, 10
+get time_ns_delta_tick_thresh 134, 120
+get time_ns_max_delta_sample 135, 121680
+get time_ns_max_delta_tick 136, 5208896
+</pre>
+
+Here's an example of looking at the scratch array with allget, then
+setting some of the scratch variables to new values with set (s), then
+looking at them again with allget, then looking at the particular
+variables with get (g).
+
+<pre>
+<b>a scr</b>
+get scr0 106, 1.234000
+get scr1 107, 0.000000
+get scr2 108, 0.000000
+get scr3 109, 0.000000
+get scr4 110, 0.000000
+get scr5 111, 5.678000
+get scr6 112, 0.000000
+get scr7 113, 0.000000
+<b>s scr0 0.11111
+s scr5 5.66666
+a scr</b>
+get scr0 106, 0.111110
+get scr1 107, 0.000000
+get scr2 108, 0.000000
+get scr3 109, 0.000000
+get scr4 110, 0.000000
+get scr5 111, 5.666660
+get scr6 112, 0.000000
+get scr7 113, 0.000000
+<b>g scr0</b>
+get scr0 106, 0.111110
+<b>g scr1</b>
+get scr1 107, 0.000000
+<b>g scr5</b>
+get scr5 111, 5.666660
+</pre>
+
+Note that allget is a convenience command for human users.  It takes a
+pattern argument, and may print more information than you need.  Get
+and set take a full variable name as an argument, so they get and
+set precisely what you need - this is important when you are writing a
+script.
+
+<p>
+To quit from shm, type quit (or q):
+
+<pre>
+<b>q</b>
+# 
+</pre>
+
+<h2>shm Program Design</h2>
+In previous versions of the IMT robot control loop, the design of RTLinux ran
+the real-time portion of a data acquisition process in a control loop in a
+Linux Kernel Module (LKM).  The current Xenomai design runs the control loop in
+a real-time capable user-mode C program rather than an LKM.
+ <p>
+
+GUI interaction
+and file I/O run in a separate user-mode program.  Linux provides
+several ways for these two programs to share data with each other,
+one is using real-time pipes, and the other is using shared memory.
+<p>
+
+<h3> shm system call docs</h3>
+Documentation for using the Linux shared memory system calls may be found
+in the <pre>shmop(2)</pre> manual pages.
+<p>
+The Linux shm system calls allow two or more processes to share memory,
+that is, references through a memory pointer in each process point to
+the same block of memory.  This memory may be read or written by any
+of the processes.
+
+
+<h3>Calling shmat and shmdt</h3>
+The call to allocate and attach to a shared memory buffer is:
+
+<pre>
+	int shmget(key_t key, int size, IPC_CREAT);
+	void *shmat(int shmid, const void *shmaddr, int shmflg);
+</pre>
+
+Each shared memory area has a numeric key and size, the shmget call creates it,
+and the shmat call attaches to that memory area and returns a pointer to it.
+<p>
+
+The call to delete and detach from a shared memory buffer is:
+
+<pre>
+	int shmctl(int shmid, IPC_RMID, NULL);
+	int shmdt(const void *shmaddr);
+</pre>
+
+shmctl(IPC_RMID) marks the segment to be deleted when detached.
+Don't call shmctl(IPC_RMID) from your user interface program,
+the control loop will delete the segment when it exits (but do call shmdt).
+The user interface should unly detach using shmdt.
+Exiting a program will <b>not</b> free an allocated
+buffer, you must call shmdt().
+
+<h3>Data Structure</h3>
+In most C programs, you declare static memory areas one variable at a
+time.  When using a shared memory block returned by an allocator, like
+malloc(), or in this case, shmat(), you will want to impose a
+data structure on the memory buffer that the allocator returns, as
+this block may contain a group of many variables.  You may do this by
+casting the shared memory buffer pointer to a structure pointer or array
+pointer.  Then you may access the shared memory using C's -&gt;
+operator, as you would any other memory.
+<p>
+<b>
+Note: the rest of this document discusses details of the workings of
+shm that may be skipped by the casual reader.
+</b>
+
+<h3>How shm Works</h3>
+The shm program allocates the shared memory buffers it needs.  These
+are called Ob (general objects), Rob (robot data), and Daq (data acq
+data).  Each of these buffers is described by its own structure that
+contains a pattern of various types of variables.
+<p>
+
+Most of these
+variables are 64-bit double precision floating point numbers or 32-bit
+integers, either signed or unsigned.  In the InMotion2 system, these
+data types have the typedef aliases f64 (64-bit floating), u32 (32-bit
+unsigned) and s32 (32-bit signed).
+<p>
+
+Many of the variables in the robot software are pairs of
+shoulder/elbow values or x/y values, depending on whether the
+describe data is in the polar coordinates of the motor space or the
+Cartesian coordinates of the tabletop space.  The robot software has
+typedefs called <b>se</b> (for shoulder/elbow) and <b>xy</b> (for x/y)
+which are structures that each hold a pair of f64 values.
+<p>
+
+If you are going to make extensive changes to the robot control loop
+you may want to put your new variables in a new data structure in
+a new shared memory buffer.  Likewise, you will want to put your
+new functions in userfn.c or in a new C source file.  Minimizing
+modifications to the existing C source for the software will make it
+as easy as possible to incorporate new versions of the control code
+from IMT.
+
+<h3>Getting a Data Value from shm</h3>
+A typical need in a robot GUI program is to query the control loop for
+the current position of the manipulandum (the handle at the end of the
+arm).  This is a similar idea to getting the x/y cursor position
+from a mouse driver on a PC windowing system.
+<p>
+
+The x/y position is stored in the daq structure, in an xy typedef
+called pos.  You can assign the shared position variables to a local
+variable in either of the following two ways:
+
+<pre>
+	// assign an xy structure
+	xy pos;
+
+	pos = daq-&gt;pos;
+
+
+	// assign individual f64 variables
+	f64 x, y;
+
+	x = daq-&gt;pos.x;
+	y = daq-&gt;pos.y;
+</pre>
+This is how you get to the data inside a C program.  But what if you
+want the data from a script?  In that case, I want to enter commands
+and have it return results:
+
+<pre>
+	<b>get x</b>
+	get x 139, 0.123456
+	<b>get y</b>
+	get y 143, -0.456789
+</pre>
+
+To make this happen, we need a mapping from the string name for a
+variable (like "x") to the shm address for that variable (like
+daq-&gt;pos.x).  To do that, the shm program creates an array of
+commands, called cmds[ ].  Each array entry has these fields:
+<ul>
+<li>size 
+<li>name 
+<li>address in shared memory
+<li>length (if it's an array)
+</ul>
+
+The entries for x and y in the array look like this:
+<pre>
+        {so_f64, "x", &amp;daq-&gt;pos.x, 1}, /* 139 */
+	...
+        {so_f64, "y", &amp;daq-&gt;pos.y, 1}, /* 143 */
+</pre>
+In the actual program, you cannot initialize an array with a variable
+shm pointer at compile time, so shared memory address is set up at
+runtime.  In the shm program, these "command locations" are set in the
+C function setcmdlocs().  The whole command table and setcmdlocs()
+function are constructed automatically, using a Tcl script called
+mkcmds.tcl, to make sure that they are correct and in sync.  <p>
+
+Now you have a table of mappings from string name to shared memory
+location, but if you want to find "x" in the table, you still need to
+search it somehow.  Since x and y are at array locations 139 and 143
+out of 150 or so variables - the table happens to be sorted alphabetically,
+though this isn't enforced, so x and y are near the end - a sequential
+search wastes lots of time.  The easiest way to search such a table is
+to use a hash function, which lets you index into a table with a
+string index, using a fixed-time function.  So now we can say,
+array["x"] is daq-&gt;pos.x, nearly as easily as saying array[139] is
+daq-&gt;pos.x .  We just use hsearch(), the hash function provided by
+the Linux C library.<p>
+
+The last step is to know what type of data is at the memory location
+that is returned.  It may be 32-bit integer, it may be 64-bit float,
+it may be something else.  The cmds array contains that type
+information, so when we get the pointer to the data, we make sure we
+get the right amount and format it properly.
+<p>
+
+There you have it.  You ask shm to get x, it uses the hash function to
+find array index 139, it finds the data at daq-&gt;pos.x, and it knows
+it's an f64, so it can be printed with the correct printf format.
+<p>
+
+Setting x to a new value is almost the same problem.  You read the
+new value from the command line with scanf, then you find the data
+location for x using the same method as in get.  Once you have the
+location, you replace the old data with the new value.  The actual
+assignment to the memory location happens with the somewhat fancy line
+of C code:
+
+<pre>
+	*((f64 *)cmds[cindex].loc) = (f64) val;
+</pre>
+
+The parentheses and stars in <code>*((TYPE*)location = (TYPE)
+value</code> are necessary to get this to work, when you have a
+variable-typed pointer stored in void variable.  It's a bit messy,
+don't worry if it's not clear.  If you are doing your own shm
+C programming, you will not need this C idiom unless you use void
+pointers to other pointers, which you probably won't.
+<p>
+<h3>Asynchronous Atomic Operations and Shared Memory</h3>
+When you are reading and writing groups of variables in shared memory,
+there are some times when you can do the I/O slowly and the operations
+are still safe, and there are other times when you need to be careful
+that a group of variables are all modified during the idle period
+between a single pair of samples.  When such a group of operations
+needs to happen without being interrupted by other work, this is known
+as an atomic operation - the word "atomic" meaning here that you can't
+divide it into smaller parts.
+<p>
+
+For example, if you are reading X and Y position from shared memory in
+order to write it to a GUI screen, you probably won't notice if the X
+is from one sample and the Y is from the next sample.  An atomic
+operation is not necessary.
+<p>
+But if you are
+writing a series of a dozen or more variables to specify new slot
+controller parameters (3 for-loop parameters: init, incr, term; 8 box
+position parameters: source box x1y1w1h1, dest box x2y2w2h2, etc.), you
+don't want to have only half of the slot set up when a new sample
+starts.
+<p>
+
+To deal with this problem, we write data that needs to be part of an
+atomic transfer into an inactive copy of the live data structure.
+When this write is finished, we set a "go" variable - the sampling
+control loop checks this go variable during a quiet part of each
+sampling cycle, and does a full atomic transfer from the inactive data
+structure to the active data structure, when it's safe and ready to do
+so.
+<p>
+
+There are such atomic write controls on the slot controller data.
+There is also an atomic control if you want to modify certain
+parameters like the sampling rate while sampling is running, but 
+this needs further testing.
+<p>
+
+If you need periodic atomic access to data, for instance, if you are
+collecting per-sample position, velocity, forces, etc., you will want
+to use writes from kernel to user space using rtfifos.
+
+<h3>Exiting shm</h3>
+The only trick when you exit shm is that you need to free the shared
+memory buffers that you have allocated.  This is easy if you use the q
+command, but some users might interrupt out of shm with control-C, and
+we still want to make sure that the proper memory buffer cleanup
+happens.  To do this, we catch the signals that interrupt a Linux
+program, and we also use the Linux atexit() call to make sure that our
+do_atexit() function always gets called to free buffers before shm exits.
+</body></html>

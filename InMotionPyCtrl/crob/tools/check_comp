@@ -1,0 +1,79 @@
+#! /bin/bash
+# search lshw -short file for needles
+# fail if you don't find them
+
+scrape() {
+    # this eats extra spaces
+    echo $check: $out
+    if ! echo "$out" | grep -q "$needle"; then
+	echo
+	echo "FAILED - needed $needle"
+	echo
+	fail=1
+    fi
+}
+
+lshw_short_file=/tmp/lshw.short
+echo "Scanning devices..."
+# redirect scanning noise to /dev/null
+sudo lshw -short > $lshw_short_file 2> /dev/null
+
+if [[ $? != 0 ]]; then
+	echo FAIL - must run on modern Linux, not Ubuntu 5.10
+fi
+
+# look for needles in haystack
+# if you don't find them, FAIL.
+
+fail=0
+
+# Intel(R) Core(TM) i5-2510E CPU @ 2.50GHz
+check="i5-2510E CPU"
+needle=i5-2510E.CPU...2.5
+out=$(grep processor $lshw_short_file | grep "$needle")
+scrape
+
+# 4GiB total memory
+check="4GiB RAM"
+needle=4GiB.System.Memory
+out=$(grep memory $lshw_short_file | grep -v empty | grep "$needle" )
+scrape
+
+# / disk
+# INTEL SSD
+check="INTEL 80GB SSD sys disk"
+needle='80GB.*SSDSC2'
+out=$(grep /dev/sda $lshw_short_file | grep "$needle")
+scrape
+
+# /home
+# INTEL SSD
+check="INTEL 80GB SSD home disk"
+needle='80GB.*SSDSC2'
+out=$(grep /dev/sdb $lshw_short_file | grep "$needle")
+scrape
+
+# check that drives are in SATA 1 and 2, not 3 and 4
+check="sda SSD right SATA slot"
+needle="0:0:0:0"
+out=$(lsscsi | grep /dev/sda | grep "$needle")
+scrape
+check="sdb SSD in right SATA slot"
+needle="1:0:0:0"
+out=$(lsscsi | grep /dev/sdb | grep "$needle")
+scrape
+
+# check that /home has been set to the 2nd disk
+check="/home mounted on sdb1"
+needle=sdb1
+out=$(mount | grep home | grep "$needle")
+scrape
+
+echo
+if [[ $fail == 1 ]] ; then
+	echo "FAILED, see above for reason."
+	exit 1
+else
+	echo PASSED
+	exit 0
+fi

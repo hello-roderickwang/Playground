@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>Accelerometer</title>
+</head>
+<body>
+
+<h1>Accelerometer</h1>
+
+Thu Sep  4 16:33:48 EDT 2003
+<p>
+
+The Analog Devices ADXL 105EM-3 3-axis accelerometer returns
+accelerations in X, Y and Z.  It returns an analog voltage between 0
+and 5 volts.  It is attached to the junction box using the connector
+labeled CN10.  This connector generates inputs on AIN0, AIN1, and AIN2
+(ADC channels 8, 9, and 10), so if you use the accelerometer, you must
+be sure that those inputs are not terminated on the junction box,
+and that they are not connected to other devices.
+ <p>
+
+An accelerometer measures "deviation from free fall." Einstein
+hypothesized that it is not possible to distinguish between
+accelerations of the reference frame and being in a gravitational
+field.  So an accelerometer at rest on a table will register 1G.
+<p>
+
+The accelerometer comes with calibration data, but you may also
+calibrate it yourself.  You do this by measuring its response to
+gravity when at rest.  Measure the output voltage with the
+accelerometer package on a flat surface (horizontal with respect to
+gravity) with X, Y, and Z both up and down (six readings).  These will
+provide 1G and -1G readings for each of the three axes.  You may
+calculate the 0G reading by averaging the two, and the 1G reading for
+each dimension by subtracting the -1G from the 1G reading and dividing
+by 2.
+ <p>
+
+The average reading for each dimension is its bias, and the average 1G
+voltage reading is the xform.  Typically, the bias readings (0G) will be
+about 2.5 volts, and the xform will be about .5 volts per G.  So it
+will read about 3 volts when rightside up, and about 2 volts when
+upside down.
+<p>
+
+</body></html>

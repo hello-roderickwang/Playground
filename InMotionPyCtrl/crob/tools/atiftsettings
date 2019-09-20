@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+
+# set the force transducer with reasonable values 
+# if arguments are given, the first two arguments are put into cfgusra and cfgusrb
+
+import sys
+from urllib2 import urlopen
+
+arg_names = ['command', 'cfgusra', 'cfgusrb']
+args = dict(zip(arg_names, sys.argv))
+
+setting_cgi = {
+    'setcfgsel': 0,  # index of array cfgs
+    'setuserfilter': 3,  # 152 Hz
+    'setpke': 0  # no peak logging
+}
+
+moncon_cgi = {
+    'setmce': 0  # no moncon threshold statement processing
+}
+
+cfgid = 0
+config_cgi = {
+    'cfgnam': 'imt-2013-10-29',  # config name
+    'cfgcalsel': 0,  # index of calibration matrix 
+    'cfgfu': 2,  # force Newtons
+    'cfgtu': 3,  # torque Newton-meter
+    'cfgtdu': 5,  # distance meter
+    'cfgtau': 2,  # angle radians
+    'cfgtfx0': 0,  # software biases
+    'cfgtfx1': 0.1375,  # offset the hand south
+    'cfgtfx2': 0,
+    'cfgtfx3': 0,
+    'cfgtfx4': 0,
+    'cfgtfx5': 0
+}
+
+comm_cgi = {
+    'comnetdhcp': 0,  # do not use dhcp (this is documented backwards)
+    'comrdte': 1,  # use rdt raw data transfer (udp)
+    'cmdrdtrate': 1000,  # Hz 
+    'comrdtmsyn': 0  # no multi-unit synchronization
+}
+
+prefix = 'http://atinetft/'
+
+for key, value in setting_cgi.iteritems():
+    urlopen(prefix + 'setting.cgi?{}={}'.format(key, value))
+
+for key, value in moncon_cgi.iteritems():
+    urlopen(prefix + 'moncon.cgi?{}={}'.format(key, value))
+
+for key, value in config_cgi.iteritems():
+    urlopen(prefix + 'config.cgi?cfgid={}&{}={}'.format(cfgid, key, value))
+
+for key, value in comm_cgi.iteritems():
+    urlopen(prefix + 'comm.cgi?{}={}'.format(key, value))
+
+for key in ('cfgusra', 'cfgusrb'):
+    if key in args:
+        urlopen(prefix + 'config.cgi?cfgid={}&{}={}'.format(cfgid, key, args[key]))
+    

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [[ -z $CROB_HOME ]]; then
+        echo "CROB_HOME is not set"
+        exit 1
+fi
+
+UCPLC=$CROB_HOME/tools/ucplc
+
+if $UCPLC -q check-ready-lamp; then
+    echo Ready lamp is ON.
+else
+    echo Ready lamp is off.
+fi
+
+if $UCPLC -q check-active; then
+    echo Active lamp is ON.
+else
+    echo Active lamp is off.
+fi
+
+if $UCPLC -q check-cal; then
+    echo Robot is CALIBRATED.
+else
+    echo Robot is not calibrated.
+fi
+
+if $UCPLC -q check-estop; then
+    echo Stop button is not pressed.
+else
+    echo STOP BUTTON IS PRESSED.
+fi
+echo
+echo LCD reads:
+$UCPLC check-lcd | sed 's/\(.\{16\}\)/\1\n/'
+

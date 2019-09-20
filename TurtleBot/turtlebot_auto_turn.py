@@ -16,9 +16,11 @@ class AutoTurn():
         rospy.init_node('autoturn', anonymous=True)
         rospy.on_shutdown(self.shutdown)
         self.rate = rospy.Rate(5)
-        self.data = []
+        self.data = [0]
         self.pub_navi = rospy.Publisher('/cmd_vel_mux/input/navi', Twist, queue_size=10)
         self.sub_laserscan = rospy.Subscriber('/scan', LaserScan, self.get_data)
+        self.min_dist = 5.0
+        self.max_dist = 0.0
 
     def get_data(self, msg):
         self.data = []
@@ -31,7 +33,16 @@ class AutoTurn():
         rospy.sleep(1)
 
     def down_sampling(self, method='MEDIAN', sample_num=30):
+        print('min_dist:', self.min_dist)
+        print('max_dist:', self.max_dist)
         self.translate_nan()
+        # self.min_dist = min(self.data)
+        # print 'min_dist:', self.min_dist
+        # for i in self.data:
+        #     if i != 10:
+        #         if i > self.max_dist:
+        #             self.max_dist = i
+        # print 'max_dist:', self.max_dist
         sample_size = len(self.data)//sample_num
         remainder = len(self.data)%sample_num
         sample = []
@@ -59,14 +70,23 @@ class AutoTurn():
         if left == right:
             return 'straight'
         elif left < right:
-            return 'right'
+            # return 'right'
+            return 'straight'
         else:
-            return 'left'
+            # return 'left'
+            return 'straight'
 
     def translate_nan(self, threshold=10):
         for i in range(len(self.data)):
+            print('len(data):', len(self.data), '  i:', i)
+            print('data[i]:', self.data[i])
             if np.isnan(self.data[i]):
+                # print('now i:', i)
                 self.data[i] = threshold
+            if self.data[i] > self.max_dist and self.data[i]!= threshold:
+                self.max_dist = self.data[i]
+            if self.data[i] < self.min_dist:
+                self.min_dist = self.data[i]
 
     def turn_left(self):
         action = Twist()

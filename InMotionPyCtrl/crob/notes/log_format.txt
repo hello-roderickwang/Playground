@@ -1,0 +1,292 @@
+IMT Logfile data format
+
+Mon Oct 10 14:59:27 EDT 2005
+
+IMT robot users are free to create their own formats for writing log
+data.  We provide a default logfile format and logging functions that
+are used in our clinical systems.
+
+Our logfiles consist of a plain-text header followed by 8-byte
+double-precision binary data in rows of samples.  The double precision
+data is written in the default 8-byte floating point format used by the
+Linux GNU C compiler on Intel PC systems.
+
+Here is an example logfile text header:
+
+=====
+# imt log
+s logheadsize 000252
+s logcolumns 9
+s logname /home/imt/therapist/test/therapy/20050207_Mon/oneway_rec_1_120919_Nb1.dat
+s logversion 1.0
+s logdate "Mon Feb 7 12:09:25 EST 2005"
+s logidate 1107796165
+
+# begin user data
+
+# end user data
+
+#####
+<binary data would start here>
+=====
+
+The header can be seen as written in a simple scripting language.
+Each line of the header is either blank, starts with a "#" or starts
+with an "s" .
+
+The "s" lines are "commands" which set variables to be used in log
+reading programs.  The "s" lines have one variable name, prepended with
+the string log, and then one value token afterward, which may contain
+spaces if it is enclosed in "double quotes." Log set variable names may
+contain lower case alpha, numerics, or underscores.  "s" lines are
+terminated by a newline.
+
+Blank lines and lines starting with a "#" are comments, and are
+ignored by a scripting language.
+
+Some scripting languages (which may be used to parse headers) may do odd
+things with backslashes ("\") or unmatched quotes, so beware of using
+these in headers, even in comments.
+
+This document describes the logfile and header currently written by IMT
+software.  You can add additional comments and "s commands" to the
+logfile without breaking existing software, for example:
+
+=====
+# new header fields
+
+s log_color_of_grass green
+s log_fingers_per_hand 5
+s log_favorite_cowboy_yell "Yee hah!"
+=====
+
+
+The first line of the logfile header is always: # imt log
+
+The other lines are usually written in the order shown, but this isn't
+strictly necessary.
+
+logheadsize:
+
+logheadsize is the size of the header in bytes, from the first character
+through (and including) the newline following the ##### line.
+logheadsize is specified in decimal, it is always exactly six digits,
+with leading zeros.  This makes it easier to generate a variable-length
+header and fill in the size of the header without knowing its length in
+advance.
+
+The log header is written before sample data is written, and it contains no
+indication of the logfile length or the number of samples recorded.
+
+logcolumns:
+
+logcolumns is the width of a sample in data items, where each data item
+is eight bytes.  So if logcolumns is 9, each sample is 9 times 8, or 72
+bytes.
+
+logname:
+
+logname is the full path name of the logfile saved on the Linux system.
+The full path name indicates a file name stored in a Linux directory
+tree.  Linux full path names may not contain spaces, they consist of
+alphanumerics, slash, underscore, and dot.  Slash is the directory
+separator, backslash is not used for this purpose on Linux systems.
+Linux file names are case-sensitive, upper and lower case characters may
+not be interchanged.
+
+The full path name:
+
+/home/imt/therapist/test/therapy/20050207_Mon/oneway_rec_1_120919_Nb1.dat
+
+indicates the following:
+
+The base directory where patient data is stored is: /home/imt/therapist
+
+The ID of the patient: test
+In a clinical protocol would usually be a numeric ID, for HIPAA/privacy
+reasons.
+
+Which type of game: therapy
+Usually therapy or eval.
+
+Date: 20050207_Mon
+The date when the game was started.  Monday, February 7, 2005.
+
+File name: oneway_rec_1_120919_Nb1.dat
+
+The file name itself can contain different information, depending on
+which protocol game is being run.  One Way Record is a clock-style game,
+where a patient moves a planar robot in a star pattern, and the logfile
+records a single linear path segment per file.  The intended direction
+of this path is indicated in the file name.  Other games may record
+other information in the file name.
+
+The leading component of the file name indicates the type of game, in
+this case, oneway_rec indicates a One Way Record game.
+
+The next 1 indicates that this is the first run in this part of the
+protocol, which may call for several runs.
+
+120919 indicates 12:09:19 PM, where hours are specified from 00 to
+23.  The date and time are in the local timezone of the recording
+system.
+
+Nb1 means that this path moves from north (N) back (b) toward the center
+of the clock display, and is the 1st path segment of a game.  If it said
+SWt35 that would indicate from center toward (t) southwest (SW), and
+that it is the 35th path segment of a game.
+
+These logfiles are usually named with a .dat suffix.  When converting a
+.dat file to plain-text, name that file with a .asc suffix (for ASCII).
+
+logversion:
+
+The current logfile version is 1.0, this is currently unused.
+
+logdate:
+
+This string indicates the time and date at the start of the path
+segment.  The string is "quoted" because it contains spaces.
+"Mon Feb 7 12:09:25 EST 2005"
+
+logidate:
+
+This is an integer representation of the logdate date/time, in UNIX date
+format, seconds since the UNIX epoch, January 1, 1970 midnight UTC.
+1107796165
+
+Note the difference between the time in logdate and the time in logname.
+The date and time in logdate indicate the time that the logfile for that
+segment was created.  The date and time in logname indicate the time
+that the entire game was started.
+
+If you start a game at 1:45:00 PM, and it requires the patient to draw
+16 path segments, and each path segment takes 5 seconds, all the file
+names will have the logname time 134500, but the logdate times will be
+13:45:00, 13:45:05, 13:45:10, etc.  This makes it easier to group
+related logfiles.  If this wasn't done, the logfiles from one game
+could even spill into two directories, if you started it before midnight
+and ended it after midnight.
+
+The rest of the header consists of a begin/end pair, in case you
+wanted to add some of your own ASCII data.  This is currently unused.
+
+# begin user data
+
+# end user data
+
+#####
+
+At the end of the header, there is a line containing ##### followed by a
+newline.  The logheadsize counts the header from its first character, up
+to and including the newline following the five #'s.
+
+If the logheadsize is 000252, if the first character of header data is
+at address 0, the first character of binary data is at address 252.
+
+
+Format of binary data:
+
+Binary data following the header is written by logging functions which
+may be specified by the designer of the software game.  In IMT's
+clinical protocol for our planar robot, we use the following C code to
+create a log record:
+
+{
+    ob->log[j++] = (f64) ob->i;
+    ob->log[j++] = ob->pos.x;
+    ob->log[j++] = ob->pos.y;
+
+    ob->log[j++] = ob->vel.x;
+    ob->log[j++] = ob->vel.y;
+
+    ob->log[j++] = rob->ft.world.x;
+    ob->log[j++] = rob->ft.world.y;
+    ob->log[j++] = rob->ft.world.z;
+
+    ob->log[j++] = rob->grasp.force;
+}
+
+This code causes the following data to be recorded, the number on the
+left is a column number, where each column is an eight-byte double
+precision quantity.
+
+0: tick number
+1: planar robot X position in meters
+2: planar robot Y position in meters
+3: planar robot X velocity in meters per second
+4: planar robot Y velocity in meters per second
+5: planar robot X force in newtons
+6: planar robot Y force in newtons
+7: planar robot Z force in newtons
+8: planar robot grasp force in newtons
+
+The tick number represents the number of clock ticks, incremented at 200
+per second if you are collecting data at 200 Hz, since the robot
+software was started, or since the tick count was reset.  This number
+will not be zero for the first logfile sample. 
+
+This number is an integral value in a floating point variable, usually
+increasing at one unit per sample.  A game could start and stop logging
+data during the writing of a single log file, which could cause a jump
+in the tick value, but this is not usually done.
+
+If the planar robot does not collect grasp data, the grasp column is
+present but its contents are undefined.
+
+Planar logfile data is recorded in the world space coordinates of the
+workstation tabletop.  The position origin (0,0) is usually set at a Y
+position offset -0.65 meters from the center of the robot body, that is,
+so it is in the middle of the tabletop.
+
+Offsets in X position may also be used to accommodate the fact that a
+patient is not seated directly in front of the robot, but the X position
+offset is usually zero.
+
+The planar robot coordinate system is a Cartesian plane.  When sitting
+in the workstation chair, +X is to the right, and +Y is toward the
+robot.  For forces, -Z is up and +Z is down.
+
+Wrist logfiles have 11 columns, and are specified this way:
+
+{
+    ob->log[j++] = (f64) ob->i;
+
+    ob->log[j++] = ob->wrist.pos.fe;
+    ob->log[j++] = ob->wrist.pos.aa;
+    ob->log[j++] = ob->wrist.pos.ps;
+
+    ob->log[j++] = ob->wrist.fvel.fe;
+    ob->log[j++] = ob->wrist.fvel.aa;
+    ob->log[j++] = ob->wrist.fvel.ps;
+
+    ob->log[j++] = 0.0; // later: fe torque
+    ob->log[j++] = 0.0; // later: aa torque
+    ob->log[j++] = 0.0; // later: ps torque
+
+    ob->log[j++] = 0.0; // later: grasp force
+}
+
+0: tick number
+1: wrist robot FE position in radians
+2: wrist robot AA position in radians
+3: wrist robot PS position in radians
+4: wrist robot FE velocity in radians per second
+5: wrist robot AA velocity in radians per second
+6: wrist robot PS velocity in radians per second
+7: wrist robot FE torque in newton meters
+8: wrist robot AA torque in newton meters
+9: wrist robot PS torque in newton meters
+10: wrist grasp force in newtons
+
+The wrist robot does not yet collect torque and grasp, so these columns
+are present but their contents are undefined.
+
+Wrist data is recorded with respect to the the degrees of freedom of the
+wrist:
+
+FE: flexion and extension
+AA: abduction and adduction
+PS: pronation and supination
+
+--end--

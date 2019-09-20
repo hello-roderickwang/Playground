@@ -1,0 +1,22 @@
+# Mon Jan 17 15:25:02 EST 2005
+
+# these runlevels are true for Red Hat 7.3,
+# they are subject to change.
+
+# 0: Halt System - To shutdown the system
+# 1: Single user mode
+# 2: Basic multi user mode without NFS
+# 3: Full multi user mode (text based)
+# 4: unused
+# 5: Multi user mode with Graphical User Interface
+# 6: Reboot System 
+
+# you may check the list with chkconfig --list
+
+# turn these off for levels 2-5.
+# this does not remove the services, that would be chkconfig --del.
+
+for i in isdn vpnd touchpad apmd sendmail wwwoffled wine rhnsd
+do
+	chkconfig --level 2345 $i off
+done

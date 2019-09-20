@@ -1,0 +1,163 @@
+#! /usr/bin/wish
+
+package require Tk
+
+proc backlash {} {
+    global ob
+
+    set ob(crobhome) $::env(CROB_HOME)
+    source $ob(crobhome)/shm.tcl
+
+    option add *Entry.font {Helvetica 24 bold}
+    option add *Label.font {Helvetica 24 bold}
+    option add *Button.font {Helvetica 24 bold}
+    option add *Scale.font {Helvetica 24 bold}
+
+    set ob(i) 1
+    set ob(motor) none
+    set ob(motorlab) None
+    set ob(lastpos) 0.0
+    set ob(wiggle_dir) +1
+    set ob(pb_dir) p
+
+    label .l_motor -text Motor:
+    label .l_mvar -textvariable ob(motorlab)
+    button .b_lmotor -text Left -command [list set_motor left]
+    button .b_rmotor -text Right -command [list set_motor right]
+    button .b_nmotor -text None -command [list set_motor none]
+    grid .l_motor .l_mvar
+    grid .b_lmotor .b_rmotor .b_nmotor
+
+    scale .s_time -orient horizontal -length 500 -from 0 -to 2000 \
+	    -label Time -command set_time \
+	    -resolution 100 -tickinterval 500
+    .s_time set 1000
+    grid .s_time - -
+
+    scale .s_force -orient horizontal -length 500 -from 0.0 -to 5.0 \
+	    -label Force -command set_force \
+	    -resolution .5 -tickinterval 1.
+    .s_force set 2.0
+    grid .s_force - -
+
+    label .l_back -text Backlash
+    grid .l_back
+    label .l_nback -textvariable ob(nback)
+    label .l_pback -textvariable ob(pback)
+    grid .l_nback .l_pback
+
+    button .b_quit -command do_quit -text Quit -bg red
+    grid .b_quit - -
+
+    update
+
+    wm protocol . WM_DELETE_WINDOW do_quit
+    start_lkm
+    start_shm
+    start_loop
+
+    wshm have_thermal_model 0
+    wshm no_safety_check 1
+    wshm test_raw_torque 1
+    wshm wrist_diff_gcomp 0.0
+    wshm wrist_ps_gcomp 0.0
+    wshm wrist_aa_offset 0.0
+}
+
+proc set_motor {m} {
+    global ob
+
+    set ob(motor) $m
+    set ob(motorlab) [string totitle $m]
+    puts "motor $m"
+    do_wiggle
+}
+
+proc set_time {n} {
+    global ob
+    set ob(time) $n
+    puts "time $n"
+}
+
+proc set_force {n} {
+    global ob
+    set ob(force) $n
+    puts "force $n"
+}
+
+proc do_quit {} {
+    stop_loop
+    stop_shm
+    stop_lkm
+    exit
+}
+
+proc do_wiggle {} {
+    global ob
+    puts "do_wiggle $ob(motor)"
+
+    wiggle_loop
+}
+
+set ob(wiggle_dir) 1
+
+proc wiggle_loop {} {
+    global ob
+
+    # if motor is none, stop wiggle loop and return.
+    # if motor is left or right,
+
+    after cancel wiggle_loop
+
+    if {$ob(motor) == "none" || $ob(time) == 0 || $ob(force) == 0.0} {
+	.l_pback config -bg gray90
+	.l_nback config -bg gray90
+	wshm wrist_left_test_volts 0.0
+	wshm wrist_right_test_volts 0.0
+	set ob(motor) "none"
+	set ob(motorlab) [string totitle $ob(motor)]
+	return
+    }
+
+    # get pos from previous trip's push
+    set pos [radtodeg [rshm wrist_$ob(motor)_disp]]
+    set diff [expr {abs($pos - $ob(lastpos))}]
+puts -nonewline "lastpos $ob(lastpos) $pos"
+    set ob(lastpos) $pos
+# debug...
+# set diff $ob(i)
+    .l_pback config -bg gray90
+    .l_nback config -bg gray90
+    set ob($ob(pb_dir)back) [format %.3f $diff]
+puts " dir $ob(pb_dir) diff ob($ob(pb_dir)back) $diff"
+    .l_$ob(pb_dir)back config -bg yellow
+
+    # alternate dir from +1 to -1
+    # this is really the start of the new cycle
+    set ob(wiggle_dir) [expr {0 - $ob(wiggle_dir)}]
+    if {$ob(wiggle_dir) == 1} {
+	set ob(pb_dir) "p"
+    } else {
+	set ob(pb_dir) "n"
+    }
+
+    # zero both motors every trip for safety
+    wshm wrist_left_test_volts 0.0
+    wshm wrist_right_test_volts 0.0
+
+    # push the motor
+    set mforce [expr {$ob(wiggle_dir) * $ob(force)}]
+    wshm wrist_$ob(motor)_test_volts $mforce
+puts "wshm wrist_$ob(motor)_test_volts $mforce"
+puts ""
+
+    # sleep
+    incr ob(i)
+    after $ob(time) wiggle_loop
+}
+
+proc radtodeg {rad} {
+    set deg [expr ($rad * 360. / (2. * (atan(1.) * 4)))]
+}
+
+backlash

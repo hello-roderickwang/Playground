@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+# tool to push calibration matrix to ati ft
+
+import sys
+from subprocess import check_output
+from time import sleep
+
+try:
+    calibfile = sys.argv[1]
+except IndexError:
+    print 'Usage: {} calibration-file.xml'.format(sys.argv[0])
+    exit(1)
+
+template = 'xpath -q -e //{}/text()[1] {}'
+
+calibs = {
+    'arr_ggn': 'GaugeGains',
+    'arr_gof': 'GaugeOffsets',
+    'cpf': 'CountsPerForce',
+    'cpt': 'CountsPerTorque',
+    'arr_mr': 'MaxRatings',
+    'arr_res': 'Resolutions',
+    'arr_rng': 'Ranges',
+    'arr_sf': '_x0031_6BitScaleFactors'
+}
+
+for key in calibs:
+    arr = calibs[key].endswith('s')
+    calibs[key] = check_output(template.format(calibs[key],calibfile).split()).rstrip()
+    if arr:
+        calibs[key] = calibs[key].split()
+
+calibs['tu'] = 1
+calibs['fu'] = 1
+
+calibcgi_prefix = 'curl -s -u ati:ati7720115 http://atinetft/calib.cgi?calid=0'
+
+for key in calibs:
+    cmd = calibcgi_prefix
+    if key.startswith('arr'):
+        realkey = key[4:]
+        for (i, val) in enumerate(calibs[key]):
+            cmd += '&cal{}{}={}'.format(realkey, i, calibs[key][i])
+    else:
+        cmd += '&cal{}={}'.format(key, calibs[key])
+    check_output(cmd.split())
+
+xmlmatrix = 'xpath -q -e //Matrix{}/text()[1] {}'
+
+mat = {}
+axes = ('FX', 'Fy', 'Fz', 'Tx', 'Ty', 'Tz')
+
+for axis in axes:  # [sic FX]
+    mat[axis] = check_output(xmlmatrix.format(axis, calibfile).split()).rstrip().split()
+
+mtx = 'curl -s -u ati:ati7720115 http://atinetft/calmtx.cgi?calid=0&calmtx{}={}'
+
+v = 0
+for axis in axes:
+    for i in range(6):
+        check_output(mtx.format(v, mat[axis][i]).split())
+        sleep(.25)
+        v += 1
+
+

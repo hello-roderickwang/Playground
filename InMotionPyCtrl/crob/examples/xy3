@@ -1,0 +1,50 @@
+#!/usr/bin/wish
+
+# script that prints position and velocity on label when button is hit
+
+# start_lkm et al should really be asynchronous, but they are not.
+# i.e., they should happen in the background and trigger an event
+# when done, so the tk event loop is not blocked.
+
+# this variable is the text of the label.
+set labvar ""
+
+# create and pack a couple of buttons and a label.
+button .ubut -text "Update" -command update_label
+label .lab -textvariable labvar
+button .xbut -text "Exit" -command done
+pack .ubut .lab .xbut
+
+set labvar  "loading kernel module..."
+update idle
+
+# commands that talk to robot's shared memory buffer
+source $::env(CROB_HOME)/shm.tcl
+
+# start the Linux Kernel Modules, shared memory, and the control loop
+start_lkm
+start_shm
+start_loop
+
+set labvar  "kernel module loaded."
+
+# sleep for .1 sec, gives robot chance to start
+after 100
+
+proc update_label {} {
+	global labvar
+	set labvar "x=[rshm x], y=[rshm y] vx=[rshm xvel], vy=[rshm yvel]"
+}
+
+proc done {} {
+	global labvar
+	set labvar "unloading kernel module..."
+	update idle
+
+	stop_loop
+	stop_shm
+	stop_lkm
+
+	exit
+
+}

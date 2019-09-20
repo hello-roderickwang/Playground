@@ -1,0 +1,1476 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>LinuxQuestions.org Forums - where Linux newbies come for help - I can't detect my ethernet card</title>
+</head>
+<body >
+
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+	<td><a href="http://www.linuxquestions.org/questions/"><img src="http://images.linuxquestions.org/questions/images/LinuxQuestions.gif" border="0" alt="LinuxQuestions.org Forums - where Linux newbies come for help"></a></td>
+	<td align="right"><font face="verdana, arial, helvetica" size="2"></font><br>
+	<font face="verdana,arial,helvetica" size="1" ><a href="printthread.php?s=08f04bb3c5b2c33a74ea81d5ccf5c70a&threadid=33441&perpage=88">Show all 88 posts from this thread on one page</a></font></td>
+</tr>
+</table>
+
+<font face="verdana, arial, helvetica" size="2">
+<p><b><a href="http://www.linuxquestions.org/questions/">LinuxQuestions.org Forums - where Linux newbies come for help</a></b> (http://www.linuxquestions.org/questions/index.php)<br>
+- <b><a href="forumdisplay.php?forumid=18">Linux - Hardware</a></b> (http://www.linuxquestions.org/questions/forumdisplay.php?forumid=18)<br>
+-- <b><a href="showthread.php?threadid=33441">I can't detect my ethernet card</a></b> (http://www.linuxquestions.org/questions/showthread.php?threadid=33441)</p>
+
+<hr>
+<i>Posted by SenorPedo on 10-22-2002 02:34 PM:</i>
+
+<p><b> I can't detect my ethernet card</b></p>
+
+<p>Just got a new computer with an Asus A7V8X motherboard.  Great board, with one problem: The on-board Broadcom BCM4401 10/100 ethernet controller isn't detected by my fresh install of RedHat 8.0.  I've tried going to the Network Config and creating it, but I don't know how to determine the IRQ, MEM, DMA, and all that other stuff.  I'm also not sure which driver I would use even if I did.  <br />
+Is there anyone with any experience/ideas on getting this running so I can get online?  Your help is greatly appreciated.<br />
+Here's the run-down of my system:<br />
+Asus A7V8X<br />
+Athlon XP 2200+<br />
+Broadcom BCM4401 10/100 NIC on board<br />
+Geforce4 MX440 8X AGP<br />
+Maxtor 60GB HD<br />
+Need anything else?</p>
+<hr>
+<i>Posted by bofh1971 on 10-22-2002 11:33 PM:</i>
+
+<p><b><img src="http://images.linuxquestions.org/questions/images/icons/icon3.gif" alt="Lightbulb" width="15" height="15" border="0"> </b></p>
+
+<p>Excellent system, (Goes green with envy)<br />
+<br />
+try allocating irq's in the bios<br />
+that should enable you to do manual config.<br />
+I wonder if the broadcom card is maybe a realtek rebadge as these boards normally have realtek chips installed.<br />
+<br />
+Just a thought<br />
+<br />
+Good Luck<br />
+BOFH1971</p>
+<hr>
+<i>Posted by finegan on 10-23-2002 01:07 AM:</i>
+
+<p><b> </b></p>
+
+<p><a href="http://www.google.com/linux?hl=en&lr=&ie=ISO-8859-1&q=BCM4401&btnG=Google+Search" notarget>This</a> just doesn't happen. You might have a network card that geek+dog hasn't had a chance to hack out a driver for at all just yet. What does Asus say, Linux drivers-wise, or broadcom?<br />
+<br />
+Cheers,<br />
+<br />
+Finegan<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+<a href="http://www.clockwatching.net/~fin/machines.html" notarget>A brief explanation of the farm.</a><br />
+<br />
+<a href="http://www.petitiononline.com/BCM4301/petition.html" notarget>Petitiion to get BroadCom to release the driver specs.</a></font></p></p>
+<hr>
+<i>Posted by SenorPedo on 10-23-2002 04:01 AM:</i>
+
+<p><b> </b></p>
+
+<p>Hmmmm good point.  Asus has nothing to say on Linux drivers for any of the on-board stuff (firewire, usb, sound, etc.), but the ethernet is the only one that wasn't picked up and configured automatically.  Broadcom has nothing to say either, unfortuantely.  Heck, I couldn't even find anything on their site that connected them to the controller at all.  I did find that Broadcom provides chips for 3Com's gigabit ethernet controllers though.  Maybe a 3Com driver would work...Does anyone else out there have an A7V8X motherboard?</p>
+<hr>
+<i>Posted by born4linux on 10-23-2002 06:42 AM:</i>
+
+<p><b> </b></p>
+
+<p>broadcom - it think it uses a driver called 'tg3' something.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+*cough* there is an affero button below...</font></p></p>
+<hr>
+<i>Posted by SenorPedo on 10-23-2002 03:17 PM:</i>
+
+<p><b> </b></p>
+
+<p>I grabbed the Broadcom documentation for the 440X series, and it makes no mention of Linux whatsoever.  I did some research on the Broadcom Tigon3 (tg3) driver and discovered its for their gigabit controller, and not the 10/100.  How can I find out if a driver is currently being written, and if it is, when it will be available, where I can get it, and if there's anything I can do to help?  Thanks for everyone's help.<br />
+<br />
+Regards,<br />
+Sr. Pedo</p>
+<hr>
+<i>Posted by finegan on 10-23-2002 06:11 PM:</i>
+
+<p><b> </b></p>
+
+<p>This perked my interest too, so I went looking at the broadcom site also. All their 440x gear is for home use, with Home PNA and modems thrown in on the same card, which makes me think they're just rebranding chipsets. I should have mentioned this earlier, but to get the ident right off the card:<br />
+<br />
+/sbin/lspci -v<br />
+<br />
+If that says something other than broadcom, you can feed that info into google and probably get the right module.<br />
+<br />
+Otherwise, if you want to bang on some C, become a driver maintainer, check out the Linux Kernel Mailing List, kernel.org should have a link, I usually just poke through it by wandering into one of the billions of mirrors of the archive on el google again.<br />
+<br />
+Cheers,<br />
+<br />
+Finegan<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+<a href="http://www.clockwatching.net/~fin/machines.html" notarget>A brief explanation of the farm.</a><br />
+<br />
+<a href="http://www.petitiononline.com/BCM4301/petition.html" notarget>Petitiion to get BroadCom to release the driver specs.</a></font></p></p>
+<hr>
+<i>Posted by SenorPedo on 10-24-2002 02:45 AM:</i>
+
+<p><b> </b></p>
+
+<p>Here's the output from lspci -v regarding the ethernet controller:<br />
+<br />
+00:09.0 Ethernet controller: Broadcom Corporation: Unknown device 4401 (rev 01)<br />
+             Subsystem: Asustek Computer, Inc.: Unknown device 80a8<br />
+             Flags: bus master, fast devsel, latency 32, IRQ 5<br />
+             Memory at e4000000 (32-bit, non-prefetchable) [size=8K]<br />
+             Expansion ROM at e7ef0000 [disabled] [size=16K]<br />
+             Capabilities: [40] Power Management version 2<br />
+<br />
+So it looks like we have ourselves a new (driverless) controller here.  Maybe I will try my hand at some C.  All I know is Fortran and BASIC right now (I know, I know).  If anyone can give me a push in the right direction I'd be much obliged.  I'm probably biting off more than I can chew, but hey, isn't that what it's all about?</p>
+<hr>
+<i>Posted by SenorPedo on 10-24-2002 02:56 AM:</i>
+
+<p><b> </b></p>
+
+<p>You know, sometimes I amaze myself with how dumb I can be.  Looking on the CD that came with the motherboard, I find a folder called D:\Drivers\LAN\4401\Linux and to my amazement...there's a tar file in there with release notes on what to do with it.  Sorry to trouble you all...but thanks so much for all your help.  If there's any questions around here I can answer, I can guarantee I'll be on it.</p>
+<hr>
+<i>Posted by jpweston on 11-13-2002 02:21 AM:</i>
+
+<p><b> </b></p>
+
+<p>SenorPedo,<br />
+<br />
+Did you get this to work?  Any special steps to complete the driver install?<br />
+<br />
+j.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+System specs:<br />
+[ <b>Distro:</b> Slackware 8.1 ]=[ <b>Mobo:</b> ASUS P3B-F ]=[ <b>CPU:</b> PIII 750MHz ]=[ <b>Mem.:</b> 512Mb Mushkin PC100 SDRAM ]<br />
+[ <b>Vid.:</b> GeForce2 GTS 32MB ]=[ <b>HDD:</b> WD 80GB 7200RPM IDE ]=[ <b>CDR:</b> Pioneer 10x CD/DVD ]=[ <b>FDD:</b> Mitsumi 1.44 ]</font></p></p>
+<hr>
+<i>Posted by SenorPedo on 11-13-2002 03:28 AM:</i>
+
+<p><b> </b></p>
+
+<p>No special steps at all.  The tarred driver was included on the motherboard cd and with the standard ./configure, make, make install procedure.  If you need a copy of the driver with release notes, I'd be happy to email it to you.</p>
+<hr>
+<i>Posted by xUltra on 11-29-2002 06:59 AM:</i>
+
+<p><b> </b></p>
+
+<p>hey... i have the same board here are my specs just to let ya know...<br />
+Asus A7V8X Motherboard<br />
+AMD Athlon XP 2400+ 2.0Ghz with 3D Now 266FSB .13 Micron<br />
+Corsair XMS 512MB DDR PC2700 RAM w/Metal Heatsink<br />
+Western Digital Caviar 80GB 7200 RPM HDD<br />
+AOpen Geoforce 4 Ti4200 w/128MB DDR RAM 8x<br />
+Plextor 40x12x40x CD-R Drive<br />
+Mitsumi 3.5" Floppy Drive<br />
+Chieftec SOHO Fileserver Case w/ Turbolink 430 Watt Power Supply<br />
+Altec Lansing 641 4.1 Speakers with Sub 400 Watt RMS<br />
+Microsoft Intellimouse Explorer 3.0<br />
+Microsoft Internet Keybaord<br />
+Microsoft Windows 2000 Professional SP3/Redhat Linux 8.0<br />
+<br />
+can i have those drivers because i just installed and i have the same problem... for some reason my cd does have that folder... <img src="http://images.linuxquestions.org/questions/images/smilies/frown.gif" border="0" alt=""><br />
+<a href="mailto:xUltra@attbi.com">xUltra@attbi.com</a> = my e-mail. thanks!</p>
+<hr>
+<i>Posted by xUltra on 11-30-2002 04:49 PM:</i>
+
+<p><b> BCM5702</b></p>
+
+<p>There are drivers on the cd for the Gigabit Ethernet Controller, the BCM5702, but not the BCM4401... it seems to be I got older CD, but then again I checked on Asus' website and they only have the drivers for the BCM5702 as well. If you could e-mail them over to me asap I would really appreciate it.</p>
+<hr>
+<i>Posted by derek.eder on 12-03-2002 12:30 PM:</i>
+
+<p><b> ASUS A7V8X and RH 8.0 LAN driver blues</b></p>
+
+<p>The ingredients ....<br />
+   * ASUS A7V8X motherboard<br />
+   * Red Hat 8.0<br />
+   * (onboard) Broadcom 4400 LAN <br />
+   * and a Linux novice<br />
+<br />
+As others have found, Red Hat 8.0 (binaries) does not automatically detect the onboard Broadcom 4400 chipset .<br />
+<br />
+I am not successful in installing this myself - perhaps you can suggest where I am going wrong?<br />
+<br />
+The ASUS "VIA KT400 support CD, Rev 37.02" contains intructions and a tar.gz file in the  /drivers/LAN/4401/linux  directory.  The detailed instructions call for either an RPM installation (but there are no RPM files on the CD) or a TAR build.<br />
+<br />
+This is what I am doing:<br />
+<br />
+i.    TAR the files to \root\lan_install (as instructed)<br />
+<br />
+ii.   cd to the new \SRC directory where the extracted files are<br />
+<br />
+iii.   type "make" and watch the screen scroll with pages and pages of errors  ("dereferencing to pointer of incomplete type" etc ...)<br />
+<br />
+iv.  shake my head in confusion.  All of the neccesary *.h and *.c files , and Makefile are here.   What simple thing am I doing wrong?<br />
+<br />
+Thank you.<br />
+<br />
+<br />
+<br />
+<a href="mailto:derek_eder@yahoo.com">derek_eder@yahoo.com</a></p>
+<hr>
+<i>Posted by 911operator on 12-10-2002 07:45 PM:</i>
+
+<p><b> Missing step</b></p>
+
+<p>Maybe you need to run ./configure before you run make?</p>
+<hr>
+<i>Posted by Joeto on 12-11-2002 04:07 PM:</i>
+
+<p><b><img src="http://images.linuxquestions.org/questions/images/icons/icon14.gif" alt="Thumbs up" width="15" height="15" border="0"> </b></p>
+
+<p><img src="http://images.linuxquestions.org/questions/images/smilies/read.gif" border="0" alt="">  Today I compile and install module to my kernel <img src="http://images.linuxquestions.org/questions/images/smilies/biggrin.gif" border="0" alt=""><br />
+(at this moment I use RH 8.0)<br />
+<br />
+1. from CD take a tar.gz file (file:/mnt/cdrom/Drivers/LAN/4401/Linux) bcm4400-1.0.1.tar.gz or download full set of drivers from asus.com (this mean and windows ones because they are included in package  <img src="http://images.linuxquestions.org/questions/images/smilies/frown.gif" border="0" alt=""> )... copy file to /tmp <br />
+2. start kterm or xterm<br />
+su -<br />
+cd /tmp<br />
+tar -xzf *.tar.gz<br />
+cd src/<br />
+make<br />
+# don't worry about warnings <img src="http://images.linuxquestions.org/questions/images/smilies/smile.gif" border="0" alt=""> this is normal for Linux <img src="http://images.linuxquestions.org/questions/images/smilies/smile.gif" border="0" alt=""> <br />
+depmod<br />
+# don't worry about unresolved symbols ... if you copy<br />
+# module from another PC <img src="http://images.linuxquestions.org/questions/images/smilies/smile.gif" border="0" alt=""><br />
+insmod bcm4400.o<br />
+lsmod | grep bcm<br />
+# if you see something like this : bcm4400             30880   1<br />
+# you problems are over if you not ... you are in troubles <br />
+# if success do this :<br />
+cp bcm4400.o /lib/modules/2.4.18-17.8.0/kernel/drivers/net/<br />
+mcedit /etc/modules.conf <br />
+# and  add next line in file:<br />
+alias eth0 bcm4400<br />
+# then F2 to save and exit. next step is to restart network :<br />
+service network restart<br />
+# and enjoy the melody's <br />
+<br />
+3. Reboot <br />
+<br />
+... I thing this is enough <img src="http://images.linuxquestions.org/questions/images/smilies/smile.gif" border="0" alt=""> ... OOOUUUU yes .... FREE-BSD Rulez any other OS is the big S..T <img src="http://images.linuxquestions.org/questions/images/smilies/smile.gif" border="0" alt="">)<br />
+<br />
+<img src="http://images.linuxquestions.org/questions/images/smilies/newbie.gif" border="0" alt=""> : Enjoy Linux and other Free OS they are great!!!</p>
+<hr>
+<i>Posted by gumpy on 12-12-2002 01:06 AM:</i>
+
+<p><b> a7v8x fasttrak 376</b></p>
+
+<p>Has anyone had any luck using the raid controller under linux?</p>
+<hr>
+<i>Posted by finegan on 12-12-2002 01:17 AM:</i>
+
+<p><b> </b></p>
+
+<p>Cruising the Asus site, and not going as far as bothering with the manual in PDF, it looks like a PDC20265 from Promise, is that correct? An /sbin/lspci will tell you for certain, even if it isn't, just post the name of the ATA/RAID controller and the model and we can point you where you need to go.<br />
+<br />
+Cheers,<br />
+<br />
+Finegan<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+<a href="http://www.clockwatching.net/~fin/machines.html" notarget>A brief explanation of the farm.</a><br />
+<br />
+<a href="http://www.petitiononline.com/BCM4301/petition.html" notarget>Petitiion to get BroadCom to release the driver specs.</a></font></p></p>
+<hr>
+<i>Posted by dwpruitt on 12-12-2002 04:46 AM:</i>
+
+<p><b> </b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by SenorPedo </i><br />
+<b>No special steps at all.  The tarred driver was included on the motherboard cd and with the standard ./configure, make, make install procedure.  If you need a copy of the driver with release notes, I'd be happy to email it to you. </b><hr></blockquote> <br />
+<br />
+This info has me hopeful.  I have a very similar configuration.  My driver CD includes the Linux drivers and the installation instructions.  I have two questions:<br />
+<br />
+1.  I don't understand the "standard ./configure" procedure.  What does this accomplish?<br />
+<br />
+2.  I tried following the Asus instructions, but the "make" fails.  I haven't been able to sort through the error messages yet, so I don't know what caused the failure.  Any comment?<br />
+<br />
+Sorry for the less-than-helpful clues here - but it's where I am.<br />
+<br />
+Thanks</p>
+<hr>
+<i>Posted by gumpy on 12-12-2002 05:07 AM:</i>
+
+<p><b> </b></p>
+
+<p>It is a promise controller: Fasttrak 376<br />
+<br />
+lspci:<br />
+00:08.0 RAID bus controller: Promise Technology, Inc.: Unknown device 3376 (rev 02)<br />
+<br />
+/proc/pci gives:<br />
+  Bus  0, device   8, function  0:<br />
+    RAID bus controller: PCI device 105a:3376 (Promise Technology, Inc.) (rev 2).<br />
+      IRQ 10.<br />
+      Master Capable.  Latency=96.  Min Gnt=4.Max Lat=18.<br />
+      I/O at 0xd400 [0xd43f].<br />
+      I/O at 0xd000 [0xd00f].<br />
+      I/O at 0xb800 [0xb87f].<br />
+      Non-prefetchable 32 bit memory at 0xed000000 [0xed000fff].<br />
+      Non-prefetchable 32 bit memory at 0xec800000 [0xec81ffff].<br />
+<br />
+<br />
+<br />
+I haven't actually tried using it w/linux yet.... but I haven't been able to find much documentation about it, so I'm somewhat reluctant to try using it with all my data still on the HD.</p>
+<hr>
+<i>Posted by gumpy on 12-12-2002 05:19 AM:</i>
+
+<p><b> bcm4404</b></p>
+
+<p>I don't have one, but:<br />
+<br />
+just ignore the ./configure - it's an auto configure script used with many packages that build from source code.  It isn't included with the bcm4404 tarball so you don't need to worry about it.<br />
+<br />
+on redhat8.0 it complles the module just fine when you just type 'make' - it gave many warnings... but you can probably just ignore that.<br />
+<br />
+once you get the bcm4404.o just insmod it and if it works, you'll have access to your network card.</p>
+<hr>
+<i>Posted by finegan on 12-12-2002 09:29 PM:</i>
+
+<p><b> </b></p>
+
+<p>Gumpy, <br />
+<br />
+I hate the fact that Promise's model numbers and chipset IDs don't match. Check this page:<br />
+<br />
+<a href="http://www.promise.com/support/download/download_eng.asp" notarget>http://www.promise.com/support/down...ownload_eng.asp</a><br />
+<br />
+And compare it to whatever info is in your motherboard manual.<br />
+<br />
+Promise is a big fan of pre-compiled modules that only work with stock kernels... it gets annoying, but its all there really is.<br />
+<br />
+Cheers,<br />
+<br />
+Finegan<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+<a href="http://www.clockwatching.net/~fin/machines.html" notarget>A brief explanation of the farm.</a><br />
+<br />
+<a href="http://www.petitiononline.com/BCM4301/petition.html" notarget>Petitiion to get BroadCom to release the driver specs.</a></font></p></p>
+<hr>
+<i>Posted by eskay on 12-13-2002 02:58 PM:</i>
+
+<p><b> </b></p>
+
+<p>bcm4400 on MD 9.0<br />
+I followed instruction for making the module and got strings of errors.  Didn't have kernel source on my system.   Loaded the kernel source package from the MD 9.0 CD and tried again.   Successful this time round.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+without the cold and desolation of winter ....</font></p></p>
+<hr>
+<i>Posted by crapboulba on 12-13-2002 08:00 PM:</i>
+
+<p><b> </b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by SenorPedo </i><br />
+<b>No special steps at all.  The tarred driver was included on the motherboard cd and with the standard ./configure, make, make install procedure.  If you need a copy of the driver with release notes, I'd be happy to email it to you. </b><hr></blockquote> <br />
+<br />
+Can you send me the drivers please? <br />
+I dont have the drivers in my asus cd ...<img src="http://images.linuxquestions.org/questions/images/smilies/cry.gif" border="0" alt=""> <br />
+<br />
+my email:<br />
+<a href="mailto:crap.boulba@laposte.net">crap.boulba@laposte.net</a></p>
+<hr>
+<i>Posted by crapboulba on 12-14-2002 12:23 PM:</i>
+
+<p><b> </b></p>
+
+<p>Someone has send it to me. <img src="http://images.linuxquestions.org/questions/images/smilies/smile.gif" border="0" alt=""><br />
+I hope, install will happend without problemes....</p>
+<hr>
+<i>Posted by PIV on 12-14-2002 01:39 PM:</i>
+
+<p><b> Driver</b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by SenorPedo </i><br />
+<b>No special steps at all.  The tarred driver was included on the motherboard cd and with the standard ./configure, make, make install procedure.  If you need a copy of the driver with release notes, I'd be happy to email it to you. </b><hr></blockquote> <br />
+<br />
+<br />
+Will you please mail me the driver and release notes?<br />
+<br />
+Thanks,<br />
+<br />
+/Peter, <a href="mailto:piv@dadlnet.dk">piv@dadlnet.dk</a></p>
+<hr>
+<i>Posted by dwpruitt on 12-14-2002 04:48 PM:</i>
+
+<p><b> </b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by eskay </i><br />
+<b>bcm4400 on MD 9.0<br />
+I followed instruction for making the module and got strings of errors.  Didn't have kernel source on my system.   Loaded the kernel source package from the MD 9.0 CD and tried again.   Successful this time round. </b><hr></blockquote> <br />
+<br />
+That was my problem as well.  Thanks for the help.</p>
+<hr>
+<i>Posted by beko on 12-15-2002 12:41 PM:</i>
+
+<p><b> </b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by SenorPedo </i><br />
+<b>No special steps at all.  The tarred driver was included on the motherboard cd and with the standard ./configure, make, make install procedure.  If you need a copy of the driver with release notes, I'd be happy to email it to you. </b><hr></blockquote> <br />
+<br />
+Hi,<br />
+I have the same trouble with the card like you (same board) and the directory isn't on my bios-cd <img src="http://images.linuxquestions.org/questions/images/smilies/frown.gif" border="0" alt=""><br />
+<br />
+Can you please mail me the BCM4401 directory, too? My mail address is <a href="mailto:beko@duke.famkos.net">beko@duke.famkos.net</a><br />
+<br />
+Thank you!</p>
+<hr>
+<i>Posted by bob49 on 12-16-2002 01:39 PM:</i>
+
+<p><b> </b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by eskay </i><br />
+<b>bcm4400 on MD 9.0<br />
+I followed instruction for making the module and got strings of errors.  Didn't have kernel source on my system.   Loaded the kernel source package from the MD 9.0 CD and tried again.   Successful this time round. </b><hr></blockquote> <br />
+<br />
+<br />
+Me too (at last!) but I did have to edit /etc/modules.conf to replace the 'eth0 tulip' entry for 'eth0 bcm4400'<br />
+<br />
+Thanks to all.<br />
+<br />
+Bob</p>
+<hr>
+<i>Posted by kyardisiak on 12-20-2002 05:55 PM:</i>
+
+<p><b><img src="http://images.linuxquestions.org/questions/images/icons/icon8.gif" alt="Angry" width="15" height="15" border="0"> broadcom drivers</b></p>
+
+<p>Can someone please email me those drivers.  I don't have a motherboard CD (bought from Dell) and I gotta get this network crap going.  Tks....my email is <a href="mailto:kimberly@luckygolfer.com">kimberly@luckygolfer.com</a>.</p>
+<hr>
+<i>Posted by Maniax_Man on 12-21-2002 06:47 PM:</i>
+
+<p><b> </b></p>
+
+<p>It is REALLY tough to get a hold of this driver. I've been hunting for three days and JUST found them. Broadcom has no downloads at all, and Asus only has Win/Dos downloads for the BCM4401. And would'nt ya know, my driver disc is up and vanished! I have the damn slip with the sticker still in it but no driver disc! <br />
+<br />
+Anyway, found these drivers at MSI's site! Dunno why the Asus download doesn't have them.. here is the link. It's a Win .exe file so you'll need some way of extracting it.<br />
+<br />
+<a href="http://download.msi.com.tw/support/dvr_exe/440145.exe" notarget>http://download.msi.com.tw/support/dvr_exe/440145.exe</a><br />
+<br />
+Hope this helps everyone!</p>
+<hr>
+<i>Posted by Maniax_Man on 12-22-2002 07:56 PM:</i>
+
+<p><b> </b></p>
+
+<p>Ok, grr.. I'm using MDK9 and when I try to "make" the driver from the sources everything appears to go through, the bcm4000.o file is created, but the term window reports alot of errors about files not being where it needs them. <br />
+<br />
+I've installed the kernel source and all dep-mods but still get this problem. Even with the completed .o file If I use the Ethernet config tool, I get no option for the driver I just compiled. The 4401 is seen as a "Unknown eth0" in the config tool BTW. When I tried to make the .o before installing the kernel source there was a message in term saying that kern 2.4.x have a different path to some things and that I had to make some changes to the makefile.. unfortunate for me, i didn't save that message.. Any ideas/help??<br />
+<br />
+Thanks!</p>
+<hr>
+<i>Posted by kyardisiak on 12-23-2002 06:11 PM:</i>
+
+<p><b> broadcom</b></p>
+
+<p>Well, I used a file that ultrax emailed to me.  I have RH 7.1 and so I needed to hunt for the kernel-source which I luckily found on the cd.  The rest (libacl, libacl-devel, libattr, and libattr-devel) I had to find on the web.  I got an error for every one of those packages I installed but continued on anyway.  Then, I tarred the file, cd into the src directory and ran make.  Well, it ran and I got the files but I also had screen upon screen loaded with the error "paste...and something about preprocessing token". I ignored it and successfully loaded the driver by running /sbin/insmod bcm4400.o.  Then I ran netconfig, and much to my amazement, everything is working.  Try that and good luck - if you want the driver I have, let me know and I'll email it to you - not sure if it's the same one you got.</p>
+<hr>
+<i>Posted by Maniax_Man on 12-24-2002 07:09 AM:</i>
+
+<p><b> </b></p>
+
+<p>Ok! New update for me. Still using MDK9 (Is that my problem?) Re-install MDK9 again, choosing to install source during the install. Install goes fine, boot into KDE 3.0, browse to where the source files are, try to "make" agian. This time there are only 2 errors. They state the same error about pre-processing. After this completes, attempt to "make install" Error now is "Not a valid ELF file" soooo have it compiled but will not install. <br />
+<br />
+Next phase: go to work and use machine at work ALSO running MDK9 but kernel 2.4.20. Compile source, NO errors, use "make install" tries to but then says "no such device" which makes sense. Make an RPM to install the Module (have it if anyone needs. Compiled in MDK9 w/kern 2.4.20). Take RPM for new kern, new kern source, and new driver RPM home. <br />
+<br />
+Next phase: Install new kern RPM using Kpackage. Install goes fine, no errors. All files installed successfully. Reboot and choose new kern in LILO, system hardlock. Numlock doesn't even respond. Reboot and try old kern, hardlock. Yay, install time again.<br />
+<br />
+Next phase: Install MDK9 agian, delete old partitions and remake new ones. Choose not to install kern 2.4.19 source, install goes well. Immediatly after install completes to to install new kern RPM using Kpackage again. Installs fine again. Reboot, try new kern, hardlock. Reset, try old link, hardlock.<br />
+<br />
+Next phase: Install MDK9 again, delete old partitions and remake new ones. Choose not to install kern 2.4.19 source, install goes well. After install completes try to install new kern RPM again. This time using Mandrake Control Center/Add Software. Install goes fine again, THIS time check LILO config before reboot. LILO is set to boot original kern at /boot/vlinuz which itself is a link to NEW KERN! Change entry to boot old kern. Save and reboot. Try new kern again, hardlock. Reset, try old kern, loads start screen, then errors saying that INIT not set or something similar.<br />
+<br />
+At this point, I decide to check my XP entry to make sure it still works.. Yup, loads fine and runs perfect (WinXP SP1). *sigh* I really want to use MDK9 but I'm beginning to think it hates my system. (Asus A7V8X, GeForce3 Ti200, 2 Maxtor 20GB, SBLive) I have a 3com PCI hard but what's the point? I don't want two NIC's. <br />
+<br />
+Well, if anyone has any other ideas for me feel free to post.</p>
+<hr>
+<i>Posted by eosin on 12-27-2002 02:35 AM:</i>
+
+<p><b> bcm4400</b></p>
+
+<p>hiya... if you need the driver for the broadcom get it from the following url<br />
+<br />
+<a href="http://www.yowser.org/linux/drivers/net/" notarget>http://www.yowser.org/linux/drivers/net/</a><br />
+<br />
+there is the gz file and the release.txt off the cdrom as well as the md5 <br />
+<br />
+Sorry if this is a repost.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+The beliver is happy, the doubter is wise.<br />
+</font></p></p>
+<hr>
+<i>Posted by clyrrad on 12-30-2002 03:28 AM:</i>
+
+<p><b><img src="http://images.linuxquestions.org/questions/images/icons/icon5.gif" alt="Question" width="15" height="15" border="0"> insmod</b></p>
+
+<p>Im gald to see I am not the only one with a problem with this motherboard <img src="http://images.linuxquestions.org/questions/images/smilies/redface.gif" border="0" alt="">)<br />
+<br />
+I am having the exact same problem, however mine has a bit of a twist.  I should mention I have the new Asus A7V8X MB.<br />
+<br />
+I am able to compile NIC driver from the source code on the Asus CD, and there are no compile errors.  The object files are made automatically and placed in<br />
+<br />
+/lib/modules/2.4.19-16mdk/kernel/drivers/net<br />
+<br />
+All files in here are object files but they have been GZip'ed, there is not one file with out a .0.gz extension.<br />
+<br />
+Anyway when I try to install the module I get an instmod error:<br />
+init_module: No such device<br />
+Hint: insmod errors can be caused by incorrect module parameters, including invalid IO or IRQ parameters.<br />
+<br />
+I have determinded that the Onboard Lan card is a Broadcom 5702 Gigabit adapter.  It is also on IRQ 10.  I found this by /sbin/lspci-v<br />
+<br />
+What am I doing wrong when im trying to insmod?  The exact syntax im typing is<br />
+insmod bcm5700<br />
+<br />
+The error message suggest I use a IRQ as a parameter to insmod, so how would I actually do this?<br />
+<br />
+If anyone has successfully added this driver using INSMOD please let me know how you did it, any help is greatly appreciated.</p>
+<hr>
+<i>Posted by coreman on 01-01-2003 11:29 PM:</i>
+
+<p><b><img src="http://images.linuxquestions.org/questions/images/icons/icon9.gif" alt="Unhappy" width="15" height="15" border="0"> I need the sources as well</b></p>
+
+<p>I recently bouhgt a Dell Dimension 2350 which uses the Broadcom 4401 ethernet controller as well. I need to build a RedHat 8.0 driver for it. Could someone email or point me to a location for getting the sources. The few URLs posted in this topic don't return the code.<br />
+<br />
+Jim</p>
+<hr>
+<i>Posted by kyardisiak on 01-02-2003 03:26 PM:</i>
+
+<p><b> broadcom drivers</b></p>
+
+<p>What's your email address coreman???</p>
+<hr>
+<i>Posted by coreman on 01-02-2003 03:38 PM:</i>
+
+<p><b> </b></p>
+
+<p><a href="mailto:reith@racores.com">reith@racores.com</a><br />
+<br />
+Thanks</p>
+<hr>
+<i>Posted by clyrrad on 01-03-2003 06:45 PM:</i>
+
+<p><b> </b></p>
+
+<p>Coreman, did you  get the drivers working successfully?  If so could you please email me the drivers as well?  <a href="mailto:darrylc@rogers.com">darrylc@rogers.com</a><br />
+<br />
+Thank-you in advance</p>
+<hr>
+<i>Posted by coreman on 01-03-2003 06:58 PM:</i>
+
+<p><b> Sources and Red Hat 8.0 driver</b></p>
+
+<p>Yes, it worked fine just as described in the release doc.<br />
+<br />
+Here's the tarball and doc<br />
+<br />
+<a href="http://www.racores.com/temp/bcm4400-1.0.1.tar.gz" notarget>http://www.racores.com/temp/bcm4400-1.0.1.tar.gz</a><br />
+<a href="http://www.racores.com/temp/RELEASE.TXT" notarget>http://www.racores.com/temp/RELEASE.TXT</a><br />
+<br />
+Later:<br />
+<br />
+Due to overwhelming response to people unable to build the driver with these instructions, here's the driver I built. This is for use on a Dell Dimension 2350 running Red Hat 8.0<br />
+<br />
+<a href="http://www.racores.com/temp/bcm4400.o" notarget>http://www.racores.com/temp/bcm4400.o</a><br />
+</p>
+<hr>
+<i>Posted by clyrrad on 01-04-2003 01:57 AM:</i>
+
+<p><b> </b></p>
+
+<p>Thank-you for the post.  By the way what Distribution are you using?  I am using Mandrake 9.  Im not sure if that matters or not, but I think this driver works for all Distributions.  Am I correct in assuming that?<br />
+<br />
+Thanks again!</p>
+<hr>
+<i>Posted by coreman on 01-04-2003 10:30 AM:</i>
+
+<p><b> </b></p>
+
+<p>I built it for Red Hat 8.0. The sources are from the Devo kernels. The driver is standard in the 2.5.x tree</p>
+<hr>
+<i>Posted by Saleen_GT_S281 on 01-05-2003 03:45 PM:</i>
+
+<p><b> RE:</b></p>
+
+<p>I'm Looking How To DO A make File Also i suck @ it my system Just Manndrake 8.2 kernal is like 4.18 somthing like that if one could compile it be great :P<br />
+<br />
+<br />
+<br />
+                          Broadcom Corporation<br />
+                          16215 Alton Parkway,<br />
+                          Irvine, CA 92619-7013<br />
+			  <br />
+                              Release Notes<br />
+                       Broadcom BCM4400 Linux Driver<br />
+                              Version 1.0.1<br />
+                                08/26/2002<br />
+<br />
+Table of Contents<br />
+=================<br />
+<br />
+  Introduction<br />
+  Limitations<br />
+  Packaging<br />
+  Installing Source RPM Package<br />
+  Building Driver From TAR File<br />
+  Notes<br />
+  Patching PCI Files<br />
+  Patching Driver Into Kernel<br />
+  Network Installation<br />
+  Unloading and Removing Driver<br />
+  Module Parameters<br />
+  Driver Messages<br />
+  Statistics<br />
+  Revision History<br />
+  <br />
+			       <br />
+Introduction<br />
+============<br />
+<br />
+This file describes the Linux driver for the Broadcom BCM4400 series<br />
+10/100 Mbps Ethernet Network Controllers.<br />
+<br />
+<br />
+Limitations<br />
+===========<br />
+<br />
+The current version of the driver has been tested on Red Hat 7.1, 7.2,<br />
+7.3, and 8.0 beta Linux distributions for i386 systems, and other similar<br />
+Linux distributions using 2.4.x kernels. The driver has been tested up to<br />
+kernel version 2.4.18.<br />
+<br />
+<br />
+Packaging<br />
+=========<br />
+<br />
+The driver is released in two packaging formats: source RPM and compressed tar<br />
+formats. The file names for the two packages are bcm4400-&lt;version&gt;.src.rpm and<br />
+bcm4400-&lt;version&gt;.tar.gz respectively. Identical source files to build the<br />
+driver are included in both packages. <br />
+<br />
+<br />
+Installing Source RPM Package<br />
+=============================<br />
+<br />
+1. Install the source RPM package:<br />
+<br />
+   rpm -ivh bcm4400-&lt;version&gt;.src.rpm<br />
+<br />
+If installing the driver on SuSE Linux, refer to the Notes section below<br />
+before continuing.<br />
+<br />
+2. CD to the RPM path and build the binary driver for your kernel:<br />
+<br />
+   cd /usr/src/&#123;redhat,OpenLinux,turbo,packages,rpm ..}<br />
+   rpm -bb SPECS/bcm4400.spec<br />
+<br />
+or<br />
+<br />
+   rpmbuild -bb SPECS/bcm4400.spec (for RPM version 4.x.x)<br />
+<br />
+Note that the RPM path is different for different Linux distributions.<br />
+<br />
+3. Install the newly built package (driver and man page):<br />
+<br />
+   rpm -ivh RPMS/i386/bcm4400-&lt;version&gt;.i386.rpm<br />
+<br />
+The driver will be installed in the following path:<br />
+<br />
+2.2.x kernels:<br />
+<br />
+    /lib/modules/&lt;kernel_version&gt;/net/bcm4400.o<br />
+<br />
+2.4.x kernels:<br />
+<br />
+    /lib/modules/&lt;kernel_version&gt;/kernel/drivers/net/bcm4400.o<br />
+<br />
+4. Load the driver:<br />
+<br />
+   insmod bcm4400<br />
+<br />
+5. To configure network protocol and address, refer to various Linux<br />
+documentations.<br />
+<br />
+Building Driver From TAR File<br />
+=============================<br />
+<br />
+1. Create a directory and extract the files:<br />
+<br />
+   tar xvzf bcm4400-&lt;version&gt;.tar.gz<br />
+<br />
+If installing the driver on SuSE Linux, refer to the Notes section below<br />
+before continuing.<br />
+<br />
+2. Build the driver bcm4400.o as a loadable module for the running kernel:<br />
+<br />
+   cd src<br />
+   make<br />
+<br />
+3. Test the driver by loading it: <br />
+<br />
+   insmod bcm4400.o<br />
+<br />
+4. Install the driver and man page:<br />
+<br />
+   make install<br />
+<br />
+See RPM instructions above for the location of the installed driver.<br />
+<br />
+5. To configure network protocol and address, refer to various Linux<br />
+documentations.<br />
+<br />
+Notes<br />
+=====<br />
+<br />
+Note 1: If compiling the driver under SuSE Linux kernel and errors are<br />
+reported, follow the general guidelines below to rebuild the kernel<br />
+source tree:<br />
+<br />
+cd /usr/src/linux-&lt;kernel_version&gt;.SuSE<br />
+cp /boot/vmlinuz.config .config<br />
+cp /boot/vmlinuz.version.h include/linux/version.h<br />
+cp /boot/vmlinuz.autoconf.h include/linux/autoconf.h<br />
+make oldconfig<br />
+make dep<br />
+<br />
+where &lt;kernel_version&gt; is the actual kernel version used in the SuSE<br />
+distribution. Example: /usr/src/linux-2.4.4.SuSE<br />
+<br />
+<br />
+Unloading and Removing Driver<br />
+=============================<br />
+<br />
+To unload the driver, use ifconfig to bring down all eth# interfaces opened<br />
+by the driver, then do the following:<br />
+<br />
+rmmod bcm4400<br />
+<br />
+<br />
+If the driver was installed using rpm, do the following to remove it:<br />
+<br />
+rpm -e bcm4400<br />
+<br />
+<br />
+If the driver was installed using make install from the tar file, the driver<br />
+bcm4400.o has to be manually deleted from the system. Refer to the section<br />
+"Building Driver From TAR File" for the location of the installed driver.<br />
+<br />
+<br />
+Module Parameters<br />
+=================<br />
+<br />
+Optional parameters for the driver can be supplied as command line arguments <br />
+to the insmod command. Typically, these parameters are set in the file<br />
+/etc/modules.conf (see the man page for modules.conf). These parameters take<br />
+the form<br />
+<br />
+    &lt;parameter&gt;=value[,value,...]<br />
+<br />
+where the multiple values for the same parameter are for multiple NICs<br />
+installed in the system.<br />
+<br />
+Note that default or other meaningful values will be used when invalid values<br />
+are selected. Some combinations of parameter values may conflict and lead to<br />
+failures. The driver cannot detect all such conflicting combinations.<br />
+<br />
+All the parameters are listed below.<br />
+<br />
+line_speed<br />
+<br />
+    Selects the line speed of the link. This parameter is used together with<br />
+    full_duplex and auto_speed to select the speed and duplexity of the link<br />
+    and the setting of autonegotiation.<br />
+    <br />
+    The valid values are:<br />
+    <br />
+    0      Autonegotiate for highest speed supported by link partner (default)<br />
+    10     10 Mbps<br />
+    100    100 Mbps<br />
+<br />
+    If line_speed is set to 10, 100, or 1000, the NIC will autonegotiate for<br />
+    the selected speed (and selected duplexity) if auto_speed is set to 1.<br />
+    If auto_speed is set to 0, the selected speed and duplexity will be<br />
+    set without autonegotiation. Note that 1000 Mbps must be negotiated for<br />
+    copper twisted pair links.<br />
+<br />
+auto_speed<br />
+<br />
+    Enables or disables autonegotiation. The valid values are:<br />
+<br />
+    0      Autonegotiation disabled<br />
+    1      Autonegotiation enabled (default)<br />
+<br />
+    Note that this parameter is ignored and assumed 1 if line_speed is set<br />
+    to 0.<br />
+    <br />
+full_duplex<br />
+<br />
+    Selects the duplexity of the link. This paramter is used together with<br />
+    line_speed to select the speed and duplexity of the link. Note that this<br />
+    parameter is ignored if line_speed is 0.<br />
+    <br />
+    The valid values are:<br />
+    <br />
+    0      half duplex<br />
+    1      full duplex (default)<br />
+    <br />
+    <br />
+rx_flow_control<br />
+<br />
+    Enables or disables receiving flow control (pause) frames. This parameter<br />
+    is used together with auto_flow_control. The valid values are:<br />
+    <br />
+    0      pause receive disabled (default)<br />
+    1      pause receive enabled if auto_flow_control is set to 0, or<br />
+           pause receive advertised if auto_flow_control is set to 1<br />
+<br />
+tx_flow_control<br />
+<br />
+    Enables or disables transmitting flow control (pause) frames. This parameter<br />
+    is used together with auto_flow_control. The valid values are:<br />
+    <br />
+    0      pause transmit disabled (default)<br />
+    1      pause transmit enabled if auto_flow_control is set to 0, or<br />
+           pause transmit advertised if auto_flow_control is set to 1<br />
+<br />
+auto_flow_control<br />
+<br />
+    Enables or disables autonegotiation of flow control. This parameter is used<br />
+    together with rx_flow_control and tx_flow_control to determine the<br />
+    advertised flow control capability. The valid values are:<br />
+    <br />
+    0      flow control autonegotiation disabled (default)<br />
+    1      flow control autonegotiation enabled with capability specified in<br />
+           rx_flow_control and tx_flow_control (only valid if line_speed is<br />
+           set to 0 or auto_speed is set to 1)<br />
+<br />
+tx_pkt_desc_cnt<br />
+<br />
+    Configures the number of transmit descriptors. Default is 64. The<br />
+    valid range is from 1 to 511.<br />
+<br />
+rx_pkt_desc_cnt<br />
+<br />
+    Configures the number of receive descriptors. Default is 64. The<br />
+    valid range is from 1 to 511.<br />
+<br />
+<br />
+Driver Messages<br />
+===============<br />
+<br />
+The following are the most common sample messages that may be logged in the file<br />
+/var/log/messages. Use dmesg -n &lt;level&gt; to control the level at which messages<br />
+will appear on the console. Most systems are set to level 6 by default.<br />
+<br />
+Broadcom 4401 Ethernet Driver bcm4400 ver. 1.0.0 (08/21/02)<br />
+<br />
+    Driver signon<br />
+<br />
+<br />
+eth#: Broadcom BCM4401 100Base-T found at mem f7ffc000, IRQ 18, node addr<br />
+0010180407b2<br />
+<br />
+    NIC detected<br />
+<br />
+<br />
+bcm4400: eth# NIC Link is Up, 100 Mbps full duplex<br />
+<br />
+    Link up and speed indication<br />
+<br />
+<br />
+bcm4400: eth# NIC Link is Down<br />
+<br />
+    Link down indication<br />
+<br />
+<br />
+Statistics<br />
+==========<br />
+<br />
+Detailed statistics and configuration information can be viewed in the file<br />
+/proc/net/nicinfo/eth#.info.<br />
+<br />
+<br />
+Revision History<br />
+================<br />
+1.0.1 (08/26/02)<br />
+<br />
+- Fixed the problem of resets during heavy traffic.<br />
+<br />
+1.0.0 (08/22/02)<br />
+<br />
+- First release.<br />
+<br />
+<br />
+<br />
+<br />
+Hopen that helps anyone has the time to compie a driver <img src="http://images.linuxquestions.org/questions/images/smilies/smile.gif" border="0" alt=""><br />
+<br />
+I recently bouhgt a Dell Dimension 2350 which uses the Broadcom 4401 ethernet controller as well. I need to build a RedHat 8.0 driver for it. Could someone email or point me to a location for getting the sources. The few URLs posted in this topic don't return the code.<br />
+<br />
+Jim<br />
+<br />
+I Also have the same Systems With a few changes i Need Please A Mandrake 8.2 i586 please everything else got setup just no net <img src="http://images.linuxquestions.org/questions/images/smilies/smile.gif" border="0" alt=""></p>
+<hr>
+<i>Posted by samoul on 01-12-2003 03:56 PM:</i>
+
+<p><b> </b></p>
+
+<p>Please E-Mail me the driver! I think a don't a good one! Thaks!</p>
+<hr>
+<i>Posted by coreman on 01-12-2003 05:58 PM:</i>
+
+<p><b> Red Hat 8.0 driver</b></p>
+
+<p>I have updated my post above and included a copy of the Red Hat 8.0 driver on my website. Use at your own risk but this is what I built and is currently working on my Dimension 2350<br />
+<br />
+<a href="http://www.racores.com/temp/bcm4400.o" notarget>http://www.racores.com/temp/bcm4400.o</a><br />
+<br />
+Use "save link to disk" to get the file</p>
+<hr>
+<i>Posted by samoul on 01-12-2003 07:07 PM:</i>
+
+<p><b> </b></p>
+
+<p>How have you do to have this file! I try the make command and it show me a lot of error and the file is not created... And you file dont work on my SuSe 8.1 the terminal sait that is not the same version of my kernel... Can you help me to create this file for my own kernel</p>
+<hr>
+<i>Posted by coreman on 01-12-2003 07:32 PM:</i>
+
+<p><b> </b></p>
+
+<p>No, I can't help you with SuSe. I don't have access to it and I don't have the time to walk you through it. I followed the instructions in the .txt file I posted with the tarball. They generated a tremendous number of warnings. other email has stated to ignore them so I did. i then did a "make install" and when I rebooted, it recognized the hardware and configured it for me. That is the sum total of my experience with it. Sorry.</p>
+<hr>
+<i>Posted by samoul on 01-12-2003 08:13 PM:</i>
+
+<p><b> </b></p>
+
+<p>Yes i know how to do it but when a type: ''make'' to terminal sait thousan or error messages!</p>
+<hr>
+<i>Posted by coreman on 01-12-2003 08:17 PM:</i>
+
+<p><b> </b></p>
+
+<p>Then you probably don't have the development tools and libraries needed loaded onto your system, or at least not properly.</p>
+<hr>
+<i>Posted by johndough on 01-13-2003 11:14 AM:</i>
+
+<p><b> broadcom bcm 4401 lan</b></p>
+
+<p>hi all<br />
+<br />
+the AsusTek/Broadcom bcm 4401 lan is really troublesome. i havent yet got it working, but i am trying...<br />
+<br />
+the drivers, no rpm found yet. the .tar.gz is available on the cd or from asus.  it is a zip file of about 10 meg with all drivers included.<br />
+4401.zip or similar.<br />
+<br />
+the microstar site  <a href="http://www.msi.com.tw" notarget>www.msi.com.tw</a> has similar files for a bcm 4401 at a coupla hundred kb download. i tried these and they were no better/different to the asus files<img src="http://images.linuxquestions.org/questions/images/smilies/wink.gif" border="0" alt=""><br />
+<br />
+with mandrake 9.0 i needed to load all the source code/libraries/development files to get a 'make' to produce a bcm4401.o and that is my progress to date.<br />
+<br />
+this is writ in w98se using the bcm4401 and i a going to switch to mandy9 and try some of the suggestiond found here.</p>
+<hr>
+<i>Posted by ikaros on 01-13-2003 07:57 PM:</i>
+
+<p><b><img src="http://images.linuxquestions.org/questions/images/icons/icon5.gif" alt="Question" width="15" height="15" border="0"> ASUS A7V8X LAN driver</b></p>
+
+<p>Hi There<br />
+<br />
+I also have an ASUS A7V8X where RH8.0 does not detect the onboard LAN interface.<br />
+I've read the previous articles with interest, but one thing i don't know what is "./configure".<br />
+<br />
+Could someone please give a newbie some instructions!<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+Best Regards IKAROS<br />
+<br />
+"Trying is the first step towards failure"<br />
+Homer Simpson</font></p></p>
+<hr>
+<i>Posted by samoul on 01-13-2003 09:32 PM:</i>
+
+<p><b> </b></p>
+
+<p>coreman<br />
+Witch developement tool and thing i need to install? And how can i do it? I you were talking about GCC i a install him....</p>
+<hr>
+<i>Posted by yngwin on 01-14-2003 09:56 PM:</i>
+
+<p><b> </b></p>
+
+<p>ikaros, for these drivers you don't need a ./configure step, so don't worry about that, for now.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+arwen: PentiumII/350 - Gentoo 1.4-rc2 / Windoze 98<br />
+blackmetal: AthlonXP2200+ - Gentoo 1.4-rc2</font></p></p>
+<hr>
+<i>Posted by glebius on 01-15-2003 03:52 PM:</i>
+
+<p><b> </b></p>
+
+<p>Sr. Pedo, where did you grab Broadcom docs from? Can you send me<br />
+them or link to <a href="mailto:glebius@cell.sick.ru">glebius@cell.sick.ru</a>?</p>
+<hr>
+<i>Posted by HwzrHlslndr on 01-18-2003 01:51 PM:</i>
+
+<p><b> </b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by SenorPedo </i><br />
+<b>No special steps at all.  The tarred driver was included on the motherboard cd and with the standard ./configure, make, make install procedure.  If you need a copy of the driver with release notes, I'd be happy to email it to you. </b><hr></blockquote> <br />
+<br />
+SenorPedo, I have essentially the same system as you, but I am not getting this to work. Maybe I am looking at the wrong instructions on motherboard CD because what I am looking at says nothing about /configure or make, etc.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+In a world without fences who needs Gates?</font></p></p>
+<hr>
+<i>Posted by HwzrHlslndr on 01-18-2003 03:12 PM:</i>
+
+<p><b> </b></p>
+
+<p>I found the reference to "make" in the section titled "Building the driver from tar file." I get errors. Can't help wondering if I need the development packages installed. When I try to update it says I need krb5-libs-1.2.5-6. I just downloaded and went to install and I am told that I already have a newer version. Yikes! I am getting frazzled.<br />
+<br />
+I'd like to simply put the RH8 install CD into the drive and reboot to reinstall RH*, but that ain't happening either.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+In a world without fences who needs Gates?</font></p></p>
+<hr>
+<i>Posted by yngwin on 01-18-2003 04:23 PM:</i>
+
+<p><b> </b></p>
+
+<p>Yes, you need to have the development packages installed and also the kernelsources, otherwise you cannot make these drivers. Some good news: the drivers are included in the development kernel (I think from 2.5.47 on), so when 2.6 is out we won't have these problems anymore (as soon as the major distros will include that kernel).<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+arwen: PentiumII/350 - Gentoo 1.4-rc2 / Windoze 98<br />
+blackmetal: AthlonXP2200+ - Gentoo 1.4-rc2</font></p></p>
+<hr>
+<i>Posted by HwzrHlslndr on 01-19-2003 03:04 PM:</i>
+
+<p><b> </b></p>
+
+<p>So if I understand correctly, I should probably just go buy a card for now. Any suggestions?<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+In a world without fences who needs Gates?</font></p></p>
+<hr>
+<i>Posted by CMcQueeny on 01-20-2003 01:12 AM:</i>
+
+<p><b> </b></p>
+
+<p>As a note, ASUS does offer these drivers on thier website. Get them at:<br />
+<br />
+<a href="http://www.asus.com.cn/support/download/selectftp.aspx?l1_id=1&l2_id=15&l3_id=15&m_id=1&f_name=4401_653.zip~zaqwedc" notarget>http://www.asus.com.cn/support/down...653.zip~zaqwedc</a></p>
+<hr>
+<i>Posted by Karin73 on 01-21-2003 09:19 AM:</i>
+
+<p><b> </b></p>
+
+<p>Can you send me the drivers please? <br />
+I dont have the drivers in my asus cd ... <br />
+<br />
+my email:<br />
+<a href="mailto:karin73@gmx.ch">karin73@gmx.ch</a></p>
+<hr>
+<i>Posted by Karin73 on 01-21-2003 09:34 AM:</i>
+
+<p><b> </b></p>
+
+<p>I have an ASUS P4PE with Broadcoam 4401 and sound onboard.  <br />
+To install the drivers impossibly. Can somebody help me?</p>
+<hr>
+<i>Posted by Dreamstar on 01-21-2003 10:17 AM:</i>
+
+<p><b> </b></p>
+
+<p>Hi guys!<br />
+I have an ASUS A7v8x, i've installed the drivers for the Broadcom4401 in my Mandrake 9 with the make/insmod procedure but now i dunno what to do to make the driver work properly: can u tell me what is the next phase? <br />
+Thank you all!<br />
+PLS HELP ME!!!!!!</p>
+<hr>
+<i>Posted by bob49 on 01-23-2003 04:10 PM:</i>
+
+<p><b> </b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by Dreamstar </i><br />
+<b>Hi guys!<br />
+I have an ASUS A7v8x, i've installed the drivers for the Broadcom4401 in my Mandrake 9 with the make/insmod procedure but now i dunno what to do to make the driver work properly: can u tell me what is the next phase? <br />
+Thank you all!<br />
+PLS HELP ME!!!!!! </b><hr></blockquote> <br />
+<br />
+It should all be plain sailing from here - bit it isn't!<br />
+<br />
+It all worked well for me first time around - but this was probably because I had tried to install various network card drivers before using the proper Broadcom ones.  <br />
+<br />
+Second time, when I was doing a re-install I thought it would be easy, but no!  The problem I found was that to install the network using the Mandrake Control Centre, you start up the Network wizard and because the BCM4400 isn't in its database it fails at the first hurdle - and you don't have the opportunity to tell  it where to find the driver. <br />
+<br />
+To overcome this I told the wizard that I had a tulip card installed - which I haven't.  It goes away, finds the driver but can't find the card and so reports an error, but gives you the opportunity to specify another driver rather than select one from a list  - so you can tell it you've got a bcm4400 driver. <br />
+<br />
+After this it should then proceed with the network installation.<br />
+<br />
+Hope it works out.<br />
+<br />
+Bob</p>
+<hr>
+<i>Posted by beegwally on 01-31-2003 02:16 AM:</i>
+
+<p><b><img src="http://images.linuxquestions.org/questions/images/icons/icon8.gif" alt="Angry" width="15" height="15" border="0"> Re: I can't detect my ethernet card</b></p>
+
+<p>I'm a real bonehead newbie to Linux.  I'm using a P4Pe Asus m/b and have the same built in Network card as SenorPedo.  I have these TAR or SRC files but do not know how to make them into something I can install.  I really need step by step how to do this.  I think I can get to the place the files are in a terminal but beyond that I am hooped if any of you could take the time to help I would appreciate it.<br />
+<br />
+Right now I am running dual boot XP pro with Linux Mandrake 9.0.  It installed like a hot dam but the network aint workin'...HELP<br />
+Thanks in advance<br />
+Wally<br />
+<br />
+<blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by SenorPedo </i><br />
+<b>Just got a new computer with an Asus A7V8X motherboard.  Great board, with one problem: The on-board Broadcom BCM4401 10/100 ethernet controller isn't detected by my fresh install of RedHat 8.0.  I've tried going to the Network Config and creating it, but I don't know how to determine the IRQ, MEM, DMA, and all that other stuff.  I'm also not sure which driver I would use even if I did.  <br />
+Is there anyone with any experience/ideas on getting this running so I can get online?  Your help is greatly appreciated.<br />
+Here's the run-down of my system:<br />
+Asus A7V8X<br />
+Athlon XP 2200+<br />
+Broadcom BCM4401 10/100 NIC on board<br />
+Geforce4 MX440 8X AGP<br />
+Maxtor 60GB HD<br />
+Need anything else? </b><hr></blockquote> <img src="http://images.linuxquestions.org/questions/images/smilies/newbie.gif" border="0" alt=""> <img src="http://images.linuxquestions.org/questions/images/smilies/newbie.gif" border="0" alt=""> <img src="http://images.linuxquestions.org/questions/images/smilies/cry.gif" border="0" alt=""> <img src="http://images.linuxquestions.org/questions/images/smilies/newbie.gif" border="0" alt=""></p>
+<hr>
+<i>Posted by tinglett on 02-02-2003 08:58 PM:</i>
+
+<p><b> </b></p>
+
+<p>I'm running Mandrake 9.0 (standard 2.4.19 kernel) on a ASUS A7V8X which has the BCM4401 10/100 ethernet (NOT the gigabit).  I built the driver from the cd that comes with the board and it works just fine.  Here's how to do it.  This will probably work for mdk8.2 or earlier as well as for redhat.<br />
+<br />
+1.  mkdir bcm4401 and cd bcm4401<br />
+<br />
+2.  tar xvfz /mnt/cdrom/LAN/4401/Linux/bcm4400-1.0.1.tar.gz  The tarball on my cdrom was 49694 bytes if that helps you confirm you have the same thing)<br />
+<br />
+3.  cd src<br />
+<br />
+4.  make<br />
+<br />
+NOTE:  I got lots of "warning: pasting "-&gt;" and "dmaregs" does not give a valid preprocessing token" messages because my compiler is gcc 3.2.  To fix this, edit the REG_RD and REG_WR macros (lines 1082 and 1085 of b44.h) and remove the "##" symbols from both macros.  They are bogus.  There is one more use of ## in b44.h that is correct in the _PADLINE macro so leave that alone).  Once I did this it built with NO warnings.<br />
+<br />
+You must be root for the rest of the steps...<br />
+<br />
+5.  make install<br />
+<br />
+6.  Edit /etc/modules.conf and look for a line starting with "alias eth0".  Change it to the following (or add a new line if needed):<br />
+<br />
+alias eth0 bcm4400<br />
+<br />
+6.  depmod -a<br />
+<br />
+7.  modprobe eth0<br />
+<br />
+8.  tail /var/log/messages and look for errors.  You want something like this:  "eth0: Broadcom BCM4401 100Base-T found at mem e9800000, IRQ 12, node addr 00e018b3d95d"<br />
+<br />
+9.  ifconfig eth0 and see if you get any output.  If so, your driver is ready to be configured!  I am assuming here that you haven't inserted another NIC so eth0 is really the broadcom.<br />
+<br />
+I'm not sure if you really need to teach Mandrake about the new module.  I suppose you do if you want to autodetect the device, but since you manually aliased the driver for eth0 it should be happy.  I'm sure you can skip the editing of /etc/modules.conf and manually pick bcm4400 from the network config gui.   I'm too lazy to use gui's <img src="http://images.linuxquestions.org/questions/images/smilies/smile.gif" border="0" alt="">.<br />
+<br />
+Hope that helps someone!<br />
+<br />
+Oh...and remember to thank ASUS for providing some Linux support.  It was one reason for me to buy ASUS since someone there went to the effort to at least collect a sample driver for us to use.  Nice.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+-todd</font></p></p>
+<hr>
+<i>Posted by dtobeydtobey on 02-06-2003 04:44 PM:</i>
+
+<p><b> bcm4400.o Binary</b></p>
+
+<p>I placed my build of the bcm4400.o here: <a href="http://www.tobeyhutchison.com/dave/bcm4400.o." notarget>http://www.tobeyhutchison.com/dave/bcm4400.o.</a> Anyone is welcome to grab it. I built it on a fresh install of RedHat 8.0. Put this file in /lib/modules/2.4.18-14/kernel/drivers/net and if you are using kudzu, it should detect it on the next reboot and you should be set.<br />
+<br />
+Thanks to everyone who posted on this thread before--you made my day!<br />
+<br />
+dave</p>
+<hr>
+<i>Posted by Hayt on 02-06-2003 07:53 PM:</i>
+
+<p><b> bcm4400.o</b></p>
+
+<p>Hello...<br />
+<br />
+I've got a problem with my Broadcom Ethernet Controller, too...<br />
+I've installed the Debian distribution (kernel 2.4.18.bf2.4)... As my connection wasn't detected during the install process, I've downloaded the driver, but when I'm trying to make the bcm4400.o with 'make', i'm obtaining errors :<br />
+<br />
+in file included from b44um.c:19:<br />
+b44mm.h:31 linux/modversions.h:no such file or directory<br />
+make:***[b44um.o] Error 1<br />
+<br />
+I'v tried to rename my /usr/src/linux-&lt;version&gt;/ directory in /usr/src/linux/, then the error message is changing a bit, but it doesn't work anymore...<br />
+<br />
+Please help me, I really want to use my Debian, and don't wanna buy another card (self-esteem  )<br />
+Thx<br />
+<br />
+Hayt<br />
+<br />
+Ps : sorry for grammar mistakes, i'm French...</p>
+<hr>
+<i>Posted by Sy$t3m on 02-08-2003 02:12 PM:</i>
+
+<p><b> Re: bcm4400.o Binary</b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by dtobeydtobey </i><br />
+<b>I placed my build of the bcm4400.o here: <a href="http://www.tobeyhutchison.com/dave/bcm4400.o." notarget>http://www.tobeyhutchison.com/dave/bcm4400.o.</a> Anyone is welcome to grab it. I built it on a fresh install of RedHat 8.0. Put this file in /lib/modules/2.4.18-14/kernel/drivers/net and if you are using kudzu, it should detect it on the next reboot and you should be set.<br />
+<br />
+Thanks to everyone who posted on this thread before--you made my day!<br />
+<br />
+dave </b><hr></blockquote> <br />
+<br />
+Hi,<br />
+I'm just a linux noob,  I tried to follow your installation-instructions. But when I make insmod bcm4400 with your compiled driver, I'm getting a lot of unresolved symbol errors... So the driver doesn't work on my system.<br />
+How did you compile the driver on redhat? <br />
+I downloaded the official drivers from asus, but when I want to compile them, I'm getting a lot of errors, for example: pci size not known or something like that...</p>
+<hr>
+<i>Posted by dtobeydtobey on 02-10-2003 12:52 AM:</i>
+
+<p><b> </b></p>
+
+<p>It's probably the case that your system is different than mine or maybe doesn't have some packages installed that mine did when I built the thing. I just built it on a fresh install of Red Hat 8.0 but I have my own selection of packages. You should try building it yourself: it's not that hard. The one thing that tripped me up was you have to download and install the rpm for kernel-source first. Then look at some past postings for instructions.</p>
+<hr>
+<i>Posted by stansfieldmd on 02-10-2003 04:13 AM:</i>
+
+<p><b><img src="http://images.linuxquestions.org/questions/images/icons/icon14.gif" alt="Thumbs up" width="15" height="15" border="0"> I have the drivers</b></p>
+
+<p>I have the drivers for the broadcom 440x cards for use under linux.  I also purchased the a7v8x board form asus.  If anyone needs the drivers please e-mail me at <a href="mailto:matthewstansfield@hotmail.com">matthewstansfield@hotmail.com</a>.<br />
+<br />
+P.S. Linux Rules</p>
+<hr>
+<i>Posted by stansfieldmd on 02-11-2003 03:19 PM:</i>
+
+<p><b> Broadcom 4401 Build Problems</b></p>
+
+<p>If your having trouble building the source with the make command make sure you have all you gnu c packages installed.  Worked for me on RH8.0.  Any questions please feel free to e-mail me at <a href="mailto:matthewstansfield@hotmail.com">matthewstansfield@hotmail.com</a></p>
+<hr>
+<i>Posted by sangerer on 02-13-2003 11:24 AM:</i>
+
+<p><b> </b></p>
+
+<p>Source RPM from the CDROM seems to work fine with ASUS P4PE and SLES 8 (kernet 2.4.19) whit broadcom 4401<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+Sigi</font></p></p>
+<hr>
+<i>Posted by Sy$t3m on 02-13-2003 12:57 PM:</i>
+
+<p><b> </b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by sangerer </i><br />
+<b>Source RPM from the CDROM seems to work fine with ASUS P4PE and SLES 8 (kernet 2.4.19) whit broadcom 4401 </b><hr></blockquote> <br />
+<br />
+Could you send me this source-rpm? I don't have it on my Asus CD.<br />
+<br />
+Thanks:<br />
+<br />
+My eMail: <a href="mailto:Ben@tredia.de">Ben@tredia.de</a></p>
+<hr>
+<i>Posted by esox on 02-15-2003 06:28 PM:</i>
+
+<p><b> Similar but not same</b></p>
+
+<p>I have the asus a7v8x with the built in broadcom4401 lan chipset.<br />
+amd2400+ and running MD9.  I just installed linux for the first time and am having this problem with the broadcom drivers.  I am new to linux but see that I am not the only one having problems.  If anyone can help with this, let me know.  I hate dual booting to Winxp just to acess this help site.  Wish i could be doing it from linux.  I followed the instructions that came with the drivers and get stuck at the Make part.  It seems to be looking for a file that is not there and also, says it cannot find the gcc command:<br />
+=======================<br />
+make: gcc: Command not found<br />
+make: *** [b44um.o] Error 127<br />
+=======================<br />
+<br />
+Below is a copy of my install instructions and the computer complaints:<br />
+<br />
+If you have any advice, also email it to me at: <a href="mailto:vikings02@charter.net">vikings02@charter.net</a><br />
+<br />
+[esox@localhost esox]$ md bcm4401<br />
+[esox@localhost esox]$ cd bcm4401<br />
+[esox@localhost bcm4401]$ tar xvfz /mnt/cdrom/Drivers/LAN/4401/Linux/bcm4400-1.0.1.tar.gz<br />
+LICENSE<br />
+RELEASE.TXT<br />
+src/<br />
+src/b44.h<br />
+src/b44lm.c<br />
+src/b44lm.h<br />
+src/b44mm.h<br />
+src/b44proc.c<br />
+src/b44queue.h<br />
+src/b44um.c<br />
+src/Makefile<br />
+src/bcm4400.4.gz<br />
+[esox@localhost bcm4401]$ cd src<br />
+[esox@localhost src]$ make<br />
+gcc -DMODULE -D__KERNEL__ -DDBG=0 -Wall -Wstrict-prototypes -O6 -I/usr/src/linux/include   -c -o b44um.o b44um.c<br />
+make: gcc: Command not found<br />
+make: *** [b44um.o] Error 127<br />
+[esox@localhost src]$ dir<br />
+b44.h  b44lm.c  b44lm.h  b44mm.h  b44proc.c  b44queue.h  b44um.c  bcm4400.4.gz  Makefile<br />
+[esox@localhost src]$<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+The right to choose does not mean the choice you made is the right one!</font></p></p>
+<hr>
+<i>Posted by stansfieldmd on 02-15-2003 11:53 PM:</i>
+
+<p><b> Re: Similar but not same</b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by esox </i><br />
+<b>I have the asus a7v8x with the built in broadcom4401 lan chipset.<br />
+amd2400+ and running MD9.  I just installed linux for the first time and am having this problem with the broadcom drivers.  I am new to linux but see that I am not the only one having problems.  If anyone can help with this, let me know.  I hate dual booting to Winxp just to acess this help site.  Wish i could be doing it from linux.  I followed the instructions that came with the drivers and get stuck at the Make part.  It seems to be looking for a file that is not there and also, says it cannot find the gcc command:<br />
+=======================<br />
+make: gcc: Command not found<br />
+make: *** [b44um.o] Error 127<br />
+=======================<br />
+<br />
+Below is a copy of my install instructions and the computer complaints:<br />
+<br />
+If you have any advice, also email it to me at: <a href="mailto:vikings02@charter.net">vikings02@charter.net</a><br />
+<br />
+[esox@localhost esox]$ md bcm4401<br />
+[esox@localhost esox]$ cd bcm4401<br />
+[esox@localhost bcm4401]$ tar xvfz /mnt/cdrom/Drivers/LAN/4401/Linux/bcm4400-1.0.1.tar.gz<br />
+LICENSE<br />
+RELEASE.TXT<br />
+src/<br />
+src/b44.h<br />
+src/b44lm.c<br />
+src/b44lm.h<br />
+src/b44mm.h<br />
+src/b44proc.c<br />
+src/b44queue.h<br />
+src/b44um.c<br />
+src/Makefile<br />
+src/bcm4400.4.gz<br />
+[esox@localhost bcm4401]$ cd src<br />
+[esox@localhost src]$ make<br />
+gcc -DMODULE -D__KERNEL__ -DDBG=0 -Wall -Wstrict-prototypes -O6 -I/usr/src/linux/include   -c -o b44um.o b44um.c<br />
+make: gcc: Command not found<br />
+make: *** [b44um.o] Error 127<br />
+[esox@localhost src]$ dir<br />
+b44.h  b44lm.c  b44lm.h  b44mm.h  b44proc.c  b44queue.h  b44um.c  bcm4400.4.gz  Makefile<br />
+[esox@localhost src]$ </b><hr></blockquote> <br />
+<br />
+<br />
+It sounds like you don't have the compiler packages installed.  Go to mandrake's package manager and install all the gcc c packages and compilers and then you should be able to make it properly.  If this doesn't work and you want the built file send me an e-mail at <a href="mailto:matthewstansfield@hotmail.com">matthewstansfield@hotmail.com</a> and i will be happy to send it to you.</p>
+<hr>
+<i>Posted by erjing on 02-16-2003 08:58 AM:</i>
+
+<p><b> hehe~~~i think u need u install gcc and lib ......</b></p>
+
+<p>first to download crd drive .I think u can got form compay home page .that is a modules,u can download and to make it ,but don't forgot to install make gcc libc6 ......some some.</p>
+<hr>
+<i>Posted by X_masterz2000 on 02-16-2003 03:23 PM:</i>
+
+<p><b> </b></p>
+
+<p>Someone told me you would have to  get a new kernel for eveything to work right.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+Xmasterz</font></p></p>
+<hr>
+<i>Posted by esox on 02-16-2003 07:11 PM:</i>
+
+<p><b> </b></p>
+
+<p>Look, I dont know hardly anything about Linux.  The last two solutions posted dont really mean much to me.  Stansfieldmd, how do install these compilers you are talking about.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+The right to choose does not mean the choice you made is the right one!</font></p></p>
+<hr>
+<i>Posted by Worry on 02-16-2003 11:17 PM:</i>
+
+<p><b> Another kind of trouble</b></p>
+
+<p>Hi, All<br />
+<br />
+I got the following problem with this network driver.<br />
+<br />
+My hardware: Asus a7v8x w onboard Broadcom BCM4400 Network Adapter<br />
+OS: Linux RedHat 8.0 (kernel 2.4.18-14)<br />
+<br />
+I got the driver source code (from <a href="http://www.asus.com" notarget>www.asus.com</a>), compiled it successfully, but when trying to use the module obtained, it fails. <br />
+<br />
+The output is as follows:<br />
+<br />
+<blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><br />
+[user root@src]# insmod bcm4400.o<br />
+bcm4400.o: kernel-module version mismatch<br />
+        bcm4400.o was compiled for kernel version 2.4.18-14custom<br />
+        while this kernel is version 2.4.18-14.<br />
+<hr></blockquote><br />
+<br />
+Then i've decided to force module loading<br />
+<blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><br />
+[user root@src]# insmod -f bcm4400.o<br />
+Warning: kernel-module version mismatch<br />
+        bcm4400.o was compiled for kernel version 2.4.18-14custom<br />
+        while this kernel is version 2.4.18-14<br />
+bcm4400.o: unresolved symbol pci_enable_device_Rsmp_a2411ea7<br />
+bcm4400.o: unresolved symbol eth_type_trans_Rsmp_5bfa2c6f<br />
+bcm4400.o: unresolved symbol pci_write_config_word_Rsmp_eb06a06f<br />
+bcm4400.o: unresolved symbol pci_unregister_driver_Rsmp_513ca96c<br />
+......<br />
+<hr></blockquote><br />
+<br />
+Help me please, I'm just a newbie in Linux.</p>
+<hr>
+<i>Posted by Packit on 02-17-2003 06:53 AM:</i>
+
+<p><b> </b></p>
+
+<p>Hello all.  New here and had to join the fray on this one.<br />
+<br />
+Edit:<br />
+<br />
+Ooops... had a problem where I had to insmod after each reboot. This was due to a typographical error in /etc/modules.conf. Corrected alias command makes it work perfectly.<br />
+<br />
+Question deleted.</p>
+<hr>
+<i>Posted by stansfieldmd on 02-17-2003 03:32 PM:</i>
+
+<p><b><img src="http://images.linuxquestions.org/questions/images/icons/icon4.gif" alt="Exclamation" width="15" height="15" border="0"> Compiling</b></p>
+
+<p>For anyone who is having trouble running the make command on the file hear is what I found was the problem.  On some default installations of Mandrake and RedHat some of the GCC Compilers aren't installed.  To install them on redhat:<br />
+1.Go to your dock and click on the hat that brings up your applications under x<br />
+<br />
+2. Go to system settings<br />
+<br />
+3. Click on packages<br />
+<br />
+4. Scroll down until you see development tools<br />
+<br />
+5. Check developement tools click on details and make sure all the gcc pakages are or will be installed.<br />
+<br />
+It will need some of your installations cd's so make sure you have them handy.  I believe the process is similar on mandrake with the mandrake package manager.  Any further questions e-mail me at <a href="mailto:matthewstansfield@hotmail.com">matthewstansfield@hotmail.com</a></p>
+<hr>
+<i>Posted by stansfieldmd on 02-17-2003 03:35 PM:</i>
+
+<p><b><img src="http://images.linuxquestions.org/questions/images/icons/icon13.gif" alt="Thumbs down" width="15" height="15" border="0"> Beta Kernel</b></p>
+
+<p>I've had alot of trouble insmod the driver on the beta kernels so i would reccomend that you don't try that.</p>
+<hr>
+<i>Posted by esox on 02-18-2003 12:45 AM:</i>
+
+<p><b> </b></p>
+
+<p>Hey guys, i found a solution to the broadcom 4400 problems.  Install a new nic.  I did.  I had a Belkin laying around, and checked the cd documentation and it used a driver that came WITH the Mandrake 9 install.  A nic is about $5 on sale.  What is your time worth????  I know, it is the challenge.  Good luck all.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+The right to choose does not mean the choice you made is the right one!</font></p></p>
+<hr>
+<i>Posted by coffeeman on 02-20-2003 01:42 PM:</i>
+
+<p><b> </b></p>
+
+<p>Has anyone managed to successfully run make on the ASUS supplied files for the 4401 with SuSE 8.1? I am having the same problem as Samoul (post #47). Make produces screenfulls of errors and does not create the .o file. The instructions with the ASUS driver files must be for an older version of SuSE. They give special instructions to help SuSE users, but the dirs/files they refer to are not there.<br />
+<br />
+Appreciate any help.<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+coffeeman</font></p></p>
+<hr>
+<i>Posted by oskar_27de on 02-20-2003 03:47 PM:</i>
+
+<p><b> </b></p>
+
+<p>I have that mobo too...<br />
+you have to compile the drivers von ASUS in your RH8.0<br />
+go to <a href="http://www.asus.com" notarget>www.asus.com</a> download the drivers for Linux,<br />
+then extract the .gz, then<br />
+cd src<br />
+make<br />
+and then you go to the RH8.0 network configuration, in RH8.0 its easy, try mandrake 9.0 (i still can configure it!)<br />
+<br />
+good luck<br />
+oscar</p>
+<hr>
+<i>Posted by quelo on 02-24-2003 12:25 AM:</i>
+
+<p><b> </b></p>
+
+<p><blockquote><font face="verdana,arial,helvetica" size="1" >quote:</font><hr><i>Originally posted by SenorPedo </i><br />
+<b>You know, sometimes I amaze myself with how dumb I can be.  Looking on the CD that came with the motherboard, I find a folder called D:\Drivers\LAN\4401\Linux<br />
+... </b><hr></blockquote> <br />
+<br />
+Unfortunately I don't have this directory in my motherboard CD-ROM... can you send me the content of this directory please?<br />
+<br />
+Quelo.</p>
+<hr>
+<i>Posted by coffeeman on Today 02:02 PM:</i>
+
+<p><b> </b></p>
+
+<p>Success!! Driver compiled and installed - once I got ahold of the kernel sources from SuSE. Why, oh why don't they provide the kernel sources on the distro CDs for the Personal version???<p><font face="verdana, arial, helvetica" size="2">__________________<br>
+coffeeman</font></p></p>
+
+
+<hr>
+</font>
+
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="top">
+	<td><font face="verdana, arial, helvetica" size="2">All times are GMT. The time now is 08:58 PM.</font></td>
+	<td align="right"><font face="verdana, arial, helvetica" size="2"></font><br>
+	<font face="verdana,arial,helvetica" size="1" ><a href="printthread.php?s=08f04bb3c5b2c33a74ea81d5ccf5c70a&threadid=33441&perpage=88">Show all 88 posts from this thread on one page</a></font></td>
+</tr>
+</table>
+
+<p align="center"><font face="verdana,arial,helvetica" size="1" >
+Copyright ©2000 - 2002, LinuxQuestions.org.<br>
+  
+</font></p>
+
+</body>
+</html>

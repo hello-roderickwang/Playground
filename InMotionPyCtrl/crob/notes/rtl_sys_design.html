@@ -1,0 +1,275 @@
+<html><head>
+<title>InMotion2 Robot Software System Design Overview</title>
+</head>
+<body>
+
+<h1>InMotion2 Robot Software System Design Overview</h1>
+
+Mon Jun 19 17:48:03 EDT 2006
+
+<h2>Scope</h2>
+
+This document is an overview of the Interactive Motion Technologies
+InMotion2 Robot Software System.  This document does not provide
+detailed design information, but rather serves to introduce system
+design concepts, as orientation for InMotion2 robot programmers and
+other users.  This document describes a 2-degree-of-freedom
+planar shoulder/elbow robot, but also applies to other robots in the IMT
+family, including the IMT wrist, ankle, and linear robots.
+<p>
+
+<h2>What does the robot hardware look like?</h2>
+
+The InMotion2 robot hardware consists of these hardware components:
+<ul>
+<li> robot arm
+<li> control panel
+<li> junction box
+<li> PC computer and monitor(s)
+<li> cabling
+<li> workstation table
+</ul>
+
+You may visualize the planar robot arm with an analogy to a human arm.  Note
+that the robot arm is not a prosthetic replacement for a human arm, it
+is a special computer-controlled therapy/exercise machine.  The planar robot
+arm has two links, corresponding to a person's upper arm and forearm.
+The upper arm link and its joint are called the shoulder, the forearm
+link and its joint are the elbow.  The two motors sit where the person's
+body would be, each motor controlling one of the links.
+At the wrist/hand endpoint of the planar robot, you may attach a
+simple handle, or more complex devices, like a 3D force
+sensor, a grasp force sensor, a 1D hand robot, or a 3D wrist robot.
+<p>
+
+The planar robot has two degrees of freedom, one for the shoulder and one for the
+elbow.  These degrees of freedom permit the handle to travel freely in
+the horizontal plane.  The top motor controls the shoulder link.
+The bottom motor controls the elbow link.
+<p>
+In the hardware drawings in the notebook, the shoulder is axis #2,
+and elbow is axis #1.
+
+<p>
+
+<h2>What does the software do?</h2>
+
+The InMotion2 planar robot has two back-drivable motors, encoders for
+sensing x/y position, and a force transducer for sensing forces.
+The InMotion2 software system controls the robot hardware by
+reading data from, and writing data to, these devices, and by allowing
+robot programmers to change the control systems to suit their needs.
+<p>
+
+These hardware components are controlled through a data acquisition
+(DAQ) board in the PC computer, by reading data from and writing data to
+analog to digital (a/d) and digital to analog (d/a) channels on the DAQ
+board.
+
+<h2>Operating System Structure</h2>
+
+The InMotion2 software system runs on an
+<a href="http://www.ubuntu.com/">
+Ubuntu</a>
+distribution running a
+<a href="http://www.kernel.org/">
+Linux 2.6</a>
+kernel, augmented with
+<a href="http://www.xenomai.org/">
+Xenomai</a>
+real-time framework.
+Xenomai provides Linux with low-latency for interrupts and
+other real-time requirements by running the Linux kernel as a
+subordinate task under a tiny microkernel.
+<p>
+
+Note that Ubuntu and Xenomai replace the Red Hat and RTlinux software
+components that we used in earlier versions.  
+
+Xenomai comes as a "kernel patch" to Linux.  Most of Xenomai is
+separate and autonomous to Linux, but there are some Xenomai "hooks"
+patched into the Linux kernel sources.  For this reason, Xenomai and
+Linux sources must be version-matched, you may not use an arbitrary
+version of Xenomai with an arbitrary version of Linux.  This is
+relevant if you are constructing a system from basic components, IMT
+provides the software system with these patches already in place.
+
+<h2>Control Loop</h2>
+
+Xenomai runs as a set of
+<a href="http://linuxdocs.org/HOWTOs/Module-HOWTO/">
+Linux Kernel Modules</a>
+(LKMs).  In previous versions of our software, the robot control loop
+was another LKM, but with Xenomai, the robot control loop runs in a
+real-time-enabled user-mode process.  The control loop runs as a daemon,
+that is, a program that performs a service (controlling the robot) without
+being directly connected to a screen or keyboard.  A user interface 
+must communicate with the control loop through a client program.
+<p>
+
+The InMotion2 robot control loop performs these tasks during each
+sample period:
+
+<ul>
+<li> read data from robot sensors
+<li> read data from reference sources
+<li> calculate controls based on input data
+<li> write control data to robot motors
+<li> write data to log channels
+</ul>
+
+Other minor tasks housekeeping tasks include time measurement, error
+checking, and so on.
+
+<h2>User Mode I/O and GUI</h2>
+
+Programs that provide reference source data, save log data, and
+interact with a graphic display monitor are separate from the control
+loop module code.  These are user-mode Linux programs, and they
+communicate with the control loop using either real-time pipes
+(replacing the previous rtfifos) which look like Linux named pipes, or
+using usermode shared memory buffers (shm, replacing the previous
+mbuffs), which allow user mode C programs to share one or more
+memory regions.
+
+<h2>What language do we use?</h2>
+
+The InMotion2 control loop module is written in C, the language of the
+Linux kernel.  We do not write in C++, because C++ has dynamic aspects,
+such as constructor/destructor and exception handling that
+sometimes have unbounded behaviors, and if their use were allowed, they
+could complicate the deterministic requirements of real-time systems.
+Linus Torvalds, author of Linux, has
+<a href="http://groups.google.com/groups?selm=1fXS8-8eg-15%40gated-at.bofh.it">
+posted his views on the subject of using C++ in the Linux kernel,</a>
+which has some relevance to our decision to use C.
+<p>
+
+The user-mode programs (like GUIs and data sources and sinks) may be
+written in C too, or they may be written in C++ or in whatever language
+runs on the Linux system.  We prefer
+<a href="http://www.tcl.tk/">
+Tcl/Tk</a>, for its power and GUI capabilities.
+You may wish to code your GUI in Python or Perl, or another language.
+Traditional UNIX tools like sh and cat may be used, for example, to
+read reference data and write log data files.
+
+<h2>Passing Data between User and Kernel Modes</h2>
+
+File-oriented per-sample data, like logs and references, are sent over
+real-time pipes (rtpipes).  Occasional data, like a request to tell the
+control loop to start or stop sampling, are sent using shared memory
+buffers (shm).  Per sample data that isn't being filed, like x/y
+position of the handle, used by a GUI, may be passed through
+either interface.  Both rtpipes and shm may have access to all data,
+you can use whichever seems more convenient.
+<p>
+
+To access shared memory from a user interface, the InMotion2 system provides a
+C program called "shm" (shared memory) that allows text-mode access to
+set and get variable data in the running system, so you can do it
+without writing your own low-level shared memory access code.  The shm
+program is also used to provide the system with initial device
+calibration and stiffness and damping control values.  When the
+InMotion2 robot module is loaded, you can run shm from the shell command
+line and use it to read and modify InMotion2 robot data.
+If you want to write your own shm access code, you may use the
+source code to shm as an example.  <p>
+
+User mode access to rtpipes is simple.  If the control loop is writing a
+stream of log data, you may capture it from user-mode with a simple file
+read system call, or by using a program like Linux "cat."
+
+<h2>Data structures</h2>
+
+<h3>Robot</h3>
+
+The Robot data structure contains data that describe the physical
+structure of the InMotion2 system.  The Robot data structure shows that
+it is made up of two Motors, each of which has Attributes (like input
+encoder angle, input tachometer velocity, and output torque), and each
+of those has values (like raw input data value, data channel number,
+calibration offset, and such).  While this tree structure makes sense
+from an object-oriented point of view, the code handles motor-centered
+data items as shoulder/elbow (s/e) pairs (like torques), and desk top
+plane data items as x/y pairs (like positions).  Some data is in the big
+C++-style Robot structure, but other data is in isolated s/e or x/y
+coordinate pairs.  <p>
+
+<h3>Ob</h3>
+Miscellaneous data objects are in a data structure called Ob.
+
+<h3>Daq</h3>
+Data objects associated with the the Data Acquisition board are in the
+Daq structure.  For example, raw input data from the a/d converters
+(adc), raw output data to the d/a converters (dac), and input data from
+the digital I/O channels (dio).  <p>
+
+These three data structures, Robot, Ob, and Daq, are allocated as shared
+memory buffers, and they are available for read and write access in both
+the control loop module and user mode programs.  In the C code, the
+structures are referenced by the pointers rob, ob, and daq:
+<pre>
+	rob-&gt;elbow.torque.xform		// elbow torque transformation
+	ob-&gt;damp			// damping
+	daq-&gt;adc[ ]			// raw input from A/D converter
+</pre>
+<p>
+
+Data from various parts of the robot pass through the following parts
+of the DAQ board:
+
+<ul>
+<li> encoders (x/y position) read dio
+<li> motor torques (push motors, moving the arm) write d/a
+<li> tachometers (velocity) read a/d (deprecated)
+<li> force transducer (forces at the handle) read a/d
+</ul>
+
+Note that some components, like the grasp sensor, force transducer and
+tachometers are optional.  If a system does not have tachometers,
+velocities may be calculated by measuring the change in x/y position
+over time.
+
+<h2>User functions</h2>
+
+The InMotion2 system uses a handy C programming idiom to allow
+programmers to modify the behavior of the InMotion2 control loop without
+modifying the code we deliver.  We provide a Func data structure with a
+list of pointers to C functions controlling various parts of the control
+loop:
+
+<ul>
+<li> read_reference
+<li> compute_controls
+<li> check_safety
+<li> write_controls
+<li> write_log
+<li> write_display
+</ul>
+
+Inside the main loop, each of these functions is called using in a
+wrapper function, for instance, main.c:call_compute_controls(),
+that looks like this:
+
+<pre>
+void
+call_compute_controls(void)
+{
+    if (func.compute_controls)
+        func.compute_controls();
+}
+</pre>
+
+The semantics here are, func.compute_controls is a pointer to a
+function.  If its value is NULL, it will not be called.  If it is
+non-NULL, it will be called.  It may be set to point to any
+function.  So you may use our default, which we call
+compute_controls_fn(), or you may write your own new control function and
+assign its name to the func.compute_controls pointer, and it will be
+called instead.  See: userfn.c:user_init().
+You may do this without modifying the basic structure of the
+control loop module code that we deliver.
+
+</body>
+</html>

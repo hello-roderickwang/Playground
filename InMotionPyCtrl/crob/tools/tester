@@ -1,0 +1,7 @@
+#!/bin/bash
+
+$CROB_HOME/tools/mvbox.tcl &
+sleep 3
+$CROB_HOME/tools/display &
+$CROB_HOME/tools/scales &
+$CROB_HOME/tools/rstrip &

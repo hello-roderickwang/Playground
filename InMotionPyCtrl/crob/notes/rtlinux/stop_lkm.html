@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>Stopping the Linux Kernel Modules</title>
+</head>
+<body>
+
+<h1>InMotion2 Linux Kernel Modules</h1>
+Mon May 19 15:37:38 EDT 2003
+<p>
+Starting an InMotion2 RTLinux program entails loading a suite of Linux
+Kernel Modules (LKM) to provide realtime services:
+
+<ul>
+<li> robot - the IMT InMotion2 robot
+<li> pwrdaq - UEI PowerDAQ A/D board
+<li> rtl_sched - RTLinux scheduler
+<li> rtl_fifo - RTLinux FIFO's (named pipe devices)
+<li> rtl_posixio - RTLinux POSIX I/O (standard Input/Output)
+<li> rtl_time - RTLinux timing
+<li> rtl - RTLinux extensions
+<li> mbuff - shared memory buffers
+</ul>
+
+When you stop an InMotion2 RTLinux program, these modules must all be
+unloaded.  The InMotion2 system provides scripts called "go" and
+"stop" to try to start and stop this set of Linux Kernel Modules.
+
+<p>
+
+If you are having trouble loading a fresh copy of the InMotion2
+system, you should run /sbin/lsmod to make sure that none of the
+modules in the list above are already loaded.
+
+<h2> Why aren't the modules unloading?</h2>
+
+LKMs are unloaded from a Linux system by /sbin/rmmod , the "remove
+modules" command.  To quote the rmmod man page:
+
+<blockquote>
+rmmod tries to unload a set of modules from the kernel,
+with the restriction that they are not in use and that
+they are not referred to by other modules.
+</blockquote>
+
+From this statement, it follows that if a module is in use, it will
+not unload.  If you are having trouble unloading the InMotion2 LKMs,
+it's usually for one of two reasons:
+
+<ol>
+<li> a user-mode program (like shm) has a shared memory buffer
+allocated
+<li> a user-mode program (like cat) has a real-time FIFO open
+(probably writing a log or reading a reference file)
+</ol>
+
+It is necessary to free these resources before you can unload the
+InMotion2 LKMs.  You can usually do this by finding the right
+processes with /bin/ps and sending them signals with the /bin/kill
+command.
+
+<p>
+
+Killing (sending a KILL signal to) a cat will force it to close all
+its I/O channels.  Killing a program like shm, that has mbuffs
+allocated, will not force it to free its mbuffs.  The InMotion2 shm
+program is designed to "catch" signals like KILL and other exit
+conditions, and to make sure it frees its mbuffs before exiting.
+If you write your own mbuff handling code, you should follow the
+example in the shm source, and do the same.  Of course, 
+you should design your graphical or command line user interfaces
+to ensure that they clean up all the resources that they use,
+including LKMs, before they exit.
+
+<p>
+
+This should cover the typical cases of the kernel modules not
+unloading.
+
+<p>
+<h2>Remember to always clean up!</h2>
+Whenever you program the InMotion2 robot, you must make
+sure that you clean up all these kernel modules whenever you exit.
+
+</body></html>

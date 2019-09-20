@@ -1,0 +1,118 @@
+#! /usr/bin/tclsh
+
+# change robot software version.
+# delete the old symbolic link for /opt/imt/robot
+# and create a new one.
+
+# ui:
+
+# Robot Software Version
+#  robot3.0.3beta018
+# 
+# [robot3.0.3beta014]
+# [robot3.0.3beta017]
+# [robot3.0.3beta018]
+#     Set  Quit
+
+package require Tk
+package require BWidget
+
+source $::env(LGAMES_HOME)/common/util.tcl
+# source $::env(I18N_HOME)/i18n.tcl
+
+font create default -family Times -size -18
+
+# find the list of robot version directories and populate the listbox
+
+proc ver_populate {} {
+    global ob
+
+    .verlist.lb delete 0 end
+
+    # get the list of robot directories
+    set ob(roblist) [lsort [glob -types d -tails -nocomplain -directory $ob(robroot) robot?*]]
+    foreach i $ob(roblist) {
+        .verlist.lb insert end $i
+    }
+    if {$ob(curver) != "none"} {
+	set ob(curnum) [lsearch $ob(roblist) $ob(curver)]
+	.verlist.lb selection set [lsearch $ob(roblist) $ob(curver)]
+    }
+}
+
+# change the robot version when the set button is pressed
+
+proc set_cmd {} {
+    global ob
+
+    set ob(curnum) [.verlist.lb curselection]
+    puts $ob(curnum)
+    if {$ob(curnum) == ""} {return}
+
+    set ob(curver) [lindex $ob(roblist) $ob(curnum)]
+    # if it's not a symlink, don't delete it
+    if {[file exists "$ob(roblink)"] && !([file type "$ob(roblink)"] == "link")} {
+	error "$ob(roblink) is not a symbolic link"
+	exit
+    }
+
+    set ob(changed) true
+    # delete the old one and set the new one
+    file delete $ob(roblink)
+    file link -symbolic $ob(roblink) $ob(robroot)/$ob(curver)
+    puts "[exec ls -l $ob(roblink)]"
+}
+
+proc quit_cmd {} {
+    global ob
+
+    if {$ob(changed)} {
+	tk_messageBox -icon warning -message "Robot software version has been changed.  Please log out and log back in."
+    }
+    exit
+}
+
+proc choosever { {dirname ""} } {
+    global ob
+
+    set ob(changed) false
+    set ob(roblink) $::env(ROBOT_HOME)
+    set ob(robroot) [file normalize $ob(roblink)/..]
+
+    if {![file writable $ob(robroot)]} {
+	tk_messageBox -message "$ob(robroot) is not writable (this program needs admin permissions)" -icon error
+	exit
+    }
+
+    if {[file exists "$ob(roblink)"] && !([file type "$ob(roblink)"] == "link")} {
+	tk_messageBox -message "$ob(roblink) exists but is not a link" -icon error
+	exit
+    }
+
+    label .title -text "Robot Software Version:" -font default
+    if {![file exists $ob(roblink)]} {
+	set ob(curver) none
+    } else {
+	set ob(curver) [file tail [file link $ob(roblink)]]
+    }
+    label .curver -textvariable ::ob(curver) -font default -bg gray95
+    label .dummy
+    ScrolledWindow .verlist
+    listbox .verlist.lb -width 30 -height 10 -exportselection 0 -font default
+    button .set -text Set -command set_cmd
+    button .quit -text Quit -command quit_cmd
+
+    grid .title -
+    grid .curver -
+    grid .dummy
+    grid .verlist -
+    grid configure .curver -sticky ew
+    grid configure .verlist -sticky news
+    grid .set .quit
+
+    .verlist setwidget .verlist.lb
+
+    ver_populate
+}
+
+choosever

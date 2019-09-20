@@ -1,0 +1,28 @@
+#! /bin/bash
+
+# Set desktop background
+# default is prod
+
+OIR=/opt/imt/robot
+BGIMAGE=$OIR/lib/blackbg.png
+
+case $1 in
+    shipit)
+        BGIMAGE=$OIR/lib/blackbg.png
+    ;;
+    demo)
+        BGIMAGE=$OIR/lib/demobg.png
+    ;;
+    prod)
+        BGIMAGE=$OIR/lib/prodbg.png
+    ;;
+    *)
+        BGIMAGE=$OIR/lib/prodbg.png
+    ;;
+esac
+
+for i in $(xfconf-query -c xfce4-desktop -p /backdrop -l |
+egrep -e "screen.*/monitor.*image-path$" -e "screen.*/monitor.*/last-image$"); do
+    xfconf-query -c xfce4-desktop -n -p $i -t string -s $BGIMAGE
+    xfconf-query -c xfce4-desktop -p $i -s $BGIMAGE
+done

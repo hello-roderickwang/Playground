@@ -1,0 +1,50 @@
+#!/usr/bin/python
+
+# sanity check if dips are correct
+
+import os
+import sys
+from os.path import join as pjoin
+from subprocess import check_output, STDOUT
+
+CROB_HOME = os.environ['CROB_HOME']
+IMT_CONFIG = os.environ['IMT_CONFIG']
+UCPLC = pjoin(CROB_HOME, 'tools', 'ucplc')
+
+def cf(filename):
+    return open(filename).read().rstrip()
+
+def current_robot():
+    return cf(pjoin(IMT_CONFIG, 'current_robot'))
+
+version = check_output([UCPLC, 'check-version'], stderr=STDOUT).rstrip()
+
+if "out of sync" in version:
+    raise IOError
+
+ver, s1, s2, s3, s4 = version.split()
+
+robottype = current_robot()
+
+try:
+    if robottype.startswith('planar'):
+        assert s1.startswith('planar')
+        assert s2.startswith('planar')
+        assert s1 == s2
+    if robottype == 'planarhand':
+        assert s3.startswith('hand')
+    if robottype == 'wrist':
+        assert s1.startswith('wrist')
+        assert s2.startswith('wrist')
+        assert s3.startswith('wrist')
+        assert s1 == s2
+    if robottype == 'ankle':
+        assert s1.startswith('ankle')
+        assert s2.startswith('ankle')
+        assert s1 == s2
+    assert s4 == 'NOT.PRESENT'
+
+except AssertionError:
+    print (version)
+    print ("Dip switches may be wrong for robot.")
+    sys.exit(1)

@@ -1,0 +1,302 @@
+With release of 3.0, the IMT robot software is no longer based upon
+RTLinux for realtime scheduling, instead we are using Xenomai 2.0.3
+(xenomai.org).
+
+If you have custom application code written in tcl, it will likely run
+as-is with no changes under the new version.
+
+If you have C code that formerly ran as a kernel module, or code that
+directly communicated with the kernel module, things have changed.
+
+First, we no longer run as a kernel module, rather the real time
+software runs in user space, making special Xenomai calls for some
+services, and restraining itself from other activities that would
+cause it to not get realtime scheduling.
+
+Second, C code that communicates with the real time code uses Xenomai
+facilities instead of RTLinux facilities for fifos (or pipes), and for
+shared memory we now use Linux shared memory facilities.
+
+
+In the porting of our code we have collected a few pointers which you
+might use as a cheatsheet.  They follow in the form of what old code
+might have looked like and what the replacement might look like.  Be
+wary of blindly substituting without understanding what is happening,
+but use following to get you started.
+
+
+
+Old:
+
+  rtf_put(ob->tcfifo, "\n" , 1);
+
+New:
+
+  rt_pipe_write(&(ob->tcfifo), "\n", 1, P_NORMAL);
+
+
+Old:
+
+  schedule_timeout(2);
+
+New:
+
+  rt_task_sleep(2);
+
+
+Old:
+
+  pthread_delete_np(thread);
+
+New:
+
+  rt_task_delete(&thread);
+
+
+Old:
+
+  mbuff_free("ob", ob);
+
+New:
+
+  shmctl(ob_shmid, IPC_RMID, NULL);
+
+
+Old:
+
+  ret = pthread_create(&thread, &attr, start_routine, 0);
+  pthread_wakeup_np(thread);
+
+New:
+
+  ret = rt_task_spawn(&thread, ROBOT_LOOP_THREAD_NAME, STACK_SIZE, STD_PRIO, 0, &start_routine, NULL);
+
+
+Old:
+
+  pthread_wait_np();
+
+New:
+
+  rt_task_wait_period();
+
+
+Old:
+
+  t = gethrtime();
+
+New:
+
+  t = rt_timer_tsc2ns(rt_timer_tsc());
+
+
+Old:
+
+  rtf_put(ob->tcfifo, "\n" , 1);
+
+New:
+
+  rt_pipe_write(&(ob->tcfifo), "\n", 1, P_NORMAL);
+
+
+Old:
+
+  pthread_make_periodic_np(ob->main_thread, gethrtime(),
+	    (hrtime_t)1000*1000*1000*1000);
+
+New:
+
+  ret = rt_task_set_periodic(NULL, TM_NOW, TM_INFINITE);
+
+
+Old:
+
+  rtf_get(ob->dififo, ob->refin, (sizeof(ob->refin[0]) * ob->nref));
+
+New:
+
+  ret = rt_pipe_read(  &(ob->dififo), ob->refin, (sizeof(ob->refin[0]) * ob->nref), TM_NONBLOCK);
+
+
+Old:
+
+  rtf_create(ob->dififo, ob->fifolen);
+
+New:
+
+  ret = rt_pipe_create(&(ob->dififo), DIFIFO_NAME, DIFIFO_MINOR);
+
+
+Old:
+
+  rtf_create_handler(ob->cififo, fifo_input_handler);
+
+New:
+
+  We poll as part of our main loop.
+
+
+Old:
+
+  rtf_destroy(i);
+
+New:
+
+  ret = rt_pipe_delete(&(ob->dififo));
+
+
+Old:
+
+  pci4e_write(0x7C000,&remap->chan[i].control);
+  pci4e_write((u32)rob->pci4e.limit-1, &remap->chan[i].preset);
+
+New:
+
+  PCI4E_WriteRegister(boardn, REG4E(i, CONTROL_REGISTER), 0x7C000);
+  PCI4E_WriteRegister(boardn, REG4E(i, PRESET_REGISTER), rob->pci4e.limit - 1);
+
+
+Old:
+
+  pci4e_write(0, &remap->chan[i].reset_channel);
+
+New:
+
+  PCI4E_WriteRegister(boardn, REG4E(i, RESET_CHANNEL_REGISTER), 0);
+
+
+Old:
+
+  mbuff_detach("ob", ob);
+
+New:
+
+  shmdt(ob);
+
+
+Old:
+
+  ob = (Ob *) mbuff_attach("ob", (int)(sizeof(Ob)));
+
+New:
+
+  ob_shmid = shmget(OB_KEY, sizeof(Ob), 0666);
+
+
+Old:
+
+  daq->n_ueidaq_boards = num_pd_boards;
+
+New:
+
+  daq->n_ueidaq_boards = PdGetNumberAdapters();
+
+
+Old:
+
+  daq->subdevid[phandle] = pd_board[phandle].PCI_Config.SubsystemID;
+  if (PD_IS_AO(daq->subdevid[phandle])) {
+    ret = pd_ao32_reset(phandle);
+	
+New:
+  if (daq->adapter_type[boardi] & atPD2AO) {
+	    AO8Handle = PdAcquireSubsystem(boardi, AnalogOut, DAQ_ACQUIRE);
+	    daq->ao8_handle[boardi] = AO8Handle;
+	    ret = _PdAOutReset(AO8Handle);
+	    ret = _PdAO32Reset(AO8Handle);
+
+
+Old:
+
+  if (!PD_IS_MF(daq->subdevid[phandle]))
+
+New:
+
+  if (!(daq->adapter_type[boardi] & atMF))
+
+
+Old:
+
+  ret = pd_ain_reset(phandle);
+  ret = pd_aout_reset(phandle);
+
+New:
+
+  ret = _PdAInReset(AIHandle);
+  ret = _PdAOutReset(AOHandle);
+  ret = _PdDInReset(DIHandle);
+  ret = _PdDOutReset(DOHandle);
+
+
+Old:
+
+  ret = pd_ain_set_config(phandle, daq->ain_cfg, 0, 0);
+  ret = pd_ain_set_channel_list(phandle, daq->ain_cl_size, adc_cl);
+  ret = pd_ain_set_enable_conversion(phandle, PDAQ_ENABLE);
+  ret = pd_ain_sw_start_trigger(phandle);
+  ret = pd_ain_sw_cl_start(phandle);
+
+New:
+
+  ret = _PdAInSetCfg(AIHandle, daq->ain_cfg, 0, 0);
+  ret = _PdAInSetChList(AIHandle, daq->ain_cl_size, adc_cl);
+  ret = _PdAInEnableConv(AIHandle, PDAQ_ENABLE);
+  ret = _PdAInSwStartTrig(AIHandle);
+  ret = _PdAInSwClStart(AIHandle);
+
+
+Old:
+
+  daq->ain_ret = pd_ain_get_samples(phandle, daq->ain_cl_size,
+	   ain, &daq->ain_got_samples);
+
+New:
+
+  daq->ain_ret = _PdAInGetSamples(AIHandle, daq->ain_cl_size,
+	   ain, &daq->ain_got_samples);
+
+
+Old:
+
+  ret = pd_aout_put_value(phandle, outdata);
+
+New:
+
+  ret = _PdAOutPutValue(daq->aout_handle[boardi], outdata);
+
+
+Old:
+
+  if (!PD_IS_AO(daq->subdevid[phandle]))
+
+New:
+
+  if (!(daq->adapter_type[boardi] & atPD2AO))
+
+
+Old:
+
+  ret = pd_ao32_write(phandle, channel, value);
+
+New:
+
+  ret = _PdAO32Write(daq->ao8_handle[boardi], channel, value);
+
+
+Old:
+
+  return pd_dout_write_outputs(phandle, masked_val);
+
+New:
+
+  return _PdDOutWrite(daq->dout_handle[boardi], masked_val);
+
+
+Old:
+
+  return pd_din_read_inputs(phandle, val);
+
+New:
+
+  _PdDInRead(daq->din_handle[boardi], val);
+

@@ -1,0 +1,23 @@
+#! /bin/bash
+
+# show robot setup value with English message
+
+out=$($CROB_HOME/tools/robsetup)
+
+case "$out" in
+
+1)  echo $out - $out axis ;;
+2)  echo $out - $out axes ;;
+3)  echo $out - $out axes ;;
+4)  echo $out - $out axes ;;
+
+18) echo $out - checkexist failure ;;
+17) echo $out - ready lamp is off ;;
+21) echo $out - dip switch failure ;;
+14) echo $out - axis count \< 1 ;;
+15) echo $out - unknown robot type ;;
+16) echo $out - not enough axes ;;
+
+*)  echo $out - unknown status from robsetup ;;
+
+esac

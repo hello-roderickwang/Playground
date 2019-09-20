@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Copyright 2014 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+# we must be root
+if [[ $EUID -ne 0 ]]; then
+    echo "=====  This script must be run as root. Exiting." 1>&2
+    exit 1
+fi
+
+stop network-manager
+start ssh
+ifconfig eth0 192.168.1.2 up
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+route add default gw 192.168.1.1 eth0

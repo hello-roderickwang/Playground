@@ -1,0 +1,118 @@
+#! /usr/bin/tclsh
+
+source $::env(CROB_HOME)/shm.tcl
+
+set ob(is_cal) [is_robot_cal_done]
+
+if {!$ob(is_cal)} {
+    error "robot is not yet calibrated."
+    exit
+}
+
+puts "loading robot process."
+
+start_lkm
+start_shm
+start_loop
+
+set ob(is_cal) [is_robot_cal_done]
+
+if {!$ob(is_cal)} {
+    error "robot is not yet calibrated."
+    exit
+}
+
+# exec $::env(CROB_HOME)/tools/display &
+
+wshm safety_pos 5.0
+wshm test_raw_torque 1
+wshm spring_stiff_e 0.0
+wshm spring_stiff_s 0.0
+movebox 0 25 {0 1 0} {0 0 0 0} {0 0 0 0} 
+
+wshm logfnid 17
+set ob(nlog) 5
+
+proc spring_force {axis eref sref stiff stime} {
+    global ob
+
+    puts "spring axis $axis eref $eref sref $sref stiff $stiff"
+    wshm spring_ref_e $eref
+    wshm spring_ref_s $sref
+    wshm spring_stiff_e $stiff
+    wshm spring_stiff_s $stiff
+}
+
+proc spring_log {axis refe refs stiff stime} {
+    global ob
+    set logfile /tmp/st2.$axis.$stime.dat
+    start_log $logfile $ob(nlog)
+}
+
+set stime [clock format [clock seconds] -format %y%m%d_%H%M%S_%a]
+
+puts ""
+
+set mode "both"
+
+puts "Test 1: Move handle to set $mode point."
+puts ""
+puts "Hit Enter for $mode motor force."
+
+gets stdin
+set epoint [rshm etheta]
+set spoint [rshm stheta]
+
+spring_force b $epoint $spoint 40.0 $stime
+puts ""
+
+puts "Displace $mode link, measure and record spring force with gauge,"
+puts "checking displacement with display software."
+puts ""
+puts "Then type an amplitude value between 0.0 and 5.0."
+puts "Then hit Enter to start vibration and logging."
+set amp [gets stdin]
+if {$amp == ""} {set amp 0.0}
+if {![string is double $amp]} {set amp 0.0}
+puts "amp is: $amp"
+wshm tvibamp $amp
+
+spring_log b epoint spoint 40.0 $stime
+
+puts "Hit Enter to stop vibration and logging."
+gets stdin
+
+stop_log
+wshm tvibamp 0.0
+wshm spring_stiff_e 0.0
+wshm spring_stiff_s 0.0
+
+puts "Hit Enter to show plot."
+puts "(Quit from plot with q.)"
+
+gets stdin
+
+catch {exec $::env(CROB_HOME)/tools/gplot /tmp/st2.b.$stime.dat 0 4 0 5 0 2 0 3}
+
+puts "Hit Enter to exit."
+gets stdin
+
+puts "Writing files..."
+foreach axis {b} {
+    puts "/tmp/st2.$axis.$stime.asc"
+    exec $::env(CROB_HOME)/ta.tcl /tmp/st2.$axis.$stime.dat > /tmp/st2.$axis.$stime.asc
+    file delete /tmp/st2.$axis.$stime.dat
+}
+puts "1: index"
+puts "2: shoulder disp"
+puts "3: elbow disp"
+puts "4: shoulder vibe volts"
+puts "5: elbow vibe volts"
+
+puts "unloading robot process."
+# catch {exec pkill display}
+stop_loop
+stop_shm
+stop_lkm
+
+puts "done."

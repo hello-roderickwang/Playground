@@ -1,0 +1,152 @@
+#! /usr/bin/wish
+# move - move motors with raw voltage
+
+# InMotion2 robot system software
+
+# Copyright 2005-2013 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+package require Tk
+
+global ob
+
+set ob(crobhome) $::env(CROB_HOME)
+
+source $ob(crobhome)/shm.tcl
+
+option add *Entry.font {Helvetica 16 bold}
+option add *Label.font {Helvetica 16 bold}
+
+global ob
+
+# list of all the voltages, so we can clear them easily
+
+set vlist {
+    raw_torque_volts_s
+    raw_torque_volts_e
+
+    wrist_left_test_volts
+    wrist_right_test_volts
+    wrist_ps_test_volts
+
+    ankle_left_test_volts
+    ankle_right_test_volts
+
+    hand_test_volts
+
+    linear_test_volts
+}
+
+# initialize the vars, it doesn't zero the board voltages
+
+foreach i $vlist {set volts($i) 0.0}
+
+# zero the voltages on the board
+
+proc zero_volts {} {
+    foreach i $::vlist {motor $i 0.0}
+}
+
+# increment a motor by inc (either +, -, or a real number, or 0.0 to clear)
+# which motor is specified with the name of the raw volts test variable
+
+proc motor {which inc} {
+    global volts
+
+    # default inc by .5
+    if {$inc == "-"} {set inc -.5}
+    if {$inc == "+"} {set inc .5}
+    # the voltage accumulates
+    set volts($which) [expr {$volts($which) + $inc}]
+    # this zeros, it's not a null increment
+    if {$inc == 0.0} {
+	    set volts($which) 0.0
+    }
+    # clamp at +/-10 volts
+    if {$volts($which) < -10.0} {set volts($which) -10.0}
+    if {$volts($which) > 10.0} {set volts($which) 10.0}
+    # write it out
+    wshm $which $volts($which)
+}
+
+# set up buttons for a single axis
+# tag is the displayed string label
+# var is the Tcl test volts variable
+# axis display looks like:
+# [tag -] 0.0 [tag +]
+
+proc setup_axis {tag var} {
+    button .b_${tag}- -text "${tag} -" -command [list motor $var -]
+    label .l_${tag} -textvariable volts($var)
+    button .b_${tag}+ -text "${tag} +" -command [list motor $var +]
+    grid .b_${tag}- .l_${tag} .b_${tag}+
+}
+
+# set up display
+
+proc init {} {
+    global fd volts ob
+
+    # quit button
+    label .l_dummy1 -text "             "
+    button .b_quit -text quit -command b_quit_proc -bg red
+    grid .l_dummy1 .b_quit
+
+    # title
+    label .l_title -text "raw values to motors"
+    grid .l_title - -
+
+    # zero all axes button
+    label .l_dummy2 -text ""
+    button .b_zero -text zero -command b_zero_proc
+    grid .l_dummy2 .b_zero
+
+    # add more axes by adding new lines here
+    setup_axis pl_shoulder raw_torque_volts_s
+    setup_axis pl_elbow raw_torque_volts_e
+    setup_axis wr_left wrist_left_test_volts
+    setup_axis wr_right wrist_right_test_volts
+    setup_axis wr_prosup wrist_ps_test_volts
+    setup_axis an_left ankle_left_test_volts
+    setup_axis an_right ankle_right_test_volts
+    setup_axis hand hand_test_volts
+    setup_axis linear linear_test_volts
+
+    if {[is_lkm_loaded]} {
+	    tk_messageBox -title "Load failed" -icon error -message \
+		"robot process is already loaded, exiting."
+	    exit
+    }
+
+    wm protocol . WM_DELETE_WINDOW b_quit_proc
+    start_lkm
+    start_shm
+    after 100
+    start_loop
+
+    wshm have_thermal_model 0
+    wshm no_safety_check 1
+    wshm test_raw_torque 1
+
+    zero_volts
+}
+
+# b_quit_proc called when quit button is pressed
+
+proc b_quit_proc {} {
+    global ob
+
+    stop_loop
+    stop_shm
+    stop_lkm
+
+    after 1000 exit
+}
+
+proc b_zero_proc {} {
+    zero_volts
+} 
+
+init

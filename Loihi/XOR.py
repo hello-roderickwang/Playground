@@ -92,8 +92,10 @@ class XOR:
         probe['hiddenGrpS'] = comGrp['hiddenGrp'].probe(nx.ProbeParameter.SPIKE)[0]
         probe['hiddenGrpU'] = comGrp['hiddenGrp'].probe(nx.ProbeParameter.COMPARTMENT_CURRENT)[0]
         probe['hiddenGrpV'] = comGrp['hiddenGrp'].probe(nx.ProbeParameter.COMPARTMENT_VOLTAGE)[0]
-        probe['weight_1'] = conn['inputGrp_hiddenGrp'].probe(nx.ProbeParameter.SYNAPSE_WEIGHT)[0][0]
+        probe['weight_1'] = conn['inputGrp_hiddenGrp'].probe(nx.ProbeParameter.SYNAPSE_WEIGHT)
         probe['weight_2'] = conn['hiddenGrp_outputGrp'].probe(nx.ProbeParameter.SYNAPSE_WEIGHT)[0][0]
+        print('len(probe[weight_1]):', len(probe['weight_1']))
+        print('len(probe[weight_1][0]):', len(probe['weight_1'][0]))
         return probe
 
     def save_weight(self, conn):
@@ -163,7 +165,7 @@ class XOR:
         plt.figure(2, figsize=(18, 20))
 
         Fig_w1 = plt.subplot(2, 1, 1)
-        probeLrn['weight_1'].plot()
+        probeLrn['weight_1'][0][0].plot()
         plt.title('Weight 1')
 
         Fig_w2 = plt.subplot(2, 1, 2)

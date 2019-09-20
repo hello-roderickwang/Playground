@@ -1,0 +1,13 @@
+# If you're not running NTP (Network Time Protocol), you can fix the clock
+# on your Linux system like this (assume you're root, and time.mit.edu is
+# an RFC 868 time server you can reach):
+
+# set system clock from time.mit.edu
+# rdate -s time.mit.edu
+rdate -s time.mit.edu
+# set local hardware clock from local system clock.
+# /usr/sbin/setclock
+hwclock --systohc
+# print time.mit.edu time and local system time,
+# times should be identical
+rdate -p time.mit.edu; date

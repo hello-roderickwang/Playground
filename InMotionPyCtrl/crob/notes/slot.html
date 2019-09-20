@@ -1,0 +1,341 @@
+<html>
+<head>
+<title>Slot Controller Notes</title>
+</head>
+<body>
+
+<h1> Slot Controller Notes</h1>
+Tue Mar  2 12:32:47 EST 2010
+<p>
+
+<h2> What is a Slot Controller?</h2>
+A slot controller is a C language function called by the robot's Linux Kernel
+Module main loop that controls the InMotion2 motor torques based on robot state
+data like current x/y position, torque, velocity, stiffness and damping, time,
+and the position of virtual objects in world space, some of which we call slots.
+<p>
+This note describes slot controllers in some detail, if you want to
+learn how to call one before you understand how it actually works,
+scroll down to
+<a href="#starting">Starting a Slot Controller from a User Mode Program</a>
+below.
+<p>
+
+Often, you want the patient to move the manipulandum from position A to B in a
+straight line path, so you want to set up a slot control such that when the
+manipulandum strays from this path, the motors draw the manipulandum back
+toward the path, and perhaps, also toward the destination.  The InMotion2 Slot
+control code provides a framework for setting up such slots.
+<p>
+
+Besides the typical slot path, you might want to use a slot controller to
+create other virtual objects in the world space.  Maybe you want an object that
+behaves like:
+
+<ul>
+<li> a pinball bumper that pushes you away when you hit it
+<li> a tar-pit that applies drag when you go through it
+<li> a planet that attracts you with stronger gravity the closer you get to it
+<li> a surrounding wall that keeps you from moving outside boundaries on the workstation tabletop
+</ul>
+
+These aren't really slots, but programming their behavior is similar to
+programming a slot path.
+ <p>
+
+We provide a "star" example that works by moving the manipulandum through a
+series of straight-line slots, from the center of the display out to and back
+from each of 8 compass points.
+<p>
+
+Note the time component of a slot - if you are going from position A to
+B, at any point in time a slot might be:
+
+<ul>
+<li> a line or box between those positions
+<li> a point moving from position A to B
+<li>a line or box collapsing (and pushing) from behind as time progresses
+</ul>
+
+depending on how you want the slot to behave.  This is all assuming that the
+slot is trying to help the patient reach the destination.  It could also be
+programmed to work against the patient's destination goal if it is desired to
+make the patient's task more challenging.
+
+<p>
+
+InMotion2 programmers will write different slot controllers based on the
+particular requirements of experiments or therapies.  The robot software
+provides an api so that the slot controller can get parameters it needs to
+function, like start and stop conditions for time and position.
+
+<h2> Program a slot controller</h2>
+<p>
+The slot control code consists of slot controllers themselves, and the
+code to manage them.  Slot controllers dictate the torques applied to
+the robot's motors so that forces are applied to manipulandum, making
+the robot arm move in different directions while feeling stiff,
+springy, etc. in the patient's hand.
+
+<p>
+Slot controllers base their
+behaviors on various inputs.  Some inputs are from the robots system's
+current or recent state - the X/Y position, tachometer velocity,
+torques currently being applied to the motors, and so forth.
+<p>
+In addition to this robot state, slot controllers can get further
+state information from slot control infrastructure.  For instance,
+let's say you have a compass face on the tabletop, centered at 0.0,
+0.0, and with compass points 0.2 meters in eight directions, north, ne, east,
+se, south, sw, west and nw, and you want to run a slot with the following
+attributes:
+
+<ul>
+<li> manipulandum starting at the center (0.0,0.0)
+<li> finishing at east (0.2,0.0)
+<li> traveling in a fixed size box .004 meters wide and .003 meters tall
+<li> start the slot immediately, at time i = 0
+<li> finish the slot in 2 seconds, at time i = 2*Hz samples
+<li> increment the time i one tick per sample
+<li> identify this slot as "id 0" - there are 8 to choose from, 0-7
+<li> invoke the slot function at index 0 - you can create an array of
+pointers to your different slot functions
+</ul>
+
+There is no C function to set up a slot.  You fill ob-&gt;copy_slot
+with the parameters it needs, then you set ob-&gt;copy_slot.go to 1,
+and it gets copied into the right place during the next sample.
+<p>
+
+The slot management code is in slot.c, the main function is called
+do_slot().  This isn't the slot controller code itself, this is the
+code that decides when to call each slot controller.  During each
+sample, do_slot iterates through the slot array and checks to see if
+there are active slots.  For each slot that is active, it increments
+the slot time counter, using a for-loop style structure - initial
+value, increment, and terminal value.
+ <p>
+
+The only dynamic variable that do_slot changes from sample to sample
+is the current time value.  The slot controller itself takes this
+variable i, plus all the fixed values for initial and terminal time,
+and initial and terminal box position, and calculates the current
+position of the slot.
+<p>
+
+Once the box/slot position for the current iteration is set, the slot
+controller uses that information, with other control information, such
+as stiffness and damping information inside and outside the current
+box, to calculate torques to apply to the motors, to provide proper
+force feedback to the patient.
+<p>
+
+The slot management code includes functions stop_slot(id) that stops
+slot # id, and stop_all_slots, that stops all the slots.
+
+<h2>When is a slot done?</h2>
+A subtle and important question about managing slot controllers is how
+to deal with the smooth transfer of control from one slot controller to
+another.  In a simple case, when a slot controller finishes processing,
+it might invoke a new slot controller, in daisy chain fashion.  That
+termination may come after a fixed time period, or perhaps after an
+event causes a "done" variable to be set.
+<p>
+What if a slot controller "stops" before a new slot controller takes
+control?  Let's say we have a loop where the manipulandum is moving
+back and forth between points A and B.  The slot controller takes 3
+seconds to go from A to B, after which it terminates.  After two more
+seconds. a new slot makes the return trip - 3 seconds of travel, then
+another two seconds of rest.
+<p>
+
+When you ask a slot controller manager to run for 3 seconds, when it
+hits its termination condition, it will not really stop running the
+slot until you zero it out, it will just keep holding on to its final
+position and slot control settings.  So in this example, it would move
+the manipulandum for 3 seconds and hold it in the final position for
+2 seconds - probably the behavior that you want.  If instead of
+holding the final position, you wanted to apply zero torques to the
+motors, you could do that by zeroing out the slot when it terminated,
+instead of letting it run until it was superseded by a new slot.
+<p>
+
+In most cases you design the task so that the actual point is near the
+desired point at the end of a slot (when the user hits the target, the
+motor forces will be low).  But if the motors are applying large
+forces to the manipulandum and you want to stop a slot, you can
+prevent the jarring effect of suddenly zeroing out a conrtrolled force
+by ramping the stiffness down to zero over a short period (half a
+second or a second).  This will provide a gentler experience for the
+user.
+
+<h2><a name="starting">
+Starting a Slot Controller from a User Mode Program</a></h2>
+The text above notes that there is no C code for invoking a slot
+controller - you start it by filling a data structure with the right
+parameters.  The robot software Tcl library provides a function called
+movebox that starts a slot controller by filling this data structure.
+It's called movebox because in typical use, it
+has the effect of moving a box-shaped slot from a source to a
+destination point.  movebox can move a point, a small box, or a slot of
+changing size that can act like a collapsing or expanding slot or box.
+Note: see <a href="#ccmc">Concurrent movebox calls</a> below.
+<p>
+
+A typical call to movebox, moving a reference point horizontally from
+the origin to a position 10 cm to the right, look like this:
+
+<p>
+<pre>
+# slotid/fnid  loop       frombox            tobox
+  movebox 0 0 {0 1000 1} {0.0 0.0 0.0 0.0}  {0.1 0.0 0.0 0.0}
+</pre>
+<h3>slotid and fnid</h3>
+<p>
+slotid identifies your slot if you have more than one slot
+active at once.  If you have one slot, slotid should be zero.
+You'll need more than one slot if you are controlling more than
+two dimensions, like if you have an integrated planar/wrist robot.
+<p>
+fnid is the slot function id.  Slot functions are stored in the *_uslot.c
+files - pl_uslot.c for planar slot functions, wr_uslot.c for wrist slot
+functions, etc.  The u in pl_uslot.c stands for user, because research
+users will add their own slot functions to these files.  A list of
+pointers to all slot functions is stored in ob-&gt;slot_fns[], which is
+managed in pl_uslot.c:init_slot_fns[].  When you add a new slot
+function, you add a declaration of your function to the list of declared
+functions, and an array entry in init_slot_fns.  (ob-&gt;slot_fns is
+currently 32 entries long in robdecls.h, if you need more, make it
+bigger and recompile.)  fnid is the numeric index into ob-&gt;slot_fns.  If
+you are using simple_ctl(), the planar slot function stored at
+ob-&gt;slot_fns[0] when we deliver the software, then fnid will be
+0.
+<p>
+<h3>loop</h3>
+The three loop parameters are like those of a C for-loop: initial,
+terminal, and increment.  To run a slot for five seconds,
+using a 200 Hz sample frequency, the loop would run for 1000 samples,
+and the loop parameters would be {0 1000 1} - that is, from zero through
+1000 with the counter incremented once per sample.  The equivalent in C
+would be: for (i=0; i<1000; i++)
+<p>
+The incremented value i is passed to your controller, so that it can react
+as a function of time.  Assume for a moment, a one-dimensional space
+(like the edge of a ruler), and you are moving at constant speed from a source
+position at 0 cm to a destination at 5 cm.  If this motion takes 5 seconds
+at 200 Hz, that's 1000 samples.
+<ul>
+<li> When the i value is 0/1000, the
+reference point is at the source position.
+<li>When i == 500, i is at 500/1000 and the reference point
+is halfway between the source and destination position.
+<li> When the i value is 1000/1000, the
+reference point is at the destination position.
+</ul>
+<p>
+Note that the controller doesn't force the robot arm to the reference point,
+it just pulls the arm toward that position, with forces depending on how
+the controller is coded, and usually utilizing a combination of
+stiffness and damping constants, position and velocity sensor readings,
+and other inputs and algorithms.
+<p>
+You may run a slot controller in an infinite loop by specifying a zero
+increment, that is, with a loop parameter: {0 1 0}.  This wouldn't make
+sense if you wanted to move a reference point from a source to a
+destination, but if your controller does not need a moving reference
+point, this can be useful.  Such cases include a controller with a fixed
+reference point (a spring anchored to a single point) or a controller
+that imposes a field with damp or curl forces that do not change as a
+function of time.
+
+<p>
+<h3>frombox and tobox</h3>
+The from box and to box are each described by a list of four numbers, those
+are the x and y coordinates and the width and height of the box.
+A box that is 2 cm wide and 1 cm tall, starting centered at (0.0,0.0)
+and ending 10 cm to the right, would be programmed with these boxes:
+{0.0 0.0 .02 .01} {0.10 0.0 .02 .01}
+A vertical slot (with width and no height) that started 10 cm wide, between (0.0,0.0) and (0.10,0.0)
+and collapsed to a point ending at the position (0.10,0.0) would be programmed with:
+{0.05 0.0 0.10 0.0} {0.10 0.0 0.0 0.0}.
+0.05 being the x center of the initial slot that is 10 cm wide.
+<p>
+Note that box parameters are simply passed into your slot controller,
+the controller software can choose to use them as it wishes.  This note describes using the
+parameters as x, y, width and height, as used in pl_uslot.c:simple_ctl,
+which we deliver in fnid 0.  You might want to pass in other parameters,
+a rotation, perhaps, or alter your code to pass in additional
+parameters.
+<p>
+We provide an example of a controller that moves a reference point based
+on a user-supplied function, see crob/examples/drawfn.tcl and
+pl_uslot.c:planar_fn_ctl(), which moves the reference point by calling
+pl_i_ref_fn() with parameters that move it in a circle around the origin.
+
+<h2>tools/mvbox.tcl</h2>
+mvbox.tcl is a tool for experimenting with slot controllers.
+Its GUI looks like this:
+
+<p>
+<pre>
+move type: ___ time: ___
+src x: ___ y: ___ w: ___ h: ___
+dst x: ___ y: ___ w: ___ h: ___
+[go] [go back] [oscillate] [show]
+[center] stop[] [quit]
+</pre>
+<p>
+
+It prompts with a screen that allows you to enter variables for move
+type (fnid), time (in seconds, not samples), and source and destination
+boxes (in meters).  You can then hit [go] to go from the source to
+destination, and then [go back] to return from destination to source.
+[oscillate] goes between the source and dests points in a loop
+if you want to stop the running slot, hit the stop checkbox.
+[show] prints the movebox command that it generates, to give you an idea
+of what it's doing.
+
+<h2>Multiple Slots</h2>
+<p>
+The planar robot only requires a single two-dimensional slot at once.
+Controlling a more complex robot requires more slots, one slot per each 2d pair.
+An integrated
+planarwrist robot requires a 2d slot to control the planar component,
+another slot to control the fe (flexion/extension) and aa (abduction/adduction),
+and a third slot to control the ps (pronation/supination).
+You can control all these at once, using different slot id's.
+<p>
+You should assign a slot id to each 2d pair and stick with it, for instance,
+use slot 0 for all your planar slots, slot 1 for wrist fe/aa, and slot 2 for
+wrist ps.
+<p>
+If you have an integrated planarwrist robot, you can run two slots at once with
+the mvbox.tcl program.
+ <p>
+
+<a name="ccmc">
+<h2>Concurrent movebox calls</h2>
+As noted above, the movebox proc copies a set of slot parameters into
+the robot control loop.  The control loop runs at a sampling
+frequency, usually 200 Hz.  This means that if you call movebox twice
+within 5 ms, you could overwrite the "copy slot" buffer from the first call
+with the second call, if there was no attention in the software for
+this problem.
+<p>
+In the case of a Tcl/Tk program with a a GUI, there is an event loop
+that allows Tcl to schedule events to occur in the future.
+movebox checks to see if a previous movebox call has completed,
+if two movebox calls happen in rapid succession,
+and the first one has not completed, it reschedules
+the new call to occur in 10 ms, by which time the movebox "copy slot" buffer
+should be available for the second call.
+<p>
+This <b>only</b> works if you have an event loop, which will be the case if you are running the Tk GUI library, but will not be happening if you are only 
+running Tcl in a text window without a GUI.  If you need to do concurrent movebox calls in a text Tcl program, use the Tcl vwait proc, which allows you to
+set up your own event loop.
+<p>
+It is possible to fix this software problem with different moveboxes sharing
+the same copy slot (by recoding to give each slotid its own copy slot), but at
+this time (late 2006), there is still just one shared copy slot.
+
+</body></html>

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# count the servos on the CAN bus
+# note that this RESETS THE SERVOS
+
+OUT=$(mktemp)
+# NMT reset
+rtcansend rtcan0 -i 0 0x81 0
+
+# start receiving
+rtcanrecv > $OUT &
+PID=$!
+
+# NMT reset again
+rtcansend rtcan0 -i 0 0x81 0
+
+kill $PID
+wait $PID
+
+cat $OUT | egrep -o '70[1-4]' | sort -u | wc -l
+rm $OUT

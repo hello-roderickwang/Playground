@@ -1,0 +1,203 @@
+<html>
+<head>
+<title>Timing in the InMotion2 Control Loop</title>
+</head>
+<body>
+
+<h1>Timing in the InMotion2 Control Loop</h1>
+Mon Sep 25 18:51:47 EDT 2006
+<p>
+The InMotion2 robot process has a user-mode control loop managed by the
+Xenomai real-time system.  (This replaces the control loop in the robot 
+Linux Kernel Module in our previous software, which ran with RTLinux.)
+The control loop sampling period is, by
+default, 200 Hz (200 times per second).  This means that every
+1/200th of a second (.005 second, or 5 ms (milliseconds)), Xenomai wakes up
+the InMotion2 process and tells it to do its work.  (When this document
+says 5 ms, it's assuming the default sampling period, if you use
+a different sampling period, this length would change.)
+<p>
+
+The control loop measures and records timing information to make sure
+that it is running properly.  A sample period of the control loop
+starts when Xenomai wakes up the control loop.  The control loop does its work,
+and then it goes to
+sleep, waiting for the next signal to wake up.  Here is a graphical
+representation of a few sample periods:
+<p>
+<pre>
+|work|----------sleep----------|
+|work-|---------sleep----------|
+|work|----------sleep----------|
+|work|----------sleep----------|
+|work-|---------sleep----------|
+</pre>
+<p>
+
+As noted above, each sample period (work plus sleep)
+should take exactly 5 ms.  The work part
+of this period should take much less than 10% of this time - most of
+the sample period should be spent sleeping, which gives the rest of the Linux
+system time to run.  As shown, there is sometimes slight variation in
+the actual time that the work takes to complete, but this variation
+should be minimal and should not have a negative effect on real-time
+performance.
+<p>
+
+The control loop records timings at the transition points of each sample
+period:
+
+<pre>
+|work|----------sleep----------|
+^    ^                         ^
+B    E                         B
+</pre>
+
+In this diagram, <b>B</b> is the beginning of the sample, which occurs when
+Xenomai wakes up the control loop, in the code this is called
+<b>time_before_sample</b>.  Notice that the beginning of the current
+work period is the same time as the end of the previous sleep period.
+<b>E</b> is the end of the work part of the sample period, in the code
+this is called <b>time_after_sample</b>.
+
+<p>
+At the beginning of sampling, the start time is recorded so that
+timing calculations may be done relative to the beginning of the run, this is
+called <b>time_at_start</b>n.
+Timings are kept for the current sample and the previous (last) sample,
+so that differences may be calculated between them.
+These times are recorded as hrtime (high resolution time) values, which
+are 64-bit integer nanosecond quantities.
+<p>
+Here are the main time values that are recorded:
+
+<ul>
+<li>time_at_start: recorded once at start of all sampling
+<li>time_before_sample: time at start of current work period
+<li>time_before_last_sample: previous time_before_sample
+<li>time_after_sample: time at end of current work period
+<li>time_after_last_sample: previous time_after_sample
+<p>
+<li>time_delta_sample: time_after_sample - time_before_sample
+<li>time_delta_tick: time_before_sample - time_before_last_sample
+<li>time_since_start: time_before_sample - time_at_start
+</ul>
+
+These time values are managed in main.c, in the timing functions
+do_time_before_sample() and do_time_after_sample().
+<p>
+
+At the beginning of the work part of the sample (B), the system sets a
+condition flag called <b>busy</b>.  When the work is done (E), busy is
+cleared.  The system should never be busy at the start of a work period,
+this would indicate that the previous sample's work took much too long, and
+never finished.
+This condition would also indicate that time_delta_sample
+(E-B)
+is greater than
+the sampling rate (5 ms).
+<p>
+The system sets warning flags if time_delta_tick or time_delta_sample
+go out of bounds of certain thresholds, even if this does not cause a
+full error condition.  Check the timing functions in main.c to
+understand the details.
+
+<h2>Thresholds</h2>
+There are several error checks performed by the main loop, mostly
+looking for timing errors.  Remember the picture of a sample time, 
+in the code, "work" is called sample, "work+sleep" is called tick.
+
+<p>
+<pre>
+|work|----------sleep----------|
+</pre>
+<p>
+
+<ul>
+<li> 1 ERR_MAIN_LATE_TICK - in main.c:check_late(), a new tick started
+before an old tick finished.  This is not good.
+<li> 2 WARN_MAIN_SLOW_TICK - in main.c:check_late(), a tick took
+longer than the delta_tick_threshold.  This may just mean that the
+tick threshold is too low.
+<li> 3 WARN_MAIN_SLOW_SAMPLE - in main.c:do_time_after_sample(), a sample took
+longer than the delta_sample_threshold.  This may just mean that the
+sample threshold is too low.
+<li> 4 ERR_UEI_NSAMPLES - in uei.c:uei_ain_read(), we tried to read
+some analog input samples, and the board return all that we asked for.
+This probably means that we are sampling too fast for the number of samples
+that we're asking for.
+<li> 5 ERR_UEI_RET - in uei.c:uei_ain_read(), 
+we tried to read some analog input samples, and the read call
+returned an error code.  
+<li> 6 ERR_UEI_BOARD_RANGE - in uei.c, you are trying to read from a
+board that isn't there.  probably a bad board or channel id in
+imt2.cal.
+</ul>
+Note that ERR is more severe than WARN.
+There is a series of variables that you can watch to see if these
+errors (or warnings) are occurring.  
+<ul>
+<li> nerrors - gets incremented every time one of the above errors
+(or warnings) occurs.
+<li>errori - an array, gets filled with the value of ob->i for the most
+recent error.
+<li>errorcode - an array, gets filled with the most recent error code
+(frin 1 though six, as above)
+<li>errornum - an index into both errori and errorcode, which points
+to the most recent error.  the arrays are 128 entries long, when they
+fill up, they wrap back to the top, so errornum will be between 0 and
+127.
+</ul>
+Usually, if you have these kinds of errors, they will come every
+sample, and "nerrors" will be incremented each sample time.  (When it
+rains, it pours.)  If you get these kinds of errors, you might be
+sampling at too high a frequency or you might be doing too much
+oversampling (of digital or analog inputs).
+<p>
+If you sample at 200Hz, you should be able to get away with 5x oversampling
+of ain and dio.  1000Hz is 5 times as much work as 200Hz, so you might
+have to raise thresholds, and check your timings.
+<p>
+The important timings to check are time_ns_delta_sample and
+time_ns_delta_tick.  The delta sample time depends on the CPU speed
+and how much code you execute during a sample.  The delta tick time
+should be close to the theoretical value (5,000,000 ns at
+200Hz, 1,000,000 ns at 1000 Hz, and so on.)
+<p>
+The two threshold values, 
+time_ns_delta_sample_thresh and time_ns_delta_tick_thresh
+may need to be adjusted if you are not running at 200 Hz.
+Note that both of these threshold values are with respect to the tick
+time in ns.  So if your desired tick is 5 million ns, and the sample
+threshold is 10 (%), the slow sample warning will fire if the sample
+takes longer than 500 thousand ns.  If the tick threshold is 120 (%),
+the slow tick warning will fire if the actual tick takes longer than 6
+million ns.
+<p>
+When these errors/warnings occur, the control loop writes messages to
+an output fifo.  You may read this fifo with the program
+~imt/crob/iofifo.  The error messages will reflect the errors above,
+and you may look at the source code for more details on exactly what
+conditions cause them.
+
+<h2>Jitter</h2>
+The variable, time_delta_tick,
+reflects the accuracy of the wakeup signals from the
+Xenomai system.  When Xenomai is running properly, this should be 5
+ms, with very little variation.  Variation in the frequency of these
+wakeup signals is known as <b>jitter</b>, and may be caused by
+problems in the Linux/Xenomai operating system, outside the InMotion2
+control loop.  
+<p>
+These problems will usually be caused by having,
+in the Xenomai-enhanced Linux kernel,
+a device driver or other kernel module that is compiled without the 
+Xenomai enhancements.  A module that is compiled "without Xemomai
+turned on" will not follow the Xemomai rules, and will not give up the
+CPU when Xemomai wants it to.  This can make Xemomai code wait too
+long for the CPU, causing jitter.  Note that this is not a problem in
+normal user-mode programs, which are under control of the Xemomai-enhanced
+Linux.  The "compile with Xemomai turned on" rule
+only applies to the Linux kernel and Linux kernel modules.
+
+</body></html>

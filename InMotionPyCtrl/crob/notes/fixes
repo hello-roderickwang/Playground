@@ -1,0 +1,12 @@
+encode transition 0/2pi transition
+
+shm reading u32 with wrong size
+
+Tue Jun  3 17:53:49 EDT 2003
+added shm ft_unbias string and shm.tcl ft_bias proc
+so isa ft and uei daq ft bias the same,
+and you can autobias on the fly.
+
+stop_shm was calling stop_lkm, which is wrong.
+took this out and the spurious "already paused"
+messages went away.

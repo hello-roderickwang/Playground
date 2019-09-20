@@ -1,0 +1,106 @@
+#!/usr/bin/wish
+
+# Copyright 2003-2013 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+# starts 
+
+package require Tk
+
+# we are not using the root window, so hide it
+wm withdraw .
+
+global ob
+
+proc done {} {
+    if {!$::lkm_already_loaded} {
+	puts "unloading robot process"
+	stop_loop
+	stop_shm
+	stop_lkm
+    } else {
+	stop_shm
+	puts "not unloading robot process"
+    }
+    exit
+}
+
+set ob(crobhome) $::env(CROB_HOME)
+
+global ob
+
+source $ob(crobhome)/shm.tcl
+
+use_wrist
+
+set ob(current_robot) [current_robot]
+
+if {$ob(current_robot) != "wrist"} {
+	tk_messageBox -title Failed -message "This robot is configured as a $ob(current_robot)\
+and you are trying to calibrate it as a wrist."
+	exit 1
+}
+
+if {![is_robot_ready]} {
+	tk_messageBox -title Failed -message "The Ready lamp is not lit.\
+Please release all Stop buttons,\
+press the Start button, and try again."
+	exit 1
+}
+
+if {[is_lkm_loaded]} {
+	set lkm_already_loaded 1
+	puts "robot process was already loaded."
+	done
+} else {
+	set lkm_already_loaded 0
+	puts "loading robot process."
+	##wm protocol . WM_DELETE_WINDOW exit_command
+	start_lkm
+}
+start_shm
+
+wshm no_safety_check 1
+wshm no_motors 1
+start_loop
+after 100
+
+# turn off cal bit, will only be turned on if the cal succeeds.
+clear_robot_cal_done
+
+set x 0.0
+set y 0.0
+
+tk_messageBox -title "Place Stalk"  -message "Place stalk on calibration block then hit OK to center"
+# gets stdin
+wshm wrist_aa_offset 0.0
+wshm isaenc_zero 1
+wshm pcienc_zero 1
+
+wshm no_safety_check 0
+wshm no_motors 0
+after 100
+
+# good cal, turn on cal bit
+set_robot_cal_done
+
+# tk_messageBox -title Home -message "Robot centers to ($x,$y)"
+# gets stdin
+
+# wcenter $x $y
+
+movebox 1 0 {0 1 0} {0 0 0 0} {0 0 0 0}
+after 100
+movebox 0 7 {0 1 0} {0 0 0 0} {0 0 0 0}
+
+wshm slot_max 2
+
+tk_messageBox -title Done -message "Remove block, then hit OK to lower robot to rest position"
+# gets stdin
+
+puts "moving wrist robot to rest position"
+wdone
+
+done
