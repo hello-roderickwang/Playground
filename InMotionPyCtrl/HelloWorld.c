@@ -4,7 +4,7 @@
 // @GitHub  : https://github.com/hello-roderickwang
 
 #include <stdio.h>
-int main(int argc, char* argv){
+int main(int argc, char** argv){
     int varA = argv[1];
     int varB = argv[2];
     printf("Enter Var_A:");

@@ -18,3 +18,5 @@ if __name__ == '__main__':
     print(result)
     # print(result2)
     # print(result3)
+    print('result.returncode:', result.returncode)
+    print('result.stdout:', result.stdout)
