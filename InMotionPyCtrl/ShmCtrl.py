@@ -1,33 +1,33 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Date    : 2019-09-21 00:25:29
+# @Date    : 2019-09-26 15:41:25
 # @Author  : Xuenan(Roderick) Wang
 # @Email   : roderick_wang@outlook.com
-# @Github  : https://github.com/hello-roderickwang
+# @GitHub  : https://github.com/hello-roderickwang
 
-import subprocess
+import ShmPy as shm
 
-def get_command(action, target, value=0, path='./shm'):
-    action_cmd = ''
-    target_cmd = target
-    value_cmd = str(value)
-    path_cmd = path
-    if action is 'get' or action is 'g':
-        action_cmd = 'get'
-        cmd = 'echo '+action_cmd+' '+target_cmd+' | '+path_cmd
-    elif action is 'set' or action is 's':
-        action_cmd = 'set'
-        cmd = 'echo '+action_cmd+' '+target_cmd+' '+value_cmd+' | '+path_cmd
-    elif action is 'allget' or action is 'a':
-        cmd = 'echo '+action_cmd+' | '+path_cmd
+def is_torque_on():
+    result = shm.send_command(shm.get_command('get', 'test_raw_torque'))
+    print('type of result:', type(result), '\nresult:', result)
+
+def set_torque_on():
+    shm.send_command(shm.get_command('set', 'test_raw_torque', 1))
+
+def send_torque(target, value=0):
+    if is_torque_on is False:
+        set_torque_on()
     else:
-        cmd = ''
-    return cmd
+        if value > 3.45 or value < -3.45:
+            value = 0
+            print('VALUE OUT OF MAXIMUM RANGE!')
+            print('VALUE RANGE: [-3.45, 3.45]')
+        if target is 'upper':
+            shm.send_command(shm.get_command('set', 'raw_torque_volts_s', value))
+        elif target is 'lower':
+            shm.send_command(shm.get_command('set', 'raw_torque_volts_e', value))
+        else:
+            print('WRONG TARGET!')
 
-def send_command(cmd):
-    if cmd is '':
-        print('ERROR! UNKNOWN COMMAND!')
-    else:
-        subprocess.run([cmd], shell=True)
-
-# if __name__ == '__main__':
+if __name__ == '__main__':
+   is_torque_on()
