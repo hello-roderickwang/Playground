@@ -29,7 +29,7 @@ def send_command(cmd):
         print('ERROR! UNKNOWN COMMAND!')
     else:
         completed_process = subprocess.run([cmd], shell=True)
-    return completed_process.returncode
+    return completed_process
 
 # if __name__ == '__main__':
 #     send_command(get_command(action='set',target='RAW_TORQUE_VOLTS_S',value='1'))
