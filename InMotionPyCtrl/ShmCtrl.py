@@ -29,5 +29,11 @@ def send_torque(target, value=0):
         else:
             print('WRONG TARGET!')
 
+def get_position():
+    pos = [0, 0]
+    pos[0] = shm.send_command(shm.get_command('get', 'x')).stdout.decode('utf-8')
+    pos[1] = shm.send_command(shm.get_command('get', 'y')).stdout.decode('utf-8')
+    return pos
+
 if __name__ == '__main__':
    is_torque_on()
