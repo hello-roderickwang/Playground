@@ -1,0 +1,219 @@
+Thu Jun 27 16:03:52 EDT 2002
+
+Notes on bringing up the new Linux/RTLinux/DAQ operating system.
+
+As of this writing (June 2002), these are the latest stable revs of software:
+
+	Linux 2.4.18
+	Red Hat 7.3
+	FSMLabs RTLinux 3.1
+
+The best UEI PowerDAQ code for Linux is the 2.1 beta, which is not
+released, I got a private drop from Alex Ivchenko at UEI.
+
+First I brought up a fairly basic Red Hat 7.3, using the KRUD CD's:
+
+    http://www.tummy.com/krud/
+
+These are barely modified Red Hat CD's, for cheap.
+I had trouble reading the 2nd of the 3 CD's during boot load, so instead
+I copied the RPMs onto another Linux box for a net/http installation,
+see the README file on the first CD.
+
+The hard disk already had Win NT installed on it.  It had a 4Gb C:
+partition and then the other 3 empty partitions were D,E, and F.
+
+I ran Partition Magic off a floppy, deleted the empty partitions, and
+made a hunk of empty space in front of C: so I could stick some the
+Linux boot partition up there where they need to be.  It was some round
+number of sectors or cylinders, 90 cylinders or something, less than
+1024 Mb, which I think is some important barrier.
+
+I stuffed all the RPMs from the CD's onto the server disk, set up apache
+to serve it up, dd'd the images/bootnet.img from the CD onto a floppy,
+boot loaded from that, and I was good to go.  During the boot process,
+I partitioned the disk like so:
+
+# sfdisk -l
+
+Disk /dev/hda: 4865 cylinders, 255 heads, 63 sectors/track
+Units = cylinders of 8225280 bytes, blocks of 1024 bytes, counting from 0
+
+   Device Boot Start     End   #cyls   #blocks   Id  System
+/dev/hda1   *     89+    610     522-  4192933+   7  HPFS/NTFS
+/dev/hda2          0+      2       3-    24066   83  Linux
+/dev/hda3        611     992     382   3068415   83  Linux
+/dev/hda4        993    4864    3872  31101840    f  Win95 Ext'd (LBA)
+/dev/hda5        993+   1374     382-  3068383+  83  Linux
+/dev/hda6       1375+   1884     510-  4096543+  83  Linux
+/dev/hda7       1885+   2394     510-  4096543+  83  Linux
+/dev/hda8       2395+   2459      65-   522081   82  Linux swap
+
+# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/hda6              4032092    192980   3634288   6% /
+/dev/hda2                23302      8540     13559  39% /boot
+/dev/hda7              4032092     44384   3782884   2% /home
+none                    127904         0    127904   0% /dev/shm
+/dev/hda5              3020140      3544   2863180   1% /tmp
+/dev/hda3              3020172   1999144    867608  70% /usr
+
+I made the normal partitions 3 or 4 Gigs, the swap 512, the /boot
+was 3 cylinders, which is about 25 Megs.
+
+[Install using graphics mode, ask for a workstation.
+On Igo's machine, I let it partition automatically.
+I also got compat egcs/glibc from the during the install phase,
+necessary for kernel hacking.  You can do it later if you forget.
+(see below).
+
+The base kernel and base RTLinux were found here:
+
+	http://ftp.kernel.org/pub/linux/kernel/v2.4/linux-2.4.18.tar.gz
+	ftp://ftp.fsmlabs.com/pub/rtlinux/v3/rtlinux-3.1.tar.gz
+
+RTL3.1 only runs on Linux 2.4.4, the patches for 2.4.18 are user
+contributed by todd.gearheart@flightsafety.com:
+
+	ftp://ftp.fsmlabs.com/pub/rtlinux/contrib/gearheart/rt-patch-2.4.18-rtl3.1.tgz
+
+they are applied to both the Linux 2.4.18 and the RTL 3.1 trees.
+You use patch -p1 to apply the patches, it comes with a README.
+(There is an SMP (multi-processor) patch too, ignore that.)
+
+The Linux UEI PowerDAQ driver that supports our 50 kHz and 150 kHz boards
+is still in beta, but basic info may be found here:
+
+	http://www.ueidaq.com/download/
+
+I got the driver tgz from Alex at UEI. it's called powerdaq_linux_2.1.tgz .
+
+
+All these raw sources are in ~imt/src/basic:
+
+# ls -l
+total 36508
+-rw-r--r--    1 root     root     30108170 Jun 26 12:20 linux-2.4.18.tar.gz
+-rw-------    1 imt      imt        308090 Jun 27 14:09 powerdaq_linux_2.1.tgz
+-rw-rw-r--    1 imt      imt       4227177 Jun 25 14:11 rtldoc-3.1.tar.gz
+-rw-rw-r--    1 imt      imt       2658946 Jun 25 14:11 rtlinux-3.1.tar.gz
+-rw-r--r--    1 root     root        17764 Jun 27 17:41 rt-patch-2.4.18-rtl3.1.tgz
+
+
+
+
+Compiling the Linux Kernel:
+
+I followed the instructions here:
+
+	http://www.redhat.com/docs/manuals/linux/RHL-7.3-Manual/custom-guide/ch-custom-kernel.html
+
+It is still necessary to compile the kernel using kgcc instead of gcc:
+
+	# gcc --version
+	2.96
+	# kgcc --version
+	egcs-2.91.66
+
+The kgcc business isn't in the Red Hat instructions above.  Red Hat's
+kernel may compile with gcc, but RTLinux and other stuff might not be as
+cleaned up as the latest Red Hat 7.3, so use kgcc.  kgcc is an older
+compiler that is compatible with older code.
+
+kgcc didn't come installed on 7.3, I had to rpm -Uvh (install) it off
+the CD's, in two parts, basic utilities and libraries:
+
+	compat-egcs-6.2-1.1.2.16
+	compat-glibc-6.2-2.1.3.2.i386.rpm
+
+(You can install these from "Select Individual Packages" : Development :
+Languages and Libraries.)
+
+After installing kgcc, you have to hack the toplevel Makefiles, changing
+the gcc definitions to kgcc, like so:
+
+	HOSTCC          = kgcc
+	CC              = $(CROSS_COMPILE)kgcc
+
+This goes for anything you want to compile into the kernel, that's
+Linux, RTLinux module, UEI DAQ module, and new IMT modules.  Compile all
+kernel stuff with kgcc.  Why?  Cuz it's got a k in front of it.  It's a
+messy story, fraught with political bias, arcane handwaving, and some
+truth.  Just do it.
+
+Anyway, once I knew to compile with kgcc, the Linux came up pretty cleanly.
+I'm using grub as a boot loader (it supersedes lilo).  The kernel make 
+automatically hacks the grub config file, so when you boot, you can
+choose the new kernel or an old one.  It was also pretty easy to get
+grub to see the Windows partition, so you can choose that too, cool.
+(I assume you can even get grub to find QNX, though I haven't yet been
+that brave.)
+
+
+OK, now we have a Linux 2.4.18 that boots and has hooks in it for
+RTLinux 3.1, next step is to compile the RTLinux code, and load it up.
+There are instructions in: /usr/src/rtlinux/rtlinux-3.1/Installation.txt .
+The way they describe the directory structure is confusing, they call
+the Linux directory rtlinux, and the RTLinux sub-directory rtlinux-3.1.
+Fooey.
+
+Anyway, to compile the RTLinux stuff, I hacked the Makefile for kgcc,
+and typed make config.  (Step 9 in the Installation.txt.)
+make config suggests running make dep, though this step is ignored in
+Installation.txt .  I ran make dep, and it crapped out with an error:
+
+	xargs: environment is too large for exec
+
+What's going on here is that the Makefile calls some script that adds
+like 1000 CONFIG_foo variable to the process environment, and then xargs
+chokes on them.  I hacked the Makefile to dump all the CONFIG_foo
+variables to a temp file, then remove them from the environment for the
+duration of the xargs call.  Whatever, it worked.
+
+So now I have an RTLinux subsystem, and I can insmod it:
+
+# lsmod
+Module                  Size  Used by    Tainted: P  
+rtl_sched              30048   0  (unused)
+rtl_fifo               11008   0  (unused)
+rtl_posixio             7968   0  [rtl_fifo]
+rtl_time                6920   0  [rtl_sched rtl_posixio]
+rtl                    20288   0  [rtl_sched rtl_fifo rtl_posixio rtl_time]
+
+I ran the Frank/Zappa fifo test in /usr/src/rtlinux/rtlinux-3.1/examples/frank ,
+that ran fine, it means that RTLinux works.
+
+Next step is to compile the UEI PowerDAQ 2.1 beta software.  I'm not
+positive that's going to come up, since this is a fairly new Linux rev.
+It's in /home/imt/daq/home/imt/daq/powerdaq-2.1 .
+
+Read the README, uncomment the RT stuff in the include files, as
+directed.  Change gcc to kgcc in Makefile and lib/Makefile.
+I compiled it and it comes up:
+
+# lsmod
+Module                  Size  Used by    Tainted: P  
+pwrdaq                451728   0  (unused)
+
+Here we can see the system actually query the board:
+
+# cat /proc/pwrdaq
+PowerDAQ driver, release 2.1
+
+PowerDAQ Info: 1 board(s) installed
+
+PowerDAQ board #1 type:  PD2_MF_16_100_16L
+        s/n:     0017371
+        ADC Fifo size:  1024 samples
+        CL FIFO Size:   768 entries
+        Mfg. date:       01-MAR-2002
+        Cal. date:       28-MAR-2002
+        Base address:   0xd9000000
+        IRQ line:       0x5
+
+
+Caveat - make clean deletes something important from the DAQ tree,
+so don't do it.  It shouldn't be necessary.
+(It's ok, you can always reload from the tgz.)
+
+But at this point, it all seems to work, yee hah!

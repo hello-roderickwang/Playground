@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>InMotion2 Maximum Torques</title>
+</head>
+<body>
+
+<h1>InMotion2 Maximum Torques</h1>
+Wed Aug 17 12:24:34 EDT 2005
+<p>
+IMT delivers the InMotion2 robot with calibration file settings that
+allow the system to move the motors with maximum safe torque levels.
+<p>
+Note: When we say "safe," we mean "won't damage the machine."
+Even a very low amount of force/torque on the robot motors is enough
+to swing the arm hard enough to cause damage or injury, same as if you
+dropped a coffee mug on your foot.  So be careful and hold on to the
+manipulandum.
+
+<p>
+
+At the time of this writing, in the imt2.cal calibration file, we set
+the maximum voltage sent to each motor to 5.0 volts.  Each voltage is
+multiplied by the torque_xform, which is approximately 2.80, yielding a
+maximum torque of 14.0 Nm.  The actual torque xform and offset for each
+motor is calculated when the robot is built, by measuring the torque
+delivered by the motor through its operating voltage range.
+
+<p>
+The motors are rated to stall at 9.65 Nm and
+to take a (very short) 65 Nm maximum impulse.  If you are running the
+motors under constant load, don't drive the motors above 9.65 Nm, or
+3.45 volts.  In our experience, 5 volts has proven to be a good maximum.
+
+<p>
+Aside from the motors, the servos (currently) are rated at a maximum
+of 9 amps continuous and 18 amps (very short) impulse.
+
+<p>
+If you set the maximum voltages (pfomax/pfotest) to greater than 5 volts,
+you risk burning out the motors, servos, and other system electronics,
+and you void your IMT warranty.  Please don't do that.
+</body></html>

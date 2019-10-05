@@ -1,0 +1,11 @@
+#! /bin/bash
+
+roc=true
+
+if [ "$1" == "false" ]; then
+	roc=false
+fi
+
+echo $roc
+
+xfconf-query -c xfwm4 -p /general/raise_on_click -s $roc

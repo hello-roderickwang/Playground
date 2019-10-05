@@ -1,0 +1,119 @@
+#!/usr/bin/tclsh
+
+# Copyright 2003-2014 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+# this moves diff from current to specified point in 1 second.
+
+proc wcenter_arm_1s {{cx 0.0} {cy 0.0}} {
+    set x [getptr wrist_fe_pos]
+    set y [getptr wrist_aa_pos]
+
+    set dist [edist $x $y $cx $cy]
+    movebox 0 7 {0 200 1} {$x $y 0.0 0.0} {$cx $cy 0.0 0.0}
+}
+
+proc done {} {
+    set ::endtime [clock seconds]
+
+    puts "Unloading Linux Kernel Module"
+    stop_loop
+    stop_shm
+    stop_lkm
+
+    set ::total_time [expr {$::endtime - $::starttime}]
+    set ::total_hours [expr {$::total_time/3600.0}]
+    puts "End: [clock format $::endtime]"
+    puts "[format %2.2f $::total_hours] hours"
+    exec zenity --info --text "total time: [format %2.2f $::total_hours] hours" &
+
+    exit
+}
+
+# over 24 hours, the timing won't be precise.  it's not important.
+# it's 24 hours of iterations, about once per second.
+
+proc loop {list} {
+    if {![llength $list]} {set list $::xylist}
+    after 1000 [list loop [lrange $list 2 end]]
+    set x [lindex $list 0]
+    set y [lindex $list 1]
+    if {$::time > $::limit} {done}
+    if {$::donevar > 0} {done}
+    # move the differential each second, repeating every 6 seconds.
+    wcenter_arm_1s $x $y
+    # flip the ps back and forth slowly every 5 seconds.
+    if {($::time % 5) == 0} {
+	if {($::time % 2) == 0} {
+	    movebox 1 12 {0 800 1} {-.4 0 0 0} {.4 0 0 0}
+	} else {
+	    movebox 1 12 {0 800 1} {.4 0 0 0} {-.4 0 0 0}
+	}
+    }
+    incr ::time
+}
+
+proc wroadtrip {} {
+    global ob
+
+    set ob(crobhome) $::env(CROB_HOME)
+
+    source $ob(crobhome)/shm.tcl
+
+    if {![is_robot_cal_done]} {
+        puts "This robot is not calibrated."
+        exit 1
+    }
+
+    set ::time 0
+    set ::hours_limit 24
+    set ::limit [expr {$::hours_limit*60*60}]
+
+    puts "Loading Linux Kernel Module."
+    start_lkm
+    start_shm
+    start_loop
+    puts ""
+    puts "wroadtrip: send wrist robot on a road trip"
+    puts "will run for $::hours_limit hours, or hit Enter to stop."
+    puts ""
+
+    # typeahead bad
+
+    flushin stdin
+
+    # control the fe/aa and ps axes independently, don't keep either centered.
+
+    wshm wrist_nocenter3d 1
+
+    # the xylist has 6 pairs.  these points are: SW NW NE SE NE NW
+    # they make an "n" shaped path for the differential, back and forth.
+    # the ps axis flips after every 5 pairs, so it stresses the differential
+    # in different ways.
+
+    set ::xylist {
+	-.6 -.4
+	-.6  .6
+	 .6  .6
+	 .6 -.4
+	 .6  .6
+	-.6  .6
+    }
+
+    set ::donevar 0
+    fileevent stdin readable [list set ::donevar 1]
+
+    set ::starttime [clock seconds]
+    puts "Start: [clock format $::starttime]"
+
+    loop $::xylist
+
+    # loop is an after loop, the program waits here.
+    vwait ::donevar
+
+    done
+}
+
+wroadtrip

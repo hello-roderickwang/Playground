@@ -1,0 +1,37 @@
+#! /bin/bash
+cr=$(cat $IMT_CONFIG/current_robot)
+
+if [[ $1 == request ]]; then
+    zenity --title "Calibrate Robot" --question --ok-label "Calibrate" --cancel-label "Cancel" --text "The robot needs to be calibrated before it can be used.\n\nWARNING\!\nDO NOT perform calibration if a patient is present\!" || exit 1
+fi
+
+case $cr in
+
+    planar)
+	$CROB_HOME/tools/plcenter
+    ;;
+
+    planarhand)
+	$CROB_HOME/tools/plcenter
+    ;;
+
+    hand)
+	$CROB_HOME/tools/hcenter
+    ;;
+
+    wrist)
+	$CROB_HOME/tools/wcenter
+    ;;
+
+    ankle)
+	$CROB_HOME/tools/acenter
+    ;;
+
+
+    *)
+	zenity --error --text "No calibration function for robot $cr"
+	exit 1
+    ;;
+
+esac
+exit 0

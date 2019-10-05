@@ -1,0 +1,452 @@
+#!/usr/bin/wish
+
+# vex: display manipulandum vectors
+
+# InMotion2 robot system software
+
+# Copyright 2003-2013 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+# displays:
+
+# vel velocity dark green
+# xy position gray links with yellow dot
+# mfrc motor force blue
+# dftf force transducer force device xy thick brown
+# dzftf force transducer force device z thin brown
+# wftf force transducer force world xy thick red
+# wzftf force transducer force world z thin red
+#
+
+# note: v is velocity, vec is vector.
+
+# thanks to kevin kenny for iir filtering tips (deleted)
+# and rich suchenwirth for info on translating coordinate systems
+# with scrollregion, scale, and move.
+
+package require Tk
+
+global ob
+
+set ob(crobhome) $::env(CROB_HOME)
+
+source $ob(crobhome)/shm.tcl
+
+set ob(current_robot) [current_robot]
+
+if {$ob(current_robot) != "planar"
+    && $ob(current_robot) != "planarhand"
+    && $ob(current_robot) != "planarwrist"} {
+        tk_messageBox -title Failed -message "This robot is configured as a $ob(current_robot)\
+and vex only works on planar."
+        exit 1
+}
+
+set ob(color,pos) yellow
+set ob(color,vel) darkgreen
+set ob(color,mfrc) blue
+set ob(color,dftf) brown
+set ob(color,wftf) red
+
+# this scales everything
+# (scaling does not change line widths)
+set ob(scale) 1000.0
+
+set ob(dscale) [expr {$ob(scale) / 100.0}]
+
+
+proc vex {w} {
+	global ob
+
+	# display canvas
+	set c [canvas $w.c -height 600 -width 600]
+	chwin $c [winfo width $c] [winfo height $c] 
+
+	set linewidth 10
+
+	# 1 screen pixel == 1 world mm
+
+	# draw a red box for the safety zone
+	$c create rect [centxy 0 0 .2] -outline red
+
+	# draw a black box for the dots
+	$c create rect [centxy 0 0 .14]
+
+	# circles at compass points and center
+	foreach i {-.14 0.0 .14} {
+	foreach j {-.14 0.0 .14} {
+		$c create oval [centxy $i $j .01] -fill gray
+	}}
+
+	# small links (zoomed out) and full scale links
+	$c create line {0 0 0 0} \
+		-tag "kscale slinks" -width 3 -fill gray -capstyle round
+	$c create line {0 0 0 0} \
+		-tag "kscale links" -width $linewidth -fill gray -capstyle round
+	$c create oval {0 0 0 0} \
+		-tag "motors" -fill gray -outline gray
+
+	# these vectors are all created at (0,0)
+	# when they move, the y coordinates will be flipped
+	# with y_up, see "tick"
+
+	# create point line, not really a vector.
+
+	$c create line {0 0 0 0} \
+		-tag "kscale vecvel" -width $linewidth -arrow last
+
+	# create vectors, start them empty
+	foreach i {dftf wftf dzftf wzftf mfrc} {
+		$c create line {0 0 0 0} \
+			-tag "dscale vec$i" -width $linewidth -arrow last
+	}
+
+
+	# put a dot on the end of links, with the dot on top.
+	$c create oval [centxy 0 0 .01] \
+		-tags "kscale circlep" -fill $ob(color,pos)
+
+	$c create oval [centxy 0 .275 0] \
+		-tags "kscale scirclep" -fill $ob(color,pos)
+
+	$c itemconfigure vecvel -fill $ob(color,vel)
+	$c itemconfigure vecmfrc -fill $ob(color,mfrc)
+	$c itemconfigure vecdftf -fill $ob(color,dftf)
+	$c itemconfigure vecwftf -fill $ob(color,wftf)
+	$c itemconfigure vecdzftf -width 5 -fill $ob(color,dftf)
+	$c itemconfigure vecwzftf -width 5 -fill $ob(color,wftf)
+
+	$c scale all 0 0 $ob(scale) $ob(scale)
+	$c scale dscale 0 0 .01 .01
+
+	# handle resize
+	bind $c <Configure> [list after idle chwin $c %w %h]
+
+	return $c
+}
+
+# handle window resize
+proc chwin {c w h} {
+	set w2 [expr {$w / 2}]
+	set h2 [expr {$h / 2}]
+	set hx125 [expr {$h * 1.25}]
+	# translate from 0,0 in upper left to 0,0 in center
+	$c config -scrollregion [list -$w2 -$hx125 $w2 $h2]
+}
+
+proc scrollupdown {w amt} {
+	global ob
+	$ob(vexw) yview scroll $amt units
+}
+
+set ob(cwd) [pwd]
+set ob(savedatpid) 0
+set ob(loaded) 0
+set ob(running) 0
+
+# set up vex window
+
+proc init {} {
+	global data ob
+
+	wm withdraw .
+	toplevel .top
+	set w ".top"
+
+
+	# widget definitions
+
+	# buttons across top in a frame
+
+	frame $w.f
+	pack $w.f
+
+	foreach i {load run star quit} {
+		button $w.f.b_${i} -text "$i" -command [list b_${i}_proc $w]
+	}
+
+	$w.f.b_load config -bg green1
+	$w.f.b_run config -bg red -state disabled
+	$w.f.b_quit config -bg red
+
+	# status at the bottom
+
+	set ::font "Helvetica 24"
+	# d1,d2,d3 are dummy labels for empty lines.
+	# this width dicates width for window.
+
+	# position
+	label $w.xy -text "vex: no data" -font $::font -width 30 \
+		-background $ob(color,pos)
+	# encoder angles
+	label $w.deg -font $::font
+	label $w.d1 -font $::font
+	# velocity
+	label $w.vel -font $::font -foreground $ob(color,vel)
+	label $w.d2 -font $::font
+	# motor x/y force and s/e torque
+	label $w.mfrc -font $::font -foreground $ob(color,mfrc)
+	label $w.mvolts -font $::font
+	label $w.d3 -font $::font
+	# force transducer device x/y/z and world x/y
+	label $w.dftf -font $::font -foreground $ob(color,dftf)
+	label $w.dzftf -font $::font -foreground $ob(color,dftf)
+	label $w.wftf -font $::font -foreground $ob(color,wftf)
+	label $w.wzftf -font $::font -foreground $ob(color,wftf)
+
+	# widget placement
+
+	pack $w.f.b_load $w.f.b_run $w.f.b_star $w.f.b_quit -side left
+	pack $w.xy $w.deg $w.d1 $w.vel $w.d2 $w.mfrc $w.mvolts $w.d3 $w.wftf $w.wzftf $w.dftf $w.dzftf
+
+	# canvas in a separate toplevel window
+
+	toplevel .vex
+	set ob(vexw) [vex .vex]
+	pack $ob(vexw)
+}
+
+# b_quit_proc called when quit button is pressed
+
+proc b_quit_proc {w} {
+
+	# puts "called quit"
+	b_unload_proc $w
+	after 1000 exit
+}
+
+# b_load_proc called when load button is pressed
+
+proc b_load_proc {w} {
+	global ob
+
+	# puts "called load"
+	if {$ob(loaded)} {
+		puts "load: already loaded"
+		return
+	}
+	set ob(loaded) 1
+	$w.f.b_load config -text ... -command "" -bg red
+	start_lkm
+	start_shm
+	$w.f.b_star config -text star -command [list b_star_proc $w] -bg green1 -state normal
+	$w.f.b_run config -text run -command [list b_run_proc $w] -bg green1 -state normal
+	$w.f.b_load config -text unload -command [list b_unload_proc $w] -bg red
+	set ob(link_s) [rshm link_s]
+	set ob(link_e) [rshm link_e]
+	set ob(neg_off_y) [expr 0.0 - [rshm offset_y]]
+	$ob(vexw) coords motors [centxy 0 -$ob(neg_off_y) .05]
+	$ob(vexw) scale motors 0 0 $ob(scale) $ob(scale)
+}
+
+proc b_star_proc {w} {
+	global star
+
+	set star(i) 0
+	start_star 1.5
+}
+
+proc center_proc {} {
+	wshm stiff 40
+	center_arm
+}
+
+proc center_print_proc {} {
+	set x [rshm x]
+	set y [rshm y]
+	set fx [rshm ft_xworld]
+	set fy [rshm ft_yworld]
+	tk_messageBox -title "Force Report" -message "x: $x y $y\nfx $fx fy $fy"
+}
+
+# b_unload_proc called when unload button is pressed
+
+proc b_unload_proc {w} {
+	global ob
+
+	# puts "called unload"
+
+	if {!$ob(loaded)} {
+		puts "load: already unloaded"
+		return
+	}
+
+	b_pause_proc $w
+	# pause pauses actuator output, stop stops all main loop i/o.
+	stop_loop
+	stop_shm
+	stop_lkm
+	$w.f.b_load config -text load -command [list b_load_proc $w] -bg green1
+	$w.f.b_run config -state disabled -bg red
+}
+
+# b_run_proc called when run button is pressed
+
+proc b_run_proc {w} {
+	global ob
+
+	# puts "called run"
+	if {!$ob(loaded)} {
+		puts "run: not yet loaded"
+		return
+	}
+	if {$ob(running)} {
+		puts "run: already running"
+		return
+	}
+	set ob(running) 1
+	wshm have_thermal_model 0
+	after 100
+	start_loop
+
+	# bias the ft when you start.
+	ft_bias
+
+	tick
+	# set ob(savedatpid) [exec cat < /dev/rtf1 > /tmp/im.dat &]
+	$w.f.b_run config -text pause -command [list b_pause_proc $w] -bg red
+}
+
+# b_pause_proc called when pause button is pressed
+
+proc b_pause_proc {w} {
+	global ob
+
+	# puts "called pause"
+	if {!$ob(running)} {
+		puts "pause: already paused"
+		return
+	}
+	# puts "pause: killing $ob(savedatpid)"
+
+	# ticking will stop at next tick
+	set ob(running) 0
+	# exec kill $ob(savedatpid)
+	# set ob(savedatpid) 0
+	star_stop
+	pause_loop
+	$w.f.b_run config -text run -command [list b_run_proc $w] -bg green1
+}
+
+# tick reads data 10x/sec when robot code is loaded.
+
+proc tick {} {
+	global ob data
+
+	set w .top
+	set c $ob(vexw)
+
+	# this will stop ticking if it returns.
+	if {!$ob(running)} {
+		$w.xy configure -text "vex: no data"
+		$w.vel configure -text ""
+		$w.deg configure -text ""
+		$w.mfrc configure -text ""
+		$w.mvolts configure -text ""
+		$w.dftf configure -text ""
+		$w.dzftf configure -text ""
+		$w.wftf configure -text ""
+		$w.wzftf configure -text ""
+		return
+	}
+
+	checkerror
+	set ob(pos,x) [getptr x]
+	set ob(pos,y) [getptr y]
+	set ob(vel,x) [getvel x]
+	set ob(vel,y) [getvel y]
+	set ob(deg,s) [format %.3f [rshm shoulder_angle_degrees]]
+	set ob(deg,e) [format %.3f [rshm elbow_angle_degrees]]
+	set ob(rad,s) [rshm shoulder_angle_rad]
+	set ob(rad,e) [rshm elbow_angle_rad]
+	set ob(mfrc,x) [getfrc x]
+	set ob(mfrc,y) [getfrc y]
+	set ob(dftf,x) [getftfrc x]
+	set ob(dftf,y) [getftfrc y]
+	set ob(dftf,z) [getftfrc z]
+	set ob(wftf,x) [getwftfrc x]
+	set ob(wftf,y) [getwftfrc y]
+	set ob(wftf,z) [getwftfrc z]
+	set ob(mvolts,s) [getvolts s]
+	set ob(mvolts,e) [getvolts e]
+	set ob(velmag) [rshm velmag]
+	set ob(ftmag) [rshm ft_xymag]
+	# pl_checkranges [list $ob(pos,x) $ob(pos,y)] $ob(velmag) $ob(ftmag)
+
+	$w.xy configure -text "x = [f3k $ob(pos,x)], y = [f3k $ob(pos,y)]"
+	$w.vel configure -text "xvel = [f3k $ob(vel,x)], yvel = [f3k $ob(vel,y)]"
+	$w.deg configure -text "sdeg = [f3 $ob(deg,s)], edeg = [f3 $ob(deg,e)]"
+	$w.mfrc configure -text "mxfrc = [f3 $ob(mfrc,x)], myfrc = [f3 $ob(mfrc,y)]"
+	$w.mvolts configure -text "msvolts = [f3 $ob(mvolts,s)], mevolts = [f3 $ob(mvolts,e)]"
+	$w.wftf configure -text "wxftf = [f3 $ob(wftf,x)], wyftf = [f3 $ob(wftf,y)]"
+	$w.wzftf configure -text "wzftf = [f3 $ob(wftf,z)]"
+	$w.dftf configure -text "dxftf = [f3 $ob(dftf,x)], dyftf = [f3 $ob(dftf,y)]"
+	$w.dzftf configure -text "dzftf = [f3 $ob(dftf,z)]"
+
+	# link lengths and y offset come from cal file
+	set sx [expr {      cos($ob(rad,s)) * $ob(link_s)}]
+	set sy [expr {$ob(neg_off_y) + sin($ob(rad,s)) * $ob(link_s)}]
+	set ex [expr {$sx + cos($ob(rad,e)) * $ob(link_e)}]
+	set ey [expr {$sy + sin($ob(rad,e)) * $ob(link_e)}]
+	$c coords links [y_up 0 $ob(neg_off_y) $sx $sy $ex $ey]
+
+	set sx [expr {       cos($ob(rad,s)) / 20. * $ob(link_s)}]
+	set sy [expr {.275 + sin($ob(rad,s)) / 20. * $ob(link_s)}]
+	set ex [expr { $sx + cos($ob(rad,e)) / 20. * $ob(link_e)}]
+	set ey [expr { $sy + sin($ob(rad,e)) / 20. * $ob(link_e)}]
+	$c coords slinks [y_up 0 .275 $sx $sy $ex $ey]
+	$c coords scirclep [y_up [centxy $ex $ey .003]]
+
+	# in the robot, +y is down, on the screen, +y is up,
+	# so negate the y coords for graphic display, using y_up
+
+	# $c coords linep [y_up 0 0 $ob(pos,x) $ob(pos,y)]
+	$c coords circlep [y_up [centxy $ob(pos,x) $ob(pos,y) .01]]
+	$c coords vecvel [y_up 0 0 $ob(vel,x) $ob(vel,y)]
+	$c coords vecmfrc [y_up 0 0 $ob(mfrc,x) $ob(mfrc,y)]
+	$c coords vecdftf [y_up 0 0 $ob(dftf,x) $ob(dftf,y)]
+	$c coords vecdzftf [y_up 0 0 0 $ob(dftf,z)]
+	$c coords vecwftf [y_up 0 0 $ob(wftf,x) $ob(wftf,y)]
+	$c coords vecwzftf [y_up 0 0 0 $ob(wftf,z)]
+
+	$c scale kscale 0 0 $ob(scale) $ob(scale)
+	$c scale dscale 0 0 $ob(dscale) $ob(dscale)
+
+	after 100 tick
+}
+
+proc vex_exit {} {
+	set w ".top.f"
+	puts "vex exit: quitting..."
+	$w.b_quit invoke
+}
+
+init
+
+set w ".top.f"
+
+wm protocol .top WM_DELETE_WINDOW vex_exit
+wm protocol .vex WM_DELETE_WINDOW vex_exit
+
+bind .top <Key-l> "$w.b_load invoke"
+bind .top <Key-u> "$w.b_unload invoke"
+bind .top <Key-r> "$w.b_run invoke"
+bind .top <Key-p> "$w.b_pause invoke"
+bind .top <Key-q> "$w.b_quit invoke"
+bind .top <Alt-c> "center_proc"
+bind .top <Alt-v> "center_print_proc"
+bind .top <Escape> "$w.b_quit invoke"
+
+bind .vex <Key-l> "$w.b_load invoke"
+bind .vex <Key-u> "$w.b_unload invoke"
+bind .vex <Key-r> "$w.b_run invoke"
+bind .vex <Key-p> "$w.b_pause invoke"
+bind .vex <Key-q> "$w.b_quit invoke"
+bind .vex <Alt-c> "center_arm"
+bind .vex <Alt-v> "center_print_proc"
+bind .vex <Escape> "$w.b_quit invoke"
+
+bind .vex <Key-Down> "scrollupdown $w 1"
+bind .vex <Key-Up> "scrollupdown $w -1"

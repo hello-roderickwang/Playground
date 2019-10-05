@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# check the state of the uc on login
+
+$($CROB_HOME/tools/ucplc check-estop)
+state=$?
+
+if (( state == 1 ))
+then
+    /usr/bin/zenity --display :0.0 --warning --text "The stop button has been pressed. Release the stop button to operate the robot."
+elif (( state == 255 ))
+then
+    /usr/bin/zenity --display :0.0 --warning --text "The microcontroller is not responding.\n\nThe robot cannot be used and needs service.\n\nContact IMT support."
+fi
+

@@ -1,0 +1,185 @@
+<html><head>
+<title>InMotion2 Robot Software System Design Overview</title>
+</head>
+<body>
+
+<h1>InMotion2 Robot Software System Design Overview</h1>
+
+Tue Feb  2 15:14:20 EST 2016
+
+<h2>Scope</h2>
+
+This document is an overview of the Interactive Motion Technologies
+InMotion2 Robot Software System.  This document does not provide
+detailed design information, but rather serves to introduce system
+design concepts as orientation for InMotion2 robot researchers and
+other users.  This document describes a two-degree-of-freedom arm
+(shoulder/elbow) robot, but also applies to other robots in the IMT
+family, including the IMT arm with hand, wrist, and ankle robots.
+<p>
+We describe the arm robot (without hand robot attached),
+but the operating theory of our other robots is similar.
+
+<h2>What does the arm robot hardware look like?</h2>
+
+The InMotion2 arm robot hardware consists of these hardware components:
+<ul>
+<li> arm robot body - the mechanical part that moves
+<li> electrical box with wired remote control - it contains a computer,
+<a href="https://en.wikipedia.org/wiki/Microcontroller">
+microcontroller,</a>
+<a href="https://en.wikipedia.org/wiki/Servo_drive">
+servo-amplifiers</a>
+and power systems.
+<li> display and keyboard
+<li> cabling
+<li> workstation - the robot is attached to this
+</ul>
+
+The arm robot has two degrees of freedom
+that permit the handle to travel freely in the horizontal plane
+This allows shoulder and elbow motion
+with the weight of the patient's arm supported by a moving cradle.
+
+The arm robot has two links that are attached to the motors in a parallelogram shape, as with a
+<a href="https://en.wikipedia.org/wiki/Pantograph">
+pantograph.</a>
+This configuration of robot is called a
+<a href="https://en.wikipedia.org/wiki/SCARA">
+SCARA</a>
+(Selective Compliance Articulated Robot Arm).
+<p>
+
+Other IMT robots are designed for a specific body parts.
+<ul>
+<li> The hand robot has one degree of freedom that allow open/close hand motin.
+<li> The wrist robot has three degrees of freedom that allow wrist motion in flexion/extension, abduction/adduction, and pronation/supination axes.
+<li> The ankle robot has two degrees of freedom that allow motion in the dorsiflextion/plantarflexion and inversion/eversion axes.
+</ul>
+<p>
+
+Each degree of freedom for the robot contains a motor with a position sensor, 
+controlled by a servo-amplifier.
+A robot with two degrees of freedom will have two of each of these.
+
+<h2>What does the software do?</h2>
+
+The InMotion2 arm robot has two back-drivable motors and encoders for
+sensing x/y position.
+Back-drivable means that a person can move the motors,
+instead of only the motors being able to move themselves.
+Back-drivability is important for patient comfort and safety.
+<p>
+Forces at the handle are determined by measuring the forces
+imposed by the motors on the patient.
+The InMotion2 software system controls the robot hardware by
+reading data from, and writing data to, these devices, and by allowing
+robot programmers to design the control systems to suit their needs.
+<p>
+
+These robot components are controlled by reading and writing data
+over a serial
+<a href="https://en.wikipedia.org/wiki/CAN_bus">
+CAN bus</a>
+to servo-amplifier drives
+that control the robot motors.
+
+<h2>Operating System Structure</h2>
+
+The InMotion2 software system runs on an
+<a href="http://www.ubuntu.com/">
+Ubuntu</a>
+operating system distribution running a
+<a href="http://www.kernel.org/">
+Linux</a>
+operating system kernel, augmented with a
+<a href="http://www.xenomai.org/">
+Xenomai</a>
+real-time framework.
+Xenomai provides Linux with low-latency for interrupts and
+other real-time requirements by running the Linux kernel as a
+subordinate task under a tiny microkernel.
+<p>
+
+<h2>Control Loop</h2>
+
+The InMotion2 robot control loop performs these tasks during each
+sample period (usually 200 samples per second):
+
+<ul>
+<li> read data from robot sensors
+<li> calculate controls based on input data
+<li> write control data to robot motors
+<li> write data to log channels
+</ul>
+
+Other minor housekeeping tasks include time measurement, error
+checking, and so on.
+
+<h2>User Mode I/O and GUI</h2>
+
+Programs that interact with a graphic display monitor
+are separate from the control loop code.
+These Linux programs communicate with the control loop
+using either real-time pipes
+which look like Linux named pipes,
+or using usermode shared memory buffers,
+which allow user mode C programs to share
+one or more memory regions.
+
+<h2>What language do we use?</h2>
+
+The InMotion2 control loop module is written in C, the language of the
+Linux kernel.  We do not write in C++, because C++ has dynamic aspects,
+such as constructor/destructor and exception handling that
+sometimes have unbounded behaviors, and if their use were allowed, they
+could complicate the deterministic requirements of real-time systems.
+Linus Torvalds, author of Linux, has
+<a href="http://groups.google.com/group/linux.kernel/msg/e96fbe3dd8f3f937">
+posted his views on the subject of using C++ in the Linux kernel,</a>
+which has some relevance to our decision to use C.
+<p>
+
+The user-mode programs (like GUIs programs that save log data) may be
+written in C too, or they may be written in C++ or in whatever language
+runs on the Linux system.  We prefer
+<a href="http://www.tcl.tk/">
+Tcl/Tk</a>, for its power and GUI capabilities.
+You may wish to code your GUI in Python or Perl, or another language.
+Traditional UNIX tools like sh and cat may be used, for example, to
+read reference data and write log data files.
+
+<h2>Passing Data between User and Kernel Modes</h2>
+
+Occasional data, like a request to tell the
+control loop to start or stop sampling, is sent using shared memory
+buffers (shm).
+
+File-oriented per-sample data like logs are sent over
+real-time pipes (rtpipes).
+
+Per sample data that isn't being filed, like x/y
+position of the handle, used by a GUI, may be passed through
+either interface.  Both shm and rtpipes have access to all data,
+you can use whichever seems more appropriate.
+<p>
+
+<h3>Shared Memory</h3>
+To access shared memory from a user interface, the InMotion2 system provides a
+C program called "shm" (shared memory) that allows text-mode access to
+set and get variable data in the running system, so you can do it
+without writing your own low-level shared memory access code.  The shm
+program is also used to provide the system with initial device
+calibration and stiffness and damping control values.  When the
+InMotion2 robot module is loaded, you can run shm from the shell command
+line and use it to read and modify InMotion2 robot data.
+If you want to write your own shm access code, you may use the
+source code to shm as an example.  <p>
+
+<h3>Real Time Pipes</h3>
+User mode access to rtpipes is simple.  If the control loop is writing a
+stream of log data, you may capture it from user-mode with a simple file
+read system call, or by using a program like Linux "cat."
+
+</body>
+</html>

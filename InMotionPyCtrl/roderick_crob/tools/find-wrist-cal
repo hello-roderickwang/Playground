@@ -1,0 +1,119 @@
+#!/usr/bin/tclsh
+
+# Copyright 2015 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+set ob(vsmall) 6.0
+set ob(vbig) 10.0
+
+package require Tk
+
+proc done {} {
+stop_loop
+stop_shm
+stop_lkm
+exit 0
+}
+
+wm withdraw .
+
+font create default -family Times -size 18
+option add *font default
+
+global ob
+
+proc tksleep {time} {
+	after $time set ::tksleep_end 1
+	vwait ::tksleep_end
+}
+
+set ob(crobhome) $::env(CROB_HOME)
+source $ob(crobhome)/shm.tcl
+
+if {!([is_robot_ready] || [info exists ::env(IGNORE57)])} {
+	tk_messageBox -title Failed -message "The Ready lamp is not lit.\
+Please release all Stop buttons,\
+press the Start button, and try again."
+	exit 1
+}
+
+# start the robot process, shared memory, and the control loop
+# puts "loading robot process"
+if {[is_lkm_loaded]} {
+	puts "lkm already loaded, exiting."
+	exit 1
+} else {
+	##wm protocol . WM_DELETE_WINDOW done
+	start_lkm
+}
+
+start_shm
+
+tksleep 100
+
+# start in open loop mode
+wshm test_raw_torque 1
+# no gravity compensation
+wshm wrist_diff_gcomp 0.0
+wshm wrist_ps_gcomp 0.0
+# we're messing with the encoders, so don't check for odd behavior
+wshm no_safety_check 1
+# let me play with all the dofs
+wshm wrist_nocenter3d 1
+
+start_loop
+
+# sleep for .1 sec, gives robot chance to start
+tksleep 100
+
+clear_robot_cal_done
+
+tk_messageBox -title "Find Calibration Offset" -icon warning -message "Move links to calibration point, then press OK."
+
+# zero encoders
+exec $ob(crobhome)/tools/canenc_zero
+
+tksleep 100
+
+tk_messageBox -title "Remove Calibration Stick" -icon warning -message "Remove the calibration stick, the robot is going to move when you press OK."
+
+proc wrmot {{l 0.0} {r 0.0} {ps 0.0}} {
+	global ob
+
+	wshm wrist_right_test_volts $r
+	wshm wrist_left_test_volts $l
+	wshm wrist_ps_test_volts $ps
+}
+
+
+wrmot 0 0 -$ob(vsmall)
+tksleep 1000
+wrmot -$ob(vbig) 0.0 -$ob(vbig)
+tksleep 1000
+
+puts "in imt2.cal"
+puts "s can_setct 1 [rshm can_pos_raw 1]"
+puts "s can_setct 2 [rshm can_pos_raw 2]"
+puts "s can_setct 3 [rshm can_pos_raw 3]"
+puts "s can_setct 4 [rshm can_pos_raw 4]"
+puts ""
+puts "in wcenter"
+puts "set setct1 [rshm can_pos_raw 1]"
+puts "set setct2 [rshm can_pos_raw 2]"
+puts "set setct3 [rshm can_pos_raw 3]"
+puts "set setct4 [rshm can_pos_raw 4]"
+
+tk_messageBox -title "Holding" -icon warning -message "holding at cal point, hit OK to end and let go"
+
+wrmot 0 0 0
+
+wshm test_raw_torque 0
+
+tksleep 100
+
+
+# puts "unloading robot process"
+
+done

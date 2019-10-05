@@ -1,0 +1,91 @@
+#! /bin/bash
+
+# ain_shift_test: make sure the UEI ains don't rotate
+
+trap fin EXIT
+
+fin() {
+    trap - EXIT
+    $CROB_HOME/stop
+    t1=$(date +%s)
+    diff=$((t1-t0))
+    echo AIn Shift Test done
+    [[ failed > 0 ]] && echo Failures: $failed
+    echo Iterations: $i
+    echo Elapsed time: $(convertsecs $diff)
+    date
+    read -p "Hit Enter to exit..."
+    exit
+}
+
+convertsecs() {
+    h=$(($1 / 3600))
+    m=$(($1  % 3600 / 60))
+    s=$(($1 % 60))
+    printf "%02dh %02dm %02ds" $h $m $s
+}
+
+date
+t0=$(date +%s)
+echo Starting AIn Shift test loop
+echo Will run for 24 hours, or hit ^C to stop
+
+i=0
+failed=0
+while :; do
+
+    a=""
+    v=""
+    ((i++))
+    $CROB_HOME/go
+    sleep 1
+
+    a=$(./vget "adcvolts 0" "adcvolts 1" n_ueidaq_boards)
+    set -- $a
+    # echo $a
+    # echo $1 $2 $3
+
+    if (($3 != 2)); then
+	$((failed++))
+	echo $failed $(date) nboards "$3 != 2"
+    fi
+
+    v=`echo "$1 > 5" | bc`
+    if [[ $v == 1 ]]; then
+	((failed++))
+	echo $failed $(date) ch0 "$1 > 5"
+    fi
+
+    v=`echo "$2 > 5" | bc`
+    if [[ $v == 1 ]]; then
+	((failed++))
+	echo $failed $(date) ch1 "$2 > 5"
+    fi
+
+    v=`echo "$1 < -5" | bc`
+    if [[ $v == 1 ]]; then
+	((failed++))
+	echo $failed $(date) ch0 "$1 < -5"
+    fi
+
+    v=`echo "$2 < -5" | bc`
+    if [[ $v == 1 ]]; then
+	((failed++))
+	echo $failed $(date) ch1 "$2 < -5"
+    fi
+
+    t1=$(date +%s)
+    diff=$((t1-t0))
+    h=$(($diff / 3600))
+    if [[ $h -ge 24 ]]; then
+	fin
+    fi
+
+    if [[ $failed -ge 10 ]]; then
+	fin
+    fi
+
+    $CROB_HOME/stop
+    sleep 1
+
+done

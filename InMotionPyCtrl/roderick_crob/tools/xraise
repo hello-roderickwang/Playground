@@ -1,0 +1,13 @@
+#! /bin/bash
+
+
+if [[ $# != 1 ]]; then
+    echo usage: xraise procname
+    exit 1
+fi
+
+wids=$(xdotool search --name $1)
+for id in $wids; do
+    xdotool windowactivate $id
+done
+exit 0

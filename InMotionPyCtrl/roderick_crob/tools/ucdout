@@ -1,0 +1,62 @@
+#!/usr/bin/python
+
+# control uc's I2C gpio pins 
+# Inmotion2 robot software
+# Copyright 2012-2013 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+
+from __future__ import division, absolute_import, print_function # Python 3
+
+import socket, select
+import argparse
+import os
+
+parser = argparse.ArgumentParser(description='Manipulate the digital out pins.')
+parser.add_argument('-p', '--port', default=socket.getservbyname('imtuc'), help='connect on specified port')
+parser.add_argument('-n', '--pin', default=0, help='use specified digital out pin (default 0)')
+
+group = parser.add_mutually_exclusive_group(required=True)
+group.add_argument('-s', '--set', type=int, help='set pin high (1) or low (0)')
+group.add_argument('-g', '--get', action='store_true', help='get value of pin (1 or 0)')
+
+args = parser.parse_args()
+
+
+def talk(command):
+    s.send((command + '\n'))
+    ready = select.select([s], [], [], 1)
+    if ready[0]:
+        retval = s.recv(4096).rstrip()
+        if retval[0] == 'x':
+            print('ucdout: No such pin or other error.')
+            exit(1)
+        return retval
+    else:
+        raise IOError
+
+# connect to the daemon
+s = socket.socket()
+s.settimeout(1)
+try:
+    s.connect(('', int(args.port)))
+except:
+    print('ucdout: Failed to connect. Daemon not running?')
+    exit(1)
+s.settimeout(None)
+
+try:
+    if args.set is not None:
+        print(talk('o {} {}'.format(args.pin, args.set)))
+    elif args.get:
+        retval = talk('i {}'.format(args.pin))
+        print(retval.split()[2])
+    else:
+        print('ucdout: No action given.')
+        exit(1)
+
+
+except (IOError, IndexError):
+    print('ucdout: Failed to communicate with daemon.')
+    exit(1)
+

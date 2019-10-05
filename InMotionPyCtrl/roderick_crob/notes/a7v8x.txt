@@ -1,0 +1,48 @@
+Wed Feb 26 15:53:23 EST 2003
+
+We're using the ASUS A7V8X motherboard (based on the VIA KT400 chipset)
+with an AMD Duron 1.6 (1533 MHz) CPU:
+
+	http://usa.asus.com/mb/socketa/a7v8x/overview.htm
+
+If you run /sbin/lspci , Linux identifies the Ethernet Controller as a
+Broadcom (unknown type 4401).
+
+RedHat 7.3 (6/2002) does not support the ethernet chip on this board
+right out of the box.  You can download the Linux driver for it here:
+
+http://www.asus.com.tw/support/download/item.aspx?ModelName=A7V8X
+(choose Linux to sift choices)
+
+This web thread was quite helpful:
+
+    http://www.linuxquestions.org/questions/history/33441
+    (copy in: bcm4400thread.html )
+
+I downloaded:
+
+    http://www.asus.com.tw/support/download/selectftp.aspx?l1_id=1&l2_id=15&l3_id=17&m_id=1&f_name=4401_653.zip
+
+Note, this mobo comes with an optional Broadcom Gigabit Lan, I guess
+that would be the 5700:
+
+    http://www.asus.com.tw/support/download/selectftp.aspx?l1_id=1&l2_id=10&l3_id=21&m_id=1&f_name=5702_558.zip
+
+These are windows pkzip files, unpack them with pkzip25:
+    http://linux.tucows.com/system/preview/8560.html
+(or something compatible.)
+
+To extract:
+    $ pkzip -extract -directories 4401_653.zip  
+
+The Linux driver is Linux/bcm4400-1.0.1.tar.gz.
+See Linux/RELEASE.TXT for further install info.
+
+Basically, I unpacked the tar.gz, compiled bcm4400.o with make, stuck it
+in /lib/modules/nnn/kernel/drivers/net, added a line to /etc/modules.conf:
+
+	alias eth0 bcm4400
+
+Then I ran the /usr/bin/neat NEtwork Admin Tool, to set it up, reloaded
+the network with "/sbin/service netowrk restart" (or did neat do that
+automatically?) and I was good to go.

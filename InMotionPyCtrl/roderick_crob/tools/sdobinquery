@@ -1,0 +1,49 @@
+#!/bin/bash
+# send a sdobincmd query, watch rtcanrecv for response
+
+node=${1:-0}
+cmd=${2:-mf}
+index=${3:-0}
+format=${4:-int}
+
+# define a function to convert a IEEE754 dec like 1114184448 to 58.2763671875
+function ieee754() {
+python <<EOF
+import struct
+print struct.unpack('f', struct.pack('i', $1))[0]
+EOF
+}
+
+RTPIDFILE=$(mktemp)
+GREPFILE=$(mktemp)
+
+# start receiving
+(rtcanrecv & echo $! >$RTPIDFILE)  > $GREPFILE
+
+$CROB_HOME/tools/sdobincmd $node $cmd $index q
+sleep .1
+
+# stop receiving
+kill $(<$RTPIDFILE)
+sleep .5
+
+if ((node == 0)); then
+   node=.
+fi
+
+data=$(grep 0x28${node} $GREPFILE | sort -k 3)
+while read -ra s; do
+    echo -n "[$(( $(echo ${s[2]} | tr -d '<>' ) - 0x280))] "
+    raw=${s[11]}${s[10]}${s[9]}${s[8]}
+    if [[ $format == "int" ]]; then
+        val=$(( 0x${raw} ))
+    elif [[ $format == "float" ]]; then
+        val=$(ieee754 $(( 0x${raw} )) )
+    else
+        val=$raw
+    fi
+    echo $val
+done <<< "$data"
+
+
+rm $RTPIDFILE $GREPFILE

@@ -1,0 +1,212 @@
+#! /bin/bash
+
+# if SMR_DEBUG is yes, just generate report file, don't print or ftp.
+
+PRINTER=${PRINTER:-hp4345}
+DESTMACHINE=${DESTMACHINE:-up}
+PERSONALITY=$(cat /opt/imt/personality)
+
+# we must be root
+if [[ $EUID -ne 0 ]]; then
+    echo "This script must be run as root. Exiting." 1>&2
+    exit 1
+fi
+
+if [[ $CROB_HOME == "" ]]; then
+    echo "IMT variables not set, run: sudo -E sendmachinereport" 1>&2
+    echo Exiting.
+    exit 1
+fi
+
+if [[ $IMT_CONFIG == "" ]]; then
+    IMT_CONFIG=/home/imt/imt_config
+    echo "IMT_CONFIG was not set. Defaulting to $IMT_CONFIG ..." 1>&2
+fi
+
+# obtain the encryption key
+if [[ -f /usr/bin/ecryptfs-unwrap-passphrase ]]; then
+    echo -n "Enter the IMT user's password: "
+    ECRYPT=$(su -c ecryptfs-unwrap-passphrase imt |grep -v Sess | grep -v Passphrase | sed 's/..../& /g')
+    # check key length
+    if [[ ${#ECRYPT} != 40 ]]; then
+	echo "Passphrase incorrect.  Exiting." 1>&2
+	exit 1
+    fi
+else
+    ECRYPT="No encryption."
+fi
+
+echo -n Generating report...
+
+for ROBOT in $(ls $IMT_CONFIG/robots); do
+    SERIAL=$(grep "Calibration file for" $IMT_CONFIG/robots/$ROBOT/imt2.cal \
+	| sed 's/# Calibration file for:\s*//' \
+	| cut -d" " -f1)
+
+    CUSTOMER=$(grep "Calibration file for" $IMT_CONFIG/robots/$ROBOT/imt2.cal \
+	| sed 's/# Calibration file for:\s*//' \
+	| cut -d" " -f2- \
+	| tr ' ' '_'     \
+	| cut -c 1-20    \
+	| sed 's/_$//')
+done
+
+FILE_DIRECTORY=/var/log/imt
+SHORT_FILE_NAME=machine_report_$(date +%Y%m%d)_${SERIAL}_${CUSTOMER}
+SHORT_FILE_NAME=$(echo $SHORT_FILE_NAME | tr '[:upper:]' '[:lower:]')
+FILE_NAME=$FILE_DIRECTORY/$SHORT_FILE_NAME
+
+echo -n > $FILE_NAME
+echo -n "Machine Report for " >> $FILE_NAME
+for ROBOT in $(ls $IMT_CONFIG/robots); do
+    grep 'Calibration file for' $IMT_CONFIG/robots/$ROBOT/imt2.cal | sed "s/# Calibration file for:\s*/$ROBOT - /" >> $FILE_NAME
+done
+
+SMARTCTLRESULTROOT=$(mktemp)
+SMARTCTLRESULTHOME=$(mktemp)
+smartctl -a /dev/sda1 >> $SMARTCTLRESULTROOT
+smartctl -a /dev/sdb1 >> $SMARTCTLRESULTHOME
+
+cat >> $FILE_NAME <<EOF
+Generated: $(date)
+
+
+Root Disk
+=========================================================
+
+$(egrep "Model|Serial|Firmware|User.Capacity" $SMARTCTLRESULTROOT)
+
+
+Home Disk
+=========================================================
+
+$(egrep "Model|Serial|Firmware|User.Capacity" $SMARTCTLRESULTHOME)
+
+
+CPU and RAM
+=========================================================
+
+processor/cores: $(egrep -c processor /proc/cpuinfo)
+$(egrep -m 4 "vendor|model.name|stepping|MHz" /proc/cpuinfo)
+
+$(head -n1 /proc/meminfo)
+
+
+MAC Address
+=========================================================
+
+eth0:
+$(ifconfig eth0 | grep HWaddr)
+
+eth1:
+$(ifconfig eth1 | grep HWaddr)
+
+
+PCI Info
+=========================================================
+
+$(/usr/bin/lshw -short 2> /dev/null)
+
+
+uname -a
+=========================================================
+
+$(uname -a)
+
+
+Application Version
+=========================================================
+
+$(ls -l /opt/imt)
+
+
+IMT user Encryption Key
+=========================================================
+
+On file at IMT.
+
+
+MCC Analog Input
+=========================================================
+
+$(/opt/imt/robot/mcc/mono/info)
+
+EOF
+
+if [[ -e $IMT_CONFIG/have_atinetft ]]; then
+cat >> $FILE_NAME <<EOF
+
+
+ATI Net Force Transducer
+=========================================================
+Configuration:
+
+$(curl -s -o - http://atinetft/netftapi2.xml|xmllint --format -)
+
+Calibration:
+
+$(curl -s -o - http://atinetft/netftcalapi.xml|xmllint --format -)
+EOF
+fi
+
+if [[ $PERSONALITY == ce ]]; then
+cat >> $FILE_NAME <<EOF
+
+
+UEI PowerDAQ
+=========================================================
+
+$CROB_HOME/go
+$(cat /proc/pwrdaq)
+$CROB_HOME/stop
+
+
+EOF
+fi
+
+if [[ $PERSONALITY == g2 ]]; then
+cat >> $FILE_NAME <<EOF
+
+
+Microcontroller software version
+=========================================================
+
+$(/opt/imt/robot/crob/tools/ucplc check-version)
+
+EOF
+fi
+
+cat >> $FILE_NAME <<EOF
+
+
+imt2.cal files
+=========================================================
+EOF
+
+
+for ROBOT in $(ls $IMT_CONFIG/robots) ;  do
+    cat >> $FILE_NAME <<EOF
+
+$ROBOT imt2.cal
+----------------------------
+
+$(cat $IMT_CONFIG/robots/$ROBOT/imt2.cal)
+EOF
+done
+
+echo -e "\n\n\n\n\nEnd $FILE_NAME" >> $FILE_NAME
+echo done.
+
+if [[ ! -v SMR_DEBUG ]]; then
+    echo -n Sending to printer...
+    cat $FILE_NAME | sed "s/On file at IMT./$ECRYPT/" | a2ps -1 --borders=no --stdin="$CUSTOMER $SERIAL" -o - | /bin/nc -w 1 $PRINTER 9100
+    echo done.
+    
+    echo -n Sending file to up...
+    curl -F "file=@${FILE_NAME};filename=${SHORT_FILE_NAME}" http://$DESTMACHINE/mr/mr.py
+    echo done.
+else
+    echo SMR_DEBUG set, no ftp or print.
+fi
+
+echo Report saved as $FILE_NAME

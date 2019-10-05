@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Update the temperature database
+# I don't use netcat because I'm a real man and don't
+# rely on external tools, especially not ones that take
+# a WHOLE SECOND to time out before they return.
+
+rrdtool update /var/log/imt/temperature.rrd N:$(
+
+exec 3<>/dev/tcp/localhost/imtuc
+
+echo "r dist_temp
+r pc_temp
+r pl_reg_temp
+r sam1_temp
+r sam2_temp
+r sam3_temp
+r sam4_temp" >&3
+
+(sed 7q <&3) |
+awk '{print $3}' |
+sed 's/NA/U/' |
+tr '\n' ':' | sed 's/.$//'
+exec 3>&- )

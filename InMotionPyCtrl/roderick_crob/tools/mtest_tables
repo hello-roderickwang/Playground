@@ -1,0 +1,114 @@
+#! /usr/bin/tclsh
+#
+# mtest_tables - reformat last 6 stanzas of torque.dat
+# for production excel spreadsheet
+#
+
+# comment input stanza 14 lines including trailing blank line
+
+set input_stanza {
+Thu Dec 03 02:18:22 PM EST 2015
+Torque Curve: planar motor: motor 1
+-2.0: 0.403162
+-4.0: -2.974786
+-6.0: -6.203225
+-8.0: -9.612292
+-10.0: -6.214400
+0.0: 3.514423
+2.0: 6.490235
+4.0: 9.547184
+6.0: 12.600623
+8.0: 15.556855
+10.0: 18.437896
+
+}
+
+# comment output file, those are tabs
+
+set output_file {
+0.403162	0.387328	0.441044
+-2.974786	-2.703859	-2.795128
+-6.203225	-5.996926	-6.0169
+-9.612292	-9.392442	-9.370051
+-6.2144	-12.574111	-12.540907
+3.514423	3.453647	3.483013
+6.490235	6.585757	6.592646
+9.547184	9.752727	9.651232
+12.600623	12.714319	12.708033
+15.556855	15.825649	15.813137
+18.437896	18.712913	18.786497
+}
+
+proc do_input {} {
+    global a
+
+    # assumes 84 lines (6*14) with precise format
+    set fd [open "| tail -84 $::env(HOME)/torque.dat"]
+
+    # 3 stanzas motor 1, 3 stanzas motor 2
+    # stanza order doesn't really matter.
+
+    for {set stanza 0} {$stanza < 6} {incr stanza} {
+        # eat time line
+        gets $fd line
+        # get motor number and check that motor is planar
+        gets $fd line
+        set mtype [lindex $line 2]
+        if {$mtype != "planar"} {
+            puts stderr "motor is $mtype, should be planar!"
+        }
+        set mnum [lindex $line 5]
+        # motor number must be 1 or 2
+        if {$mnum != "1" && $mnum != "2"} {
+            puts stderr "motor number is $mnum, must be 1 or 2."
+        }
+        incr m($mnum)
+        # 3 runs for each motor
+        # m($mnun) must be a number between 1 and 3
+        if {$m($mnum) > 3} {
+            puts stderr "there are $m($mnum) runs for motor $mnum, should be 3 runs for each motor."
+        }
+        # read 11 lines with torques
+        for {set i 0} {$i < 11} {incr i} {
+            gets $fd line
+    # puts "$i: $line"
+            scan $line "%f: %f" volts torque
+            # stuff torque into array a, for later formatting
+            # array indexed by robot, motor number, run number, volts
+            set a($mtype,$mnum,$m($mnum),$volts) $torque
+    # puts "$mtype $stanza $mnum $m($mnum) $volts $torque"
+        }
+        # eat blank line
+        gets $fd line
+    }
+    close $fd
+}
+
+proc do_output {} {
+    global a
+
+    # voltages in output file line order
+    set vlist {-2.0 -4.0 -6.0 -8.0 -10.0 0.0 2.0 4.0 6.0 8.0 10.0}
+
+    set curtime [clock seconds]
+    set stamp [clock format $curtime -format "%Y%m%d_%a_%H%M%S"]
+
+    # write torques in 2 files of 11 rows of 3 tab-separated columns
+    foreach mot {1 2} {
+        # example filename: 20151203_Thu_175204_m1.txt
+        set fname "${stamp}_m${mot}.txt"
+        set fd [open $fname w]
+        foreach v $vlist {
+            puts -nonewline $fd "$a(planar,$mot,1,$v)"
+            foreach mrun {2 3} {
+                puts -nonewline $fd "\t$a(planar,$mot,$mrun,$v)"
+            }
+            puts $fd ""
+        }
+        puts stderr "wrote $fname"
+        close $fd
+    }
+}
+
+do_input
+do_output

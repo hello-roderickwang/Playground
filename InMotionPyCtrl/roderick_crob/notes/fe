@@ -1,0 +1,3 @@
+set channel [open "|script" r]
+[fconfigure $channel -buffering line]
+fileevent on the channel.

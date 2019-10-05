@@ -1,0 +1,84 @@
+#!/usr/bin/tclsh
+
+# Copyright 2003-2010 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+# mfzero - test fixture for mfboard voltage levels
+
+global ob
+
+set ob(crobhome) $::env(CROB_HOME)
+set ob(loghome) $::env(LOG_HOME)
+
+proc logsetup {name} {
+    global ob
+
+    set curtime [clock seconds]
+    set datestamp [clock format $curtime -format "%Y%m%d_%a"]
+    set timestamp [clock format $curtime -format "%H%M%S"]
+    set fn $name.$timestamp.dat
+    set baselogdir $::env(LOG_HOME)
+    set logdir [file join $baselogdir $datestamp]
+    file mkdir $logdir
+    set ob(logf) [file join $logdir $fn]
+    set ob(nlog) $ob(anlog)
+
+    wshm logfnid $ob(alogfnid)
+}
+
+file mkdir $ob(loghome)
+
+set ::env(NO_PLC_OK) yes
+
+source $ob(crobhome)/shm.tcl
+
+start_lkm
+start_shm
+start_loop
+
+# choose a max voltage
+wshm pfotest 5.0
+
+center_arm
+# (whichever robot)
+
+set ob(alogfnid) 15
+set ob(anlog) 1
+
+puts "Hit enter to start 0 volts shake test"
+gets stdin
+
+wshm vibrate 500
+after 500
+
+wshm aocount 0
+# this is a "fake" logger.  it's just doing some calcs, not writing a real log.
+logsetup mfzero
+puts "writing log file $ob(logf)"
+puts "logger $ob(alogfnid), $ob(nlog) items."
+puts "started at [clock format [clock seconds]]"
+
+start_log $ob(logf) $ob(nlog)
+
+after 5000
+
+for {set i 0} {$i < 8} {incr i} {
+    lappend rms [rshm aorms $i]
+    lappend avg [rshm aoavg $i]
+}
+
+puts "ticks: [rshm aocount]"
+puts "rms: $rms"
+puts "avg: $avg"
+
+stop_log
+
+puts "stopped at [clock format [clock seconds]]"
+
+stop_loop
+stop_shm
+stop_lkm
+
+puts "done"

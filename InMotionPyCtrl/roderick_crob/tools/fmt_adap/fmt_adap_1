@@ -1,0 +1,178 @@
+#! /usr/bin/tclsh
+
+# fmtadap - format adaptive.asc data
+# the file id data does not come from the filename,
+# it comes from within the file
+
+# hack input line
+
+# input:
+# slotnum 81
+# init 95.0617283951
+# max_dist_along_axis 94.0343490054
+# active_power 96.5831008859
+# min_jerk_deviation 103.069192883
+# dist_straight_line 37.3386301035
+
+# output
+# pm display:
+# slotnum 81
+# init 60
+# min_dist_from_target 7
+# robot_power 37
+# jerkmag 70
+# dist_straight_line 4
+
+# output
+# slotnum = 81
+# array:
+# a(81,init)                  = 60
+# a(81,min_dist_from_target)  = 7
+# a(81,robot_power)           = 37
+# a(81,jerkmag)               = 70
+# a(81,dist_straight_line)    = 4
+
+proc hack_input_line {line} {
+    global a
+    global slotnum
+
+    set llist [split $line]
+    set key [lindex $llist 0]
+    set a1 [lindex $llist 1]
+
+    if {$key == "slotnum"} {
+	set slotnum $a1
+    } else {
+	set a($slotnum,$key) $a1
+    }
+}
+
+proc lreverse L {
+    set res {}
+    set i [llength $L]
+    while {$i} {lappend res [lindex $L [incr i -1]]}
+    set res
+}
+
+proc fmt_adap {} {
+    global argv argc a slotnum
+
+    if {$argc != 1} {
+	puts {usage: fmt_adap adap_asc_filename
+
+output columns
+1 pm_version
+2 patient_id
+3 date
+4 day
+5 time
+6 gamenum
+7 slotnum
+8 pm_init
+9 pm_min_dist_along_axis
+10 pm_robot_power
+11 pm_jerkmag
+12 pm_dist_straight_line}
+    exit
+    }
+
+    set fname [lindex $argv 0]
+    puts stderr "$fname"
+
+    # slurp up the data file
+    set fp [open $fname r]
+    set file_data [read $fp]
+    close $fp
+    # process data file
+    # slotnum 0 is used to tag data at the top of the file
+
+    set ::slotnum 0
+    set data [split $file_data "\n"]
+    # hack the whole input file at once
+    foreach line $data {
+	hack_input_line $line
+    }
+    # parray a
+
+# input:
+# dir: /home/imt/therapist/p123/therapy/20110901_Thu
+# game: adaptive_1
+# time: 133606
+
+# array:
+# a(0,dir:)                   = /home/imt/therapist/p123/therapy/20110901_Thu
+# a(0,game:)                  = adaptive_1
+# a(0,time:)                  = 133606
+
+    # split dir name into tokens
+    # doing it in reverse allows the base dir to be anywhere
+    #                     3    2       1        0
+    # /home/imt/therapist/p123/therapy/20110901_Thu
+
+    if {[info exists a(0,dir:)]} {
+	set dirnlist [split $a(0,dir:) "/_"]
+	set rdirnlist [lreverse $dirnlist]
+	set pat [lindex $rdirnlist 3]
+	set date [lindex $rdirnlist 1]
+	set day [lindex $rdirnlist 0]
+    } else {
+	puts stderr "Warning, missing folder name data."
+	set pat None
+	set date 20000000
+	set day Sun
+    }
+
+    if {[info exists a(0,game:)]} {
+	set gamenlist [split $a(0,game:) "_"]
+	set gamei [lindex $gamenlist 1]
+	set filetime $a(0,time:)
+    } else {
+	puts stderr "Warning, missing game name data."
+	set gamei 0
+	set filetime 000000
+    }
+
+# write four lines, one line for each set of pm data
+# 2 p123 20110901 Thu 133606 1 81 60 7 37 70 4
+# 2 p123 20110901 Thu 133606 1 161 60 6 28 74 4
+# 2 p123 20110901 Thu 133606 1 241 60 6 30 76 4
+# 2 p123 20110901 Thu 133606 1 321 59 6 31 76 4
+
+    set ver 0
+    set pmlist {init min_dist_from_target robot_power
+	jerkmag dist_straight_line}
+
+    # old data
+    if {[info exists a(81,active_power)]} {
+	set ver 1
+	set pmlist {init max_dist_along_axis active_power
+	    min_jerk_deviation dist_straight_line}
+    }
+    # new data
+    if {[info exists a(81,robot_power)]} {
+	if {$ver == 1} {
+	    # the file thinks it's both ver 1 and 2!
+	    puts stderr "Warning, file is both version 1 and 2."
+	    set ver 0
+	} else {
+	    set ver 2
+	}
+	set pmlist {init min_dist_from_target robot_power
+	    jerkmag dist_straight_line}
+    }
+    foreach snum {81 161 241 321} {
+	puts -nonewline "$ver $pat $date $day $filetime $gamei $snum"
+	foreach j $pmlist {
+		# if the data item isn't there, set it to 000
+		# rather than failing
+		if {![info exists a($snum,$j)]} {
+		    set a($snum,$j) 000
+		    puts stderr "Warning, missing metric data."
+		}
+		puts -nonewline " $a($snum,$j)"
+	}
+	puts ""
+    }
+}
+
+fmt_adap

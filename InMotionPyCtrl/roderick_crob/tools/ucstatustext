@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# dump the current sensors and pins status
+# name-last so the tabs line up
+
+echo -e "read\tact\tlowlim\thilim\tvalue\tname"
+echo "n" | 
+nc -q 1 localhost imtuc |
+sed 's/v sensors //
+     s/ /\n/g
+     s/[=,]/\t/g'    | 
+sort | 
+awk -v OFS='\t' '{print $2, $3, $4, $5, $6, $1}'
+
+echo -e "\nstate\tname"
+echo "y" |
+nc -q 1 localhost imtuc |
+sed 's/v pins //
+     s/ /\n/g
+     s/=/\t/g' |
+sort |
+awk -v OFS='\t' '{print $2, $1}'

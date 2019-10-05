@@ -1,0 +1,136 @@
+#!/usr/bin/tclsh
+# Copyright 2011 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+# ainterference - check the signal interference
+# on uei analog inputs 8-15, with and without motors
+# requires terminated inputs
+# works for planar and wrist
+
+global ob
+
+set ob(crobhome) $::env(CROB_HOME)
+
+global ob
+
+source $ob(crobhome)/shm.tcl
+
+# set ::env(NO_PLC_OK) yes
+
+proc get_aorms {} {
+        for {set i 0} {$i < 8} {incr i} {
+                set ::ob(aorms,$i) [rshm aorms $i]
+        }
+}
+
+proc print_aorms {} {
+        for {set i 0} {$i < 8} {incr i} {
+		puts -nonewline "$::ob(aorms,$i) "
+	}
+}
+
+
+proc get_aoavg {} {
+        for {set i 0} {$i < 8} {incr i} {
+                set ::ob(aoavg,$i) [rshm aoavg $i]
+        }
+}
+
+proc print_aoavg {} {
+        for {set i 0} {$i < 8} {incr i} {
+		puts -nonewline "$::ob(aoavg,$i) "
+	}
+}
+
+if {[is_lkm_loaded]} {
+	set lkm_already_loaded 1
+	puts "linux kernel module was already loaded."
+} else {
+	set lkm_already_loaded 0
+	puts "loading linux kernel module."
+	start_lkm
+}
+
+start_shm
+
+start_loop
+after 100
+set cur_robot [current_robot]
+
+set doshake ""
+puts -nonewline "for no vibrate, type n: "
+flush stdout
+gets stdin doshake
+
+if {$cur_robot == "planar"} {
+	wshm no_safety_check 1
+	wshm damp 40.
+	wshm stiff 400.
+	puts "centering"
+	center_arm
+	after 5000
+	wshm no_safety_check 0
+
+	movebox 0 0 {0 1 0} {0 0 0 0} {0 0 0 0}
+
+	wshm safety_pos 0.2
+}
+
+if {$cur_robot == "wrist"} {
+	wshm wrist_diff_stiff 10.0
+	wshm wrist_diff_damp 0.5
+	wshm wrist_ps_stiff 10.0
+	wshm wrist_ps_damp 0.5
+	puts "centering"
+	center_arm
+	after 5000
+
+	movebox 7 0 {0 1 0} {0 0 0 0} {0 0 0 0}
+}
+
+if {$doshake != "n"} {
+puts "vibrating"
+wshm vibrate 3000
+} else {
+puts "not vibrating"
+}
+
+wshm logfnid 19
+
+after 1000
+
+puts "logging for 5 seconds"
+
+wshm nlog 1
+
+after 5000
+
+puts "stop logging"
+wshm nlog 0
+
+after 1000
+puts "stop vibrate and movebox"
+
+wshm vibrate 0
+stop_movebox
+
+get_aorms
+puts rms
+print_aorms
+puts ""
+get_aoavg
+puts avg
+print_aoavg
+puts ""
+
+if {!$lkm_already_loaded} {
+    puts "unloading linux kernel module"
+    stop_loop
+    stop_shm
+    stop_lkm
+} else {
+    stop_shm
+    puts "not unloading linux kernel module"
+}

@@ -1,0 +1,32 @@
+#! /bin/bash
+
+# zero (or set to specified values) the encoders
+
+node1=${1:-0}
+node2=${2:-0}
+node3=${3:-0}
+node4=${4:-0}
+
+# set the values we want (or zeros)
+$CROB_HOME/tools/sdobincmd 1 hm 2 $node1
+$CROB_HOME/tools/sdobincmd 2 hm 2 $node2
+$CROB_HOME/tools/sdobincmd 3 hm 2 $node3
+$CROB_HOME/tools/sdobincmd 4 hm 2 $node4
+
+# do it
+$CROB_HOME/tools/sdobincmd 0 hm 4 2
+$CROB_HOME/tools/sdobincmd 0 hm 1 1
+
+# and before we leave, let's put HM[2] back to zero to be polite
+$CROB_HOME/tools/sdobincmd 0 hm 2 0
+
+ROBOTTYPE=$(cat $IMT_CONFIG/current_robot)
+if [[ "$ROBOTTYPE" == "ankle" ]]; then
+  # zero the ankle too. we only ever want 0.
+  $CROB_HOME/tools/sdobincmd 0 hy 2 0
+
+  # do it
+  $CROB_HOME/tools/sdobincmd 0 hy 4 2
+  $CROB_HOME/tools/sdobincmd 0 hy 1 1
+
+fi

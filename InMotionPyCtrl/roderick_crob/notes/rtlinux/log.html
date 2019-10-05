@@ -1,0 +1,291 @@
+<html>
+<head>
+<title>Writing Log Data</title>
+</head>
+<body>
+
+<h2>Writing Log Data</h2>
+Wed Aug  4 16:34:20 EDT 2004
+<p>
+This document describes the process of writing data to a logfile using
+the InMotion2 system.
+<p>
+
+<h2>Kernel Side - new way</h2>
+(This changed in August, 2004.) In the old code, you wrote a logging function
+and then pointed to it in userfn.c like so:
+
+	func.write_log = write_data_fifo_sample_fn;
+
+The trouble with this is that every time you want to change logging functions,
+you must edit the userfn.c:user_init function and recompile.
+<p>
+
+In the new style, you keep an array of pointers to logging functions
+(similar to the array of slot functions), and you choose a logging
+function by selecting the index into the ob-&gt;log_fns[] array.
+<p>
+
+What used to be called userfn.c has been split into ulog.c (for
+user-written logging functions) and uslot.c (for user-written slot
+controller functions).
+<p>
+
+Let's say that ulog.c has these log_fns set up:
+
+<pre>
+void
+init_log_fns(void)
+{
+	ob-&gt;log_fns[0] =  write_data_fifo_sample_fn;
+	ob-&gt;log_fns[1] =  write_motor_test_fifo_sample_fn;
+	ob-&gt;log_fns[2] =  write_fancy_fifo_sample_fn;
+	...
+}
+</pre>
+If you want to use write_fancy_fifo_sample_fn(), you assign the value of 
+ob-&gt;logfnid to 2 (the wshm variable is called logfnid), and off you go.  By
+default, logfnid is zero, which points to the standard
+write_data_fifo_sample_fn().
+<p>
+
+If you want to add a new logging function, you still need to add it to ulog.c,
+and add a pointer to it to ob-&gt;log_fns[] in init_log_fns() (and run make).  But
+once that's done, you can switch between existing logging functions by changing the logfnid index in shared memory.
+<p>
+
+Except for choosing the logger with logfnid instead of editing func.write_log,
+the logging still works as below.
+
+<h2>Kernel Side - old way</h2>
+The InMotion2 main loop writes log file data by
+calling a function pointed to by the pointer func.write_log.
+This pointer is usually assigned in userfn.c:user_init(), for example:
+
+<pre>
+	func.write_log = write_data_fifo_sample_fn;
+</pre>
+
+<h2>Kernel Side - continue here</h2>
+
+This is a typical example of a logging function, it logs a sampling counter,
+x/y position, x/y velocity, and x/y motor forces:
+
+<pre>
+// write counter, then nlog doubles from log array, into dofifo.
+
+void
+write_data_fifo_sample_fn(void)
+{
+    s32 j;
+
+    dpr(3, "write_log\n");
+    if (ob-&gt;nlog &lt; 1)
+        return;
+
+    j = 0;
+    ob-&gt;log[j++] = (f64) ob-&gt;i;
+    ob-&gt;log[j++] = ob-&gt;pos.x;
+    ob-&gt;log[j++] = ob-&gt;pos.y;
+    ob-&gt;log[j++] = ob-&gt;vel.x;
+    ob-&gt;log[j++] = ob-&gt;vel.y;
+    ob-&gt;log[j++] = ob-&gt;motor_force.x;
+    ob-&gt;log[j++] = ob-&gt;motor_force.y;
+
+    rtf_put(ob-&gt;dofifo, ob-&gt;log, (sizeof(ob-&gt;log[0]) * ob-&gt;nlog));
+}
+</pre>
+
+The logging function performs several steps:
+<ol>
+<li>It checks whether the user wants data logged at all.
+<li>If the user wants log data, the log function gathers the
+data into the logging output buffer ob-&gt;log[ ].
+<li>After the data is in the output buffer, it written to the
+log data fifo, using rtf_put().
+<li>This completes the job of the kernel-mode side of data logging.  Once
+the data for a sample is written, another program on the user-mode
+side must read the data from the fifo and copy it to a file.
+</ol>
+<p>
+This logging function is called once per sample when the control loop is
+running (not paused).  At the top of the function, there is a control variable
+ob-&gt;nlog.  Setting nlog (usually from user-mode) turns logging on or off.  If
+nlog is set to zero, the function returns immediately.  If nlog is greater than
+zero, the logging function does its work.
+The nlog variable has two jobs:  to tell
+the kernel module whether to write log data at all, and if so, to tell it how
+many data items to write per sample.
+<p>
+Note that the value stored in the nlog variable does not specify how many
+samples (rows or lines) are written to the log file, it specifies how many data
+items (columns) are written per sample.  Sampling is usually turned on and off
+by a user-mode program.  If you need a precise number of samples (instead of
+just asking the logger to start and stop when you press a button or trigger a
+user-mode timer), you must write code to do that in your write_log()
+function, keeping a logged-samples counter, and zeroing nlog when the desired
+number is reached.
+
+<p>
+
+If nlog is greater than zero, the data items specified in the logging
+function are copied to successive elements of the array, ob-&gt;log[ ],
+starting with ob-&gt;log[0].  The idiom, ob-&gt;log[j++], is used to specify
+the successive elements of the array, so that if you want to shuffle the
+elements around, or insert new elements in the middle of the list,
+the code will take care of the array indices.
+<p>
+
+In the example above, the seven data items are stored in the log
+array, at indices 0 through 6.  Notice that the sample number i is an
+integer.  All elements of log are double-precision floating point, so
+i is converted to double when it is copies.  There is an explicit C
+cast here (f64), it is a reminder to the reader, C would have
+performed the cast automatically anyway.  These seven data items are each
+eight bytes long, so 56 bytes are written per sample period.
+<p>
+
+The variable nlog is greater than zero, and data has been copied from system
+state variables to the log buffer, log[ ].  Now log[ ] needs to be written to
+an output stream from kernel space.  This is done by calling the rtf_put()
+function in the last line.  rtf_put() works like a C write() system call.  This
+is how its function parameters are defined:
+
+<ol>
+<li>
+The first arg is a file descriptor, in this case dofifo.  dofifo
+is opened by the InMotion2 kernel module
+when it is loaded, and it is assigned to real-time fifo number
+1, similar to UNIX standard output being assigned to file descriptor
+1.  Real-time fifo number 1 can be read in user mode using the file named /dev/rtf1
+<li>The second arg is the address of the data buffer to be written, in
+this case the log buffer we have just prepared.
+<li>The third arg is the length of the data in the buffer, in bytes.
+We know that ob-&gt;log[] is an array of 64-bit doubles.  The user
+specifies the number of log entries required by setting the value of
+nlog.  sizeof(ob-&gt;log[0]) will be 8 bytes, because it's a double,
+and this is multiplied by nlog.
+</ol>
+<p>
+
+This function is set up to collect the sample number, position,
+velocity, and motor forces, 7 data items in all.  Let's say that 
+for this run the user only wants to see the sample number and x/y
+position, because we just want to plot the manipulandum position
+path over time, x vs y.  We can use the function show here, and if we
+set nlog to 3 (probably by setting its value from user mode through
+shared memory), the first three values will be sent out to the log data
+output real time fifo.
+
+<h2>User Side</h2>
+<p>
+The data has not been saved to a file yet, it has only
+being sent to a fifo.
+(It is getting sent through a pipe,
+but we have no bucket at the end of of the pipe).
+In this example, the fifo is called ob-&gt;dofifo
+(data output fifo), which the kernel module has set up as real time fifo number 1.  The user-mode handle for this fifo is the file named /dev/rtf1
+<p>
+
+The data output fifo dofifo (/dev/rtf1), is opened whenever the
+InMotion2 kernel module is loaded, but data only gets sent to the fifo when
+nlog &gt; 0.  To read from the fifo, have a user-mode program
+open /dev/rtf0 and start reading, when you set nlog greater than zero
+in shared memory, data will start flowing out during each sample
+period.  To stop logging, set nlog to zero, and stop
+the program that is reading the log data.
+<p>
+
+This is done in Tcl programs using procs like the following:
+
+<pre>
+proc start_log {logfile {num 3} {uheaderfile ""}} {
+    global ob
+
+    # puts "start_log $logfile $num"
+    wshm nlog $num
+
+    # make sure the dir is there
+    file mkdir [file dirname $logfile]
+
+    # write log header
+    logheader $logfile $num $uheaderfile
+
+    set ob(savedatpid) [exec cat &lt; /dev/rtf1 &gt;&gt; $logfile &]
+}
+
+proc stop_log {} {
+    global ob
+
+    # puts "stop_log"
+    wshm nlog 0
+    if [info exists ob(savedatpid)] {
+        exec kill $ob(savedatpid)
+        unset ob(savedatpid)
+    }
+}
+</pre>
+<p>
+
+The proc start_log sets nlog to the number of data items to save.
+after that is done, it writes an informational logfile header.  (Older
+versions of start_log did not write a header.)  After the header is
+written, the final line of start_log executes the Linux "cat" program,
+which connects ("catenates") the data output real-time fifo
+(/dev/rtf1) to the logfile named in the start_log command.  The process ID
+of the cat process is saved in ob(savedatpid).
+<p>
+
+When logging is done, nlog is set to zero in shared memory, and the
+logging process (cat) is stopped by killing the process specified by the
+process ID, ob(savedatpid).
+<p>
+
+In this case, we may have called start_log like this:
+<pre>
+	start_log /tmp/xy.dat 3
+	# later...
+	stop_log
+</pre>
+
+The data is now in /tmp/xy.dat, as a stream
+64-bit double binary data.  This is raw data, but we know that we
+asked for a 3 items per sample.
+You can write a program to process the binary data, or you can convert
+it to ASCII (plain text), using the ta.tcl (ta for To ASCII),
+using the command
+ta.tcl.  Newer versions of the logging software write the number of
+columns in the log file, and ta.tcl reads it from there,
+so it need not be specified on the ta.tcl command line.  Older versions
+of ta.tcl (before August 2003) took the number-of-entries-per-sample as the
+first arg, so you run:
+
+<pre>
+	ta.tcl 3 /tmp/xy.dat &gt; /tmp/xt.asc
+</pre>
+
+The conversion from binary to plain-text ASCII is not complicated, you can
+write your own conversion script to suit your requirements.
+
+<p>
+
+From here, you can run your data through gnuplot or some other analysis
+software.  This is a slice of a typical log data file converted to ASCII,
+with ten samples of x/y data, each one preceded by a sample number:
+
+<pre>
+4550.0 -0.142418 0.0778987
+4551.0 -0.143285 0.0756795
+4552.0 -0.144075 0.0734816
+4553.0 -0.14487 0.0711552
+4554.0 -0.145615 0.0688232
+4555.0 -0.146364 0.0664319
+4556.0 -0.147061 0.0640352
+4557.0 -0.147735 0.0615393
+4558.0 -0.148384 0.0590119
+4559.0 -0.148923 0.0564654
+4560.0 -0.149464 0.0538616
+</pre>
+
+
+</body></html>

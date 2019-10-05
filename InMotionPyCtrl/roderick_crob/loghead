@@ -1,0 +1,97 @@
+#! /bin/bash
+
+# create a log file header with some standard fields at the top,
+# including a field with its size, so you can skip the header.
+
+# Copyright 2003-2013 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+# first it writes the header file to /tmp, so we can get the length.
+# then rewrites to outputfile
+
+# the header size string is %06d, a constant 6 digits, padded with zeros.
+# MAKE SURE that your program understands that this is a decimal number.
+# some languages convert leading zero numbers to octal.
+
+# you can seek to logheadsize-6 in the log and make sure that
+# the next 5 chars are #####
+
+# user inputfile data can include column tags, etc.
+# I suggest sticking to tcl-readable format:
+# s name "value"
+
+if [[ $# == 0 ]]; then
+    echo "usage: $0 outputfile logversion [ number-of-columns [ inputfile ] ]"
+    exit 1
+fi
+
+# default log file name: log.dat
+LOGNAME=${1:-log.dat}
+
+LOGVER=${2:-1.0}
+
+# default number of columns: 3 (time, x, and y)
+COLUMNS=${3:-3}
+
+# input?
+INPUT=${4:-noinput}
+
+
+# log directory, will be deleted on exit
+TMP=/tmp/loghead$$
+trap "rm -rf /tmp/loghead$$" EXIT
+mkdir -p $TMP
+
+# date puts out formats that tcl should understand.
+# clock scan and clock format should be able
+# to convert between these, but if you need both, here they are.
+
+# current datetime, using tmpdir timestamp as ref
+LOGDATE=$(date -r $TMP)
+# integer datetime in seconds since epoch, same as LOGDATE
+LOGIDATE=$(date -r $TMP +%s)
+
+case "$INPUT" in
+    noinput)
+	touch $TMP/input
+	;;
+    -)
+	cat > $TMP/input
+	;;
+    *)
+	cat $INPUT > $TMP/input
+	;;
+esac
+
+# make it first time for size, then again for real.
+for NAME in $TMP/file $LOGNAME; do
+
+    if [[ $NAME != $LOGNAME ]]; then
+	LOGHEADSIZE=000000
+    else
+	set $(wc -c $TMP/file)
+	SIZE=$1
+	LOGHEADSIZE=$(printf %06d $SIZE)
+    fi
+
+    exec > $NAME
+
+    echo "# imt log"
+    echo s logheadsize $LOGHEADSIZE
+    echo s logcolumns $COLUMNS
+    echo s logname $LOGNAME
+    echo s logversion $LOGVER
+    echo s logdate \"$LOGDATE\"
+    echo s logidate $LOGIDATE
+    echo
+    echo "# begin user data"
+    cat $TMP/input
+    echo
+    echo "# end user data"
+    echo
+    # end of log
+    echo "#####"
+
+done

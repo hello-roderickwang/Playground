@@ -1,0 +1,113 @@
+#!/usr/bin/python
+
+# multiplexer for talking to microcontroller 
+# daemonized by upstart
+# Inmotion2 robot software
+# Copyright 2012-2013 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+
+# This program is NOT Python 3 ready because Twisted
+# was not available for Python 3 at the time it was written.
+
+from __future__ import division, absolute_import, print_function  # Python 3
+
+from time import sleep
+import socket
+import serial
+import argparse
+import logging
+import os
+from random import randint
+from twisted.internet.protocol import ServerFactory
+from twisted.protocols.basic import LineReceiver
+from twisted.internet import reactor
+from twisted.internet.error import CannotListenError
+
+def connect_uc(serport):
+    """
+    connect to the uc, making sure we are in sync talking to it
+    return the serial connection object
+    """
+
+    ser = None
+    try:
+        ser = serial.Serial(serport, baudrate=115200, timeout=1)
+    except Exception as msg:
+        logging.critical(msg)
+        exit(255)
+    sleep(1)
+    ser.flushInput()
+    logging.info("connecting to uc over serial... ")
+    i = randint(1,10000)
+    try:
+        ser.write('e {}\n'.format(i))
+        if int(ser.readline().split()[1]) == i:
+            logging.info("connected to uc over serial.")
+        else:
+            logging.critical("got unexpected response, can't start.")
+            exit(1)
+    except IndexError:
+        logging.critical("failed to connect, can't start.")
+        exit(1)
+    return ser
+
+# noinspection PyMethodOverriding
+class CmdProtocol(LineReceiver):
+
+    delimiter = '\n'
+    MAX_LENGTH = 120
+
+    def connectionMade(self):
+        self.client_ip = self.transport.getPeer().host
+        if len(self.factory.clients) >= self.factory.clients_max:
+            logging.warning('Too many connections!')
+            self.client_ip = None
+            self.transport.loseConnection()
+        else:
+            self.factory.clients.append(self.client_ip)
+            logging.debug('Client connected ({} total)'.format(len(self.factory.clients)))
+
+    def connectionLost(self, reason):
+        if self.client_ip:
+            self.factory.clients.remove(self.client_ip)
+            logging.debug('Client disconnected: ({} total)'.format(len(self.factory.clients)))
+
+    def lineReceived(self, line):
+        logging.debug("<<< {}".format(line.rstrip()))
+        ser.write(line + '\n')
+        resp = ser.readline().rstrip()
+        logging.debug("\t\t>>> {}".format(resp))
+        self.sendLine(resp)
+
+    def lineLengthExceeded(self, line):
+        msg = 'x Command line too long, NOT sent to microcontroller!'
+        logging.warning(msg)
+        self.sendLine(msg)
+
+
+class MyFactory(ServerFactory):
+    protocol = CmdProtocol
+    def __init__(self, clients_max=20):
+        self.clients_max = clients_max
+        self.clients = []
+
+
+
+parser = argparse.ArgumentParser(description='Run the uc multiplexer, which communicates with the microcontroller.')
+parser.add_argument('-p', '--port', default=socket.getservbyname('imtuc'), help='run on specified port')
+parser.add_argument('-t', '--tty', default='/opt/imt/devUC', help='connect to specified serial device')
+parser.add_argument('-v', '--verbose', action='store_const', const=logging.DEBUG, default=logging.INFO,
+    help='echo all received commands')
+args = parser.parse_args()
+
+logging.basicConfig(format='%(levelname)s:%(message)s', level=args.verbose)
+
+try:
+    reactor.listenTCP(args.port, MyFactory())
+    ser = connect_uc(args.tty)
+    reactor.run()
+except CannotListenError:
+    logging.critical('ucserve is already running. exiting.')
+    exit(1)
+

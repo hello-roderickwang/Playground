@@ -1,0 +1,105 @@
+#!/usr/bin/env python
+
+# monitor the uc and alert or shutdown if necessary 
+# Inmotion2 robot software
+# Copyright 2012-2014 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+
+from __future__ import division, absolute_import, print_function  # Python 3
+
+import argparse
+import logging
+import signal
+from subprocess import call, check_call, check_output, CalledProcessError, Popen
+from time import sleep
+import os
+from os.path import join as pjoin
+
+
+def zenity(message, switch_to_console=False):
+    try:
+        check_call(['/usr/bin/zenity', '--display', ':0.0', '--warning', '--text', message])
+    except CalledProcessError:
+        if switch_to_console:
+            Popen(['/bin/chvt', '1'])
+            open('/dev/tty1', 'w').write(message)
+
+def say_goodbye():
+    logging.info('ucsysmonitor: killed, stopping.')
+    exit(255)
+
+def comms_failure():
+    logging.critical('Failed to communicate with ucserve!')
+    Popen('/opt/imt/robot/crob/stop 57', shell=True)
+    message = "The computer has failed to communicate with\nthe microcontroller.\n\nPlease call Interactive Motion for support.\n\n"
+
+    if args.shutdown:
+        message += "The system will SHUT DOWN in {} minutes!\n\nTo cancel shutdown, enter the command:\n   sudo shutdown -c".format(int(args.shutdowngrace))
+        Popen('/sbin/shutdown -P ' + str(args.shutdowngrace), shell=True)
+        
+    zenity(message, switch_to_console=True)
+
+
+if __name__ == "__main__":
+    
+    UCPLC = '/opt/imt/robot/crob/tools/ucplc'
+    
+    last_killtime = -1
+    
+    signal.signal(signal.SIGINT, lambda signum, frame: say_goodbye())
+    signal.signal(signal.SIGTERM, lambda signum, frame: say_goodbye())
+    
+    parser = argparse.ArgumentParser(description='Monitor the uc; take action (e.g., shutdown) if it fails.')
+    parser.add_argument('-e', '--every', default=2, type=float, help='seconds to wait between probes')
+    parser.add_argument('-m', '--messages', action='store_true', help='display messages when 57V kill condition detected')
+    parser.add_argument('-s', '--shutdown', action='store_true', help='shut down the system on failure')
+    parser.add_argument('-g', '--shutdowngrace', default=1, type=int, help='minutes to wait before shutdown action')
+    parser.add_argument('-f', '--failures', default=2, type=int, help='number of failures permitted before action is taken')
+    
+    args = parser.parse_args()
+    
+    logging.basicConfig(filename='/var/log/imt/uc-57v-kills.log', format='%(asctime)s %(levelname)s:%(message)s', level=logging.INFO)
+    
+    failed = 0
+    power_is_off = True
+    
+    try:
+        check_output([UCPLC, 'check-kill-reason'])
+    except CalledProcessError:
+        logging.critical('ucsysmonitor: Failed to call ucplc even once, exiting')
+        exit(1)
+    
+    while failed < args.failures:
+        sleep(args.every)
+
+        try:
+            power_is_off = call([UCPLC, 'check-ready-lamp'])
+        except OSError:
+            logging.warning('ucsysmonitor: Failed to call ucplc check-ready-lamp')
+            failed += 1
+            continue
+
+        try:
+            killstate = check_output([UCPLC, 'check-kill-reason']).rstrip()
+            (killtime, killreason, killvalue) = killstate.split()
+            killtime, killvalue = int(killtime), float(killvalue)
+        except CalledProcessError:
+            logging.warning('ucsysmonitor: Failed to call ucplc check-kill-reason')
+            failed += 1
+            continue
+    
+        if killtime > 0 and killtime != last_killtime:
+            # we've been freshly killed!
+            last_killtime = killtime
+            logging.info('57V killed at {} because {} = {}'.format(killtime, killreason, killvalue))
+            Popen('/opt/imt/robot/crob/stop 57', shell=True)
+            if args.messages:
+                if killreason == "status_es0":
+                    zenity("The stop button has been pressed. Release the stop button to operate the robot.")
+                elif power_is_off and ("amp_ok" in killreason or "motor_ok" in killreason):
+                    pass
+                else:
+                    zenity("The robot power was removed because the\nsensor '{}' got the value {}.".format(killreason, killvalue))
+    
+    comms_failure()

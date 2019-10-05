@@ -1,0 +1,13 @@
+#! /bin/sh
+
+# convert one file from logversion 1 to logversion 2:
+
+base=`basename $1`
+dir=`dirname $1`
+
+echo writing logversion2/${dir}/$base
+mkdir -p logversion2/${dir}
+
+(($CROB_HOME/tools/dathead $1 | 
+  sed 's/version 1/version 2/') && 
+ $CROB_HOME/ta.tcl $1 ) > logversion2/${dir}/$base

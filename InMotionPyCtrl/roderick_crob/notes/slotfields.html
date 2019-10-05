@@ -1,0 +1,82 @@
+<html>
+<head>
+<title>Slot Fields</title>
+</head>
+<body>
+
+<h1> Slot Fields</h1>
+Wed Oct 29 12:29:09 EDT 2008
+<p>
+Slot controllers impose force fields that dictate the robot's
+motion.  In a typical slot, there is a desired position rectangle
+(which may be a line or point), and the force imposed by the
+robot is proportional to the distance between the desired
+rectangle and the robot's actual position point.
+
+<p>
+In cases where it seems that the robot is guiding the
+patient's limb to a goal point, the software usually
+accomplishes this by either moving a desired point toward
+the goal, or by establishing a linear slot with where the two
+ends points  of the line are a starting point and the goal point,
+and the line collapses with the back wall moving toward the
+goal point.
+<p>
+The robot has a specific desired rectangle at each point in time.
+The software recalculates the desired rectangle during each
+sample period, usually 200 times per second.  These calculations
+create the sensation of a moving force field acting on the robot.
+
+<p>
+While the images below attempt to describe force fields visually, it
+is most helpful to actually feel their effects using the robots.
+
+<h2>Point Controller</h2>
+<p>
+The illustration below shows the forces imposed by a point slot
+controller.  The desired point is at the center of the image.
+The controller imposes forces pushing toward the center point,
+with darker values, further from the desired point, exerting greater force.
+Imagine a rubber band connecting you to the desired point, and the further
+you move from that point, the harder it tries to pull you back.
+<p>
+<img src="images/pointslotfield.jpg"> 
+<p>
+<h2>Line controller</h2>
+The illustration below shows the forces imposed by a line slot
+controller.  The desired line (segment) is positioned
+horizontally at the ligher area in the center of the image.  The
+controller imposes forces pushing toward the horizontal line,
+with darker values, further from the desired line, exerting
+greater force.  In a collapsing slot controller, the starting
+point of the line would move toward the goal point over a short
+time, creating a force that pushes the patient's limb from
+behind, but allowing the patient to move freely ahead of the
+collapsing force field.  Imagine a rubber band wrapped around the
+desired line, and if you try to pull away from the line, the rubber
+band pulls you back toward the nearest point on the line.
+
+<p>
+<img src="images/lineslotfield.jpg"> 
+<p>
+<h2>Curl controller</h2>
+The illustration below shows the forces imposed by a curl controller.
+The shade of gray does not represent a force magnitude here, this
+is a more impressionistic image.
+<p>
+When you move the robot in a curl field, the field resists with a
+damping force perpendicular to the velocity of your motion.  The
+sensation is like that of walking in a stiff crosswind or trying to
+move in a fluid whirlpool.  In a clockwise curl field, when you
+try to move forward in any direction, you will feel a force
+pushing you to the right.  The faster you move forward, the
+greater the force pushing you to the right.  Imagine yourself
+always at the center of a field that rotates clockwise
+around you at a speed proportonal to your velocity.  In a curl
+controller, as in a damping controller, there is no force exerted
+when the robot is not moving.
+
+<p>
+<img src="images/curlslotfield.jpg"> 
+<p>
+</body></html>

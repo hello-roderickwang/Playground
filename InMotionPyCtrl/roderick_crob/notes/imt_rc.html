@@ -1,0 +1,124 @@
+<html>
+<head>
+<title>Setting up imt.rc</title>
+<body>
+
+<h1>Setting up imt.rc</h1>
+Tue Mar 12 16:36:13 EDT 2013
+<p>
+
+The configuration file <tt>imt.rc</tt> is a shell script containing assignments
+to shell environment variables that control where the IMT robot system
+looks for its software components.  Some of these variables specify
+locations of robot programs.  Other variables specify locations of
+directory folders that are used to store research and therapy log file
+data that the robot software generates.
+<p>
+For typical clinical use, clinicians will not modify the standard software
+system that IMT delivers.  The standard software system is stored in
+<tt>ROBOT_HOME (/opt/imt/robot)</tt>, a read-only area of the hard disk.
+
+<p>
+Researchers who wish to modify the standard system software cannot
+change this read-only disk area.  They must copy the standard software
+system from the read-only disk area to a writable area in their own local
+login directory folder space.  After copying the software, they must modify
+their own copy of <tt>imt.rc</tt> file to point to these new local folders.  This will
+notify the robot system software to use the software in the locally modified
+folders rather than the standard software system.
+
+<p>
+This method allows many users to develop different sets of robot
+software on the same PC, and also allows a single user to switch between
+tasks which use different versions of the software.
+<p>
+The <tt>imt.rc</tt> file is invoked by the <tt>.profile</tt> at login.
+
+<p>
+After you modify your <tt>imt.rc</tt> file, you must log out and log back in, or run <tt>source ~/imt_config/imt.rc</tt>
+
+<p>
+You can check the state of your <tt>imt.rc</tt> variables by running
+<tt>$CROB_HOME/tools/robstat</tt> .  If the system responds:
+<tt>-bash: /tools/robstat: No such file or directory</tt>
+that means <tt>CROB_HOME</tt> isn't set and <tt>imt.rc</tt> has not been loaded.
+
+<p>
+
+The read-only reference copy of <tt>imt.rc</tt> is here:
+<tt>/opt/imt/robot/imt_config/imt.rc</tt>
+<p>
+
+The copy for user imt is here:
+<tt>/home/imt/imt_config/imt.rc</tt>
+<p>
+
+To make a new copy for user andy, put it here:
+<tt>/home/andy/imt_config/imt.rc</tt>
+<p>
+
+If user andy wants to work with his own copy of the crob and lgames
+directory folders, he may copy them from the standard read-only
+/opt/imt/robot disk area, to his own directory tree:
+
+<pre>
+cp -a /opt/imt/robot/crob /home/andy/crob
+cp -a /opt/imt/robot/lgames /home/andy/lgames
+</pre>
+
+he would then edit <tt>/home/andy/imt_config/imt.rc</tt> , modifying the
+relevant variables to point to his locally modified directory folders:
+
+<pre>
+export CROB_HOME=/home/andy/crob
+export LGAMES_HOME=/home/andy/lgames
+</pre>
+
+Once you make this modification and log out and back in, the system
+will use these newly set variables.
+
+<p>
+This is a list of the <tt>imt.rc</tt> environment variable names and their function:
+<ul>
+<li><tt>CROB_HOME</tt> - Robot control loop software, mostly written in C.
+<li><tt>LGAMES_HOME</tt> - Basic clinical games, mostly written in tcl
+<li><tt>IMAGES_HOME</tt> - images used by clock and squegee games
+<li><tt>I18N_HOME</tt> - Internationalization code and some image files.
+<li><tt>PROTOCOLS_HOME</tt> - Protocols mostly used by basic clinical games
+<li><tt>ROBOT_HOME</tt> - Base of read-only robot code directory tree
+<li><tt>THERAPIST_HOME</tt> - Base of clinical log files
+<li><tt>LOG_HOME</tt> - Base of research log files
+</ul>
+
+<p>
+
+This is the default contents of <tt>/opt/imt/robot/imt_config/imt.rc</tt> :
+<pre>
+#!/bin/bash
+
+# This file gets sourced when you log into a graphical X session,
+# editing it could allow a customized installation to substitute one
+# or more components.  After editing this file you will need to log
+# out and back in for the change to take effect.
+
+# This version points to the read-only /opt/imt/robot folders for clinical use.
+
+# Items that are part of the IMT product.  You can copy the originals
+# (with cp -a) to your home directory and modify that copy.
+export CROB_HOME=/opt/imt/robot/crob
+export LGAMES_HOME=/opt/imt/robot/lgames
+export I18N_HOME=/opt/imt/robot/i18n
+export IMAGES_HOME=/opt/imt/robot/images
+export PROTOCOLS_HOME=/opt/imt/robot/protocols
+export ROBOT_HOME=/opt/imt/robot
+
+# Items that need to be writable with data.
+export THERAPIST_HOME=$HOME/therapist
+export LOG_HOME=$HOME/imt_logs # Note, in a purely clinical environment
+                           # this directory does not get created, so
+                           # we will not be cluttering up the user's
+                           # home directory
+export IMT_CONFIG=$HOME/imt_config
+
+</pre>
+</body></html>

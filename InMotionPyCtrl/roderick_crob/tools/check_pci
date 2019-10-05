@@ -1,0 +1,54 @@
+#! /bin/bash
+CHT=$CROB_HOME/tools
+IC=~/imt_config
+OIC=/opt/imt/robot/imt_config
+
+on_exit()
+{
+    rm -f $IC/have_no_plc
+    cp $OIC/have_plc $IC/
+    echo have_plc is SET.
+    read -p "Enter to quit."
+}
+
+trap on_exit EXIT
+
+echo
+echo check_pci - Check PCI boards
+echo Production check to see that UEI PCI boards are functioning.
+echo Run after boards are installed and before PC is installed in
+echo CE electrical panel.
+echo
+
+echo Setting have_no_plc for this test only.
+rm -f $IC/have_plc
+cp $OIC/have_no_plc $IC/
+
+echo
+read -p "Enter to continue..."
+
+echo Example:
+echo "0000:06:01.0 0480: UEI 1057:1801 (rev 03)"
+echo "0000:06:02.0 0b40: US Digital PCI4E 1892:5747"
+echo "0000:06:03.0 0480: UEI 1057:1801 (rev 02)"
+echo
+
+echo lsboards, should print three lines like above.
+echo
+$CHT/lsboards
+echo
+
+read -p "Enter to continue..."
+
+echo
+echo Running display tool.
+echo Hit load button, it will turn to unload in 3 seconds.
+echo Then hit run button.
+echo Check that i and \"adcvolts 0\" are moving.
+echo "(if they are moving, test is sucessful.)"
+echo When done, hit quit button.
+
+$CHT/display
+echo
+echo Test is done.
+echo

@@ -1,0 +1,582 @@
+#! /bin/bash
+
+# guidance script for pre-ship software check
+
+treset="\e[0m"
+tbold="\e[1m"
+tred="\e[31m"
+tgreen="\e[32m"
+tyellow="\e[33m"
+tblue="\e[34m"
+thome="\e[H"
+tclear="\e[J"
+tstrong=$tgreen
+ttall="\e[8;40;80t"
+
+if [[ $NO_ESC -ne 0 ]]; then
+    treset=""
+    tbold=""
+    tred=""
+    tgreen=""
+    tyellow=""
+    tblue=""
+    thome=""
+    tclear=""
+    tstrong=""
+    ttall=""
+fi
+
+# trap if you exit early
+
+trap caught_sig SIGHUP SIGINT SIGTERM
+
+# catch a signal, especially ^C
+
+caught_sig () {
+    testid "(caught signal inside $testid_name)"
+    test_fail
+    cleanup
+}
+
+# cleanup on all exits
+
+cleanup () {
+    eche
+    if [[ $XSTAT != 0 ]]; then
+	eche check_prod ${tred}FAILED.${treset}
+	eche
+	eche Tests failed:
+	eche "$failed_tests"
+	eche
+    else
+	eche check_prod ${tgreen}PASSED.${treset}
+    fi
+
+    exit $XSTAT
+}
+
+# identify test
+
+testid () {
+    testid_name=$*
+    eche "Test: $testid_name"
+    eche
+}
+
+# test failed
+# set failed status.
+# append test name to failed_tests
+
+test_fail () {
+    XSTAT=1
+    failed_tests=$(eche "$failed_tests\\n* $testid_name")
+    eche
+    eche "Test ${tred}FAILED${treset}: $testid_name"
+    eche
+}
+
+# prompt for a y/n
+# did the user not type yes (y)?
+# 0 ("success") is when the user does not type y.
+
+notyes () {
+    nyans=""
+    while [[ $nyans = "" ]]; do
+	read -p "(type y for yes, n for no) " nyans
+    done
+    ret=0
+    if [[ $nyans = "y" ]]; then
+	ret=1
+    fi
+    return $ret
+}
+
+# eche for echoing to display, allowing backslash escapes
+
+eche () {
+    echo -e "$@"
+}
+
+# prompts ENTER to Continue and prints ##### to separate next test
+
+econt () {
+    eche
+    read -p "ENTER to Continue: "
+    eche
+    eche "${thome}${tclear}"
+}
+
+# these are escape codes for bold and color.
+# note that handling escape codes works differently in different shells.
+# this is for /bin/bash.
+
+PERSONALITY=$(cat /opt/imt/personality)
+# shell exit status non-zero = FAIL.
+
+XSTAT=0
+
+# if this robot is curently set as planarhand, start it as planar.
+
+current_robot=$(echo -n $(cat $HOME/imt_config/current_robot))
+
+if [[ $current_robot == "planarhand" ]]; then
+    current_robot=planar
+    echo $current_robot > $HOME/imt_config/current_robot
+fi
+
+# is this a 2axis or 3axis robot, according to ucsettings.rc?
+# ucsettings.rc must be a link.
+
+axes=0
+axfile=$(readlink /home/imt/imt_config/ucsettings.rc)
+if [[ $axfile = "ucsettings.rc.2axis" ]]; then
+    axes=2
+elif [[ $axfile = "ucsettings.rc.3axis" ]]; then
+    axes=3
+fi
+
+# make window 80x40
+
+eche "${ttall}"
+
+eche "${thome}${tclear}"
+eche "############################"
+eche Final Production Test
+eche "Robot: $current_robot"
+now=$(date)
+eche "$now"
+eche "############################"
+eche
+
+testid standard imt.rc
+
+if ! diff -q /opt/imt/robot/imt_config/imt.rc /home/imt/imt_config/imt.rc; then
+    test_fail
+    eche /home/imt/imt_config/imt.rc is not the standard production configuration.
+    eche it may be a software engineering development system
+    eche or a specially crafted non-standard system.
+    econt
+fi
+
+if ! $CROB_HOME/tools/${PERSONALITY}plc -q check-ready-lamp; then
+    eche "Ready lamp is not on.  Please check stop buttons"
+    eche and make sure that both Power and Ready lamps are lit.
+    exit 1
+fi
+
+eche
+eche "${tstrong}Final Production Test${treset}."
+eche
+eche "This check must be run after production"
+eche "immediately prior to packing for shipment."
+eche "It may be run at other times."
+eche
+eche "${tstrong}If you make changes to the software system during or after"
+eche "this check, the full check must be run again.${treset}"
+eche
+eche "This script may be interrupted with ^C and run multiple times."
+eche "Nothing in this script changes robot files on the system,"
+eche "(like calibration files or other robot software)."
+eche "If changes are required, you must do that in another window."
+eche
+eche "This script does change some files that do not affect the"
+eche "robot software system state, like emptying the Trash folder."
+eche
+eche "If you find problems that require a fix, ^C out of this check,"
+eche "fix the problem, and run the check again from the beginning."
+eche "If you can't solve a problem, get help from software engineering."
+eche "Continue until the full check runs cleanly."
+eche
+eche "On exit, this script will show either ${tgreen}PASSED${treset} or ${tred}FAILED${treset}"
+eche "if it fails, it will show a list of tests that failed."
+econt
+
+testid check computer components
+
+$CROB_HOME/tools/check_comp || test_fail
+econt
+
+testid ucsettings file
+
+eche "Checking that ucsettings.rc is a standard version."
+
+if [[ -e /home/imt/imt_config/robots/planarhand ]]; then
+
+    if ! diff -q /opt/imt/robot/imt_config/ucsettings.rc.3axis $IMT_CONFIG/ucsettings.rc; then
+	eche 
+	eche ucsettings.rc in $IMT_CONFIG is not the standard version.
+	test_fail
+    fi
+
+elif [[ -e /home/imt/imt_config/robots/planar ]]; then
+
+    if ! diff -q /opt/imt/robot/imt_config/ucsettings.rc.2axis $IMT_CONFIG/ucsettings.rc; then
+	eche 
+	eche ucsettings.rc in $IMT_CONFIG is not the standard version.
+	test_fail
+    fi
+fi
+
+if [[ -e /home/imt/imt_config/robots/wrist ]]; then
+
+    if ! diff -q /opt/imt/robot/imt_config/ucsettings.rc.3axis $IMT_CONFIG/ucsettings.rc; then
+	eche 
+	eche ucsettings.rc in $IMT_CONFIG is not the standard version.
+	test_fail
+    fi
+fi
+
+econt
+
+testid fans
+
+eche "Checking that the fans are properly connected."
+eche "If the fans do not do as stated, stop the test."
+eche
+
+echo f 0   | nc -q 1 localhost imtuc
+read -p "All fans should spin 50%, says 0%, Press ENTER."
+
+echo f 100 | nc -q 1 localhost imtuc
+read -p "All fans should spin 100% says 100%, Press ENTER."
+
+echo f -1  | nc -q 1 localhost imtuc
+read -p "All fans should spin 50%, says off, Press ENTER."
+
+eche
+eche "Did all fans change speeds correctly?"
+if notyes ; then
+    test_fail
+fi
+
+econt
+
+testid can analog inputs
+
+tempadcs=$($CROB_HOME/tools/vget "can_analog1 1" "can_analog1 2" "can_analog1 3")
+
+eche motor temperature analog inputs, axis 1,2,3 use tbd
+eche $tempadcs
+
+econt
+
+testid version of software in /opt/imt
+
+eche Check /opt/imt for current version and to make sure old versions
+eche are removed.
+
+eche
+eche ls -l /opt/imt
+ls -l /opt/imt
+
+eche
+eche -n "The installed software version is: "
+ls -l /opt/imt | grep -- "robot.->" | sed "s/.*robot -> //" | sed "s/.opt.imt.//"
+
+eche
+eche "Is this the correct current production software version?"
+if notyes; then
+    test_fail
+fi
+
+econt
+
+testid /home folder has only imt and recovery users.
+
+eche "Check /home to make sure the only users are imt and recovery:"
+eche "(lost+found is there too.)"
+eche
+eche ls -l /home
+ls -l /home
+
+# need echo to sanitize newlines for bash
+
+ulist=$(echo $(ls /home))
+if [[ "$ulist" != "imt lost+found recovery" ]]; then
+    test_fail
+fi
+econt
+
+testid empty trash
+
+eche -n "Emptying Trash folder..."
+rm -rf $HOME/.Trash/* $HOME/*~ $HOME/Desktop/*~
+eche Done.
+
+econt
+
+testid test for correct robot configurations with respect to current_robot
+
+eche Checking $IMT_CONFIG/robots to make sure there are
+eche no extra robot configurations there.
+eche
+eche ls -l $IMT_CONFIG/robots
+ls -l $IMT_CONFIG/robots
+
+rlist=$(echo $(ls $IMT_CONFIG/robots))
+
+if [[ $current_robot != planar
+    && $current_robot != wrist
+    && $current_robot != ankle ]]; then
+	test_fail
+fi
+
+if [[ (($current_robot == planar) && ("$rlist" != planar))
+    && (($current_robot == planar) && ("$rlist" != "planar planarhand")) ]]; then
+    test_fail
+elif [[ $current_robot == wrist && "$rlist" != wrist ]]; then
+    test_fail
+elif [[ $current_robot == ankle && "$rlist" != ankle ]]; then
+    test_fail
+fi
+
+eche Checking that current_robot matches the number of axes in ucsettings.rc
+
+if [[ $current_robot == planar && $axes != 2 ]]; then
+    test_fail
+elif [[ $current_robot == wrist && $axes != 3 ]]; then
+    test_fail
+elif [[ $current_robot == ankle && $axes != 2 ]]; then
+    test_fail
+fi
+
+econt
+
+testid check cal file settings
+
+eche "Check relevant data from cal files:"
+eche "* that each file has correct settings"
+eche "* that settings match between files when necessary"
+eche "For all robots:"
+eche "* check that calibration file line has a correct eche serial number"
+eche "   and customer name \(not just a country/city name\)"
+eche "* make sure there are no lines that say \"nnn customer\""
+eche "where there should be a customer name"
+eche
+eche "* For arm robots, check that torque_xforms and torque_offsets"
+eche "   are set and that have_ft is set correctly"
+eche
+(
+cd $IMT_CONFIG/robots
+for i in */imt2.cal
+do
+    grep -HE "^s.have.ft|^..Calib|^..Date|^..Last|que.xform|que.offset|nnn|customer" $i
+    eche
+done
+)
+
+eche "Do the cal file settings look correct?"
+if notyes; then
+    test_fail
+fi
+
+econt
+
+testid check cal file customer data
+
+eche Check cal files to make sure they have correct customer
+eche annotations, ft_cal customizations, and other custom settings.
+eche This step runs tkdiff on the planar and planarhand files, and
+eche firefox on the wrist file.  You must close these windows to proceed.
+eche 
+
+# a planar/hand
+if [[    -e $IMT_CONFIG/robots/planar/imt2.cal 
+      && -e $IMT_CONFIG/robots/planarhand/imt2.cal ]]; then
+    eche
+    eche "Click X on the browser window title bar to exit."
+    eche
+    eche tkdiff $IMT_CONFIG/robots/planar/imt2.cal $IMT_CONFIG/robots/planarhand/imt2.cal
+    tkdiff $IMT_CONFIG/robots/planar/imt2.cal $IMT_CONFIG/robots/planarhand/imt2.cal
+    # we need this sleep or firefox may get confused and not re-open
+    # because it still sees the first one closing.
+    sleep 1
+    econt
+fi
+
+# else...
+for i in $IMT_CONFIG/robots/*/imt2.cal
+do
+    
+    # don't do this if it's a planar/hand pair
+    if [[ $i == $IMT_CONFIG/robots/planarhand/imt2.cal 
+         && -e $IMT_CONFIG/robots/planar/imt2.cal ]]; then
+	continue
+    fi
+    if [[ $i == $IMT_CONFIG/robots/planar/imt2.cal 
+         && -e $IMT_CONFIG/robots/planar/imt2.cal ]]; then
+	continue
+    fi
+
+    firefox $i
+    # we need this sleep or firefox may get confused and not re-open
+    # because it still sees the first one closing.
+    sleep 1
+    econt
+done
+
+eche Cal file checks Done.
+econt
+
+testid no extra patient folders except test
+
+eche Make sure there are no patient folders in $THERAPIST_HOME
+eche "(except test)."
+eche
+eche ls -lL $THERAPIST_HOME
+ls -lL $THERAPIST_HOME
+plist=$(ls $THERAPIST_HOME)
+if [[ "$plist" != "test" ]]; then
+    test_fail
+fi
+econt
+
+testid date/time for customer location
+
+eche This is the date/time on this robot:
+eche
+date
+eche
+
+tz=$(echo -n $now | awk '{print $5}')
+if [[ ! "$tz" =~ E.Tx ]]; then
+    eche Note, timezone is ${tgreen}$tz${treset}
+    eche
+fi
+
+eche "Make sure it is correct and is set to the customer's time zone."
+eche "If not, set it with the Gear Menu (top right) -> System Settings -> Date and Time"
+eche "(do this by hand)."
+
+eche
+eche "Is the time zone ok?"
+if notyes; then
+    cleanup
+    fi
+
+econt
+
+if [[ $PERSONALITY == "ce" ]]; then
+    testid UEI position and serial numbers for CE
+
+    eche "Check UEI board position and serial number."
+    $CROB_HOME/go
+    cat /proc/pwrdaq | grep "s/n\|board"
+    $CROB_HOME/stop
+    econt
+fi
+
+testid Run robot motion tasks
+
+if [[ $XSTAT != 0 ]]; then
+    eche "Some tests have failed, do you want to continue with functional tests?"
+    if notyes; then
+	cleanup
+    fi
+fi
+
+roblist=$(ls $IMT_CONFIG/robots)
+eche Robot list: $roblist
+for i in $roblist
+do
+    eche
+    case $i in
+	planar)
+
+	    testid Planar plcenter
+
+	    eche "Run Adaptive1 test"
+	    echo planar > $IMT_CONFIG/current_robot
+	    eche run planar zero
+	    $CROB_HOME/tools/plcenter
+
+	    $CROB_HOME/tools/${PERSONALITY}plc -q check-cal || continue
+
+            # is there a 1 on the have_ft line?
+            if [[ $(grep have.ft $IMT_CONFIG/robots/planar/imt2.cal) = *1* ]]; then
+		testid Planar ft_test
+
+		eche run planar Force Transducer test
+		$CROB_HOME/tools/ft_test
+		econt
+	    fi
+
+	    testid Planar vex
+
+	    eche run planar vex
+	    $CROB_HOME/vex
+
+	    testid Planar Clock Adaptive1
+
+	    eche run planar clock
+	    PATID=test $LGAMES_HOME/clock/clock.tcl $PROTOCOLS_HOME/planar/clock/adaptive/therapy/adaptive_1 test
+
+	    testid Planar maze
+
+	    eche run planar maze
+	    PATID=test $LGAMES_HOME/cs/runcs
+	    ;;
+
+	planarhand)
+	    echo planarhand > $IMT_CONFIG/current_robot
+	    eche run planarhand zero
+
+	    testid Planarhand center
+
+	    $CROB_HOME/tools/plcenter
+
+	    $CROB_HOME/tools/${PERSONALITY}plc -q check-cal || continue
+
+	    testid Planarhand clock Adaptive1
+
+	    eche run planarhand clock
+	    PATID=test $LGAMES_HOME/clock/clock.tcl $PROTOCOLS_HOME/planarhand/clock/adaptivegrasp/therapy/grasp_pick_adaptive test
+	    eche set robot type back to planar
+	    echo planar > $IMT_CONFIG/current_robot
+	    ;;
+
+	wrist)
+	    echo wrist > $IMT_CONFIG/current_robot
+	    eche run wrist zero
+
+	    testid Wrist center
+
+	    $CROB_HOME/tools/wcenter
+
+	    $CROB_HOME/tools/${PERSONALITY}plc -q check-cal || continue
+
+	    testid Wrist 2D Adaptive1
+
+	    eche run wrist clock
+	    PATID=test $LGAMES_HOME/clock/clock.tcl $PROTOCOLS_HOME/wrist/clock/adaptive/therapy/wr_adaptive_2d_1 test
+	    eche run wrist maze
+	    PATID=test $LGAMES_HOME/cs/runcs
+	    ;;
+
+	*)
+	    eche "No test for $i"
+	    ;;
+
+    esac
+    eche "$i done"
+    econt
+done
+
+testid Turning off incoming ssh
+sudo sh -c "echo manual > /etc/init/ssh.override"
+eche Done
+eche "(To turn ssh back on, run: sudo rm /etc/init/ssh.override)"
+eche
+
+testid sendmachinereport
+
+# (should this be now or later?)
+
+eche Check to see whether sendmachinereport has been run.
+eche Check for machine_report files in /var/log/imt .
+eche 
+eche ls -ltr /var/log/imt
+ls -ltr /var/log/imt
+econt
+
+cleanup

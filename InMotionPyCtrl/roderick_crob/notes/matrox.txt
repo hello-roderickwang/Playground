@@ -1,0 +1,23 @@
+Wed Feb 26 15:05:27 EST 2003
+
+We are using the Matrox 450 dual-head graphics board under Linux.
+
+Red Hat 7.3 6/2002 comes with xfree86 4.2.0, which supports it, but it
+does not support the dual-head features fully.
+(Find the xfree86 version with xdpyinfo, see: vendor release number.)
+
+You can download the latest Matrox Linux drivers from:
+
+	http://www.matrox.com/mga/support/drivers/latest/home.cfm
+	http://www.matrox.com/mga/support/drivers/files/lnx_200.cfm
+
+(I installed the 2.0 beta, there was a 2.1 beta too, and later ones may
+work.)
+
+Download both the driver and the MGA PowerDesk setup utility.
+The binary versions work fine.
+Follow the instructions in the readme,
+
+After installing the device driver, you can run the PowerDesk utility
+(mgapdesk) to set various dual-head modes, including single head, cloned
+heads, separate heads or merged heads.

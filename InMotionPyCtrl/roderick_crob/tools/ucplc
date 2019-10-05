@@ -1,0 +1,120 @@
+#!/usr/bin/python
+
+# emulate the old PLC 
+# Inmotion2 robot software
+# Copyright 2012-2013 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+
+from __future__ import division, absolute_import, print_function  # Python 3
+
+import socket, select
+import argparse
+import os
+import logging
+from random import randint
+from time import sleep
+
+commands = {
+    'disable-samwatch': 'p 0 0 0 0',
+    'check-kill-reason': 'd',
+    'check-shutdown-reason': 'D',
+    'clear-shutdown-reason': 'D 0',
+    'check-ready-lamp': 'r RDY_LAMP',
+    'check-ready-en': 'g RDY_EN',
+    'check-cal': 'g CALIBRATED',
+    'check-lcd': 'l',
+    'check-fan': 'f',
+    'check-version': 'v',
+    'check-active': 'g ACT_LAMP',
+    'check-estop': 'g E_RUN',
+    'check-sensors': 'n',
+    'check-pins': 'y',
+    'check-sensors-short': 'N',
+    'check-pins-short': 'Y',
+    'check-surge': 'r stat_srg_prt',
+    'check-warm': 'g WAS_WARM',
+    'clear-warm': 's WAS_WARM 0',
+    'set-backlight-en': 'b 1',
+    'set-backlight-dis': 'b 0',
+    'set-active-en': 's GAME_ON 1',
+    'set-active-dis': 's GAME_ON 0',
+    'set-cal-en': 's CALIBRATED 1',
+    'set-ready-dis': 's RDY_EN 0',
+    'set-ready-en': 's RDY_EN 1',
+    'robsetup-done': 'Z 1',
+    'set-cal-dis': 's CALIBRATED 0'
+}
+
+epilog = "Available commands: \n\t" + "\n\t".join(sorted(commands.keys()))
+parser = argparse.ArgumentParser(description='Send commands to the uc.', epilog=epilog, formatter_class=argparse.RawTextHelpFormatter)
+parser.add_argument('command', type=str, help='command to send to the uc')
+parser.add_argument('-p', '--port', default=socket.getservbyname('imtuc'), help='connect on specified port')
+parser.add_argument('-q', '--quiet', action='store_true', help='do not output UC response')
+parser.add_argument('-v', '--verbose', action='store_const', const=logging.DEBUG, default=logging.INFO, help='verbose logging')
+
+args = parser.parse_args()
+
+logging.basicConfig(format='%(message)s', level=args.verbose)
+
+def talk(command):
+    s.send((command + '\n'))
+    ready = select.select([s], [], [], 1)
+    if ready[0]:
+        return s.recv(4096).rstrip()
+    else:
+        raise IOError
+
+def randcheck():
+    """
+    This method sends 'e 1234' where 1234 is a random number. It expects
+    to hear 'v 1234' back. If it doesn't, the communications with the uC
+    is out of sync, and we abort.
+    """
+    i = randint(1,10000)
+    try:
+        r = int(talk('e {}'.format(i)).split()[1])
+        if i != r:
+            raise IOError
+    except (IOError, ValueError):
+        logging.critical('ucplc: out of sync with microcontroller')
+        exit(255)
+    
+
+# connect to the daemon
+s = socket.socket()
+s.settimeout(1)
+try:
+    s.connect(('', int(args.port)))
+except:
+    logging.critical('ucplc: Failed to connect. Daemon not running?')
+    exit(255)
+s.settimeout(None)
+randcheck()
+
+if args.command == "disable-samwatch":
+    args.quiet = True
+
+try:
+    retval = ' '.join(talk(commands[args.command]).split(' ')[2:])
+    if not args.quiet:
+        print(retval)
+    try:
+        # if it's a binary response, we need to reverse the sense
+        # because shells are stupid and think 0 is true and 1 is false. ew.
+        if int(float(retval)) == 1:
+            exit(0)
+        elif int(float(retval)) == 0:
+            exit(1)
+        else:
+            exit(int(float(retval)))
+    except ValueError:
+        # we can't exit(int(retval)) for texty responses
+        exit(0)
+except (IOError, IndexError):
+    logging.critical('ucplc: Failed to communicate with daemon.')
+    exit(255)
+except KeyError:
+    logging.critical('ucplc: No such command.')
+    exit(255)
+

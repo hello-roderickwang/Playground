@@ -1,0 +1,39 @@
+#!/bin/bash
+# generate a settings file for the uc
+# use -w to write out a config file from stdin to the uc
+#   if given as -wrc, writes /home/imt/imt_config/ucsettings.rc
+#                      instead of stdin
+# Inmotion2 robot software
+# Copyright 2013 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+
+
+if [[ $1 == "-w" ]]; then
+    nc localhost imtuc \
+       && echo "wrote settings to uc" \
+       || (echo "could not write settings to uc" && exit 1)
+    exit
+fi
+
+if [[ $1 == "-wrc" ]]; then
+    RC=/home/imt/imt_config/ucsettings.rc
+    if [[ -f $RC ]]; then
+        $0 -w < $RC
+        exit
+    else
+        echo "$RC not found, nothing written to uc"
+        exit 1
+    fi
+fi
+
+echo "# m sensor=read,act,lowlimit,highlimit"
+echo "n" |
+nc -q 1 localhost imtuc |
+sed -r -e 's/v sensors //' \
+       -e 's/ /\n/g' |
+sed -r 's/(.*),.*/m \1/' |
+sed 's/_P[01]//' |
+sort -u
+echo "Z 0"
+

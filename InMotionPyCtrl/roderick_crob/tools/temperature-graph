@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# plot the robot temperature history.
+# by default, plot the last 12 hours.
+# optionally specify a duration and endtime.
+# see AT-STYLE TIME SPECIFICATION or rrdgraph_examples for syntax.
+
+DURATION=${1:-12h}
+ENDTIME=${2:-now}
+FILE=${3:-$(mktemp /tmp/XXXXXXX.png)}
+
+rrdtool graph $FILE \
+--start end-$DURATION \
+--end $ENDTIME \
+--title "Temperature Sensors" \
+--vertical-label "Temperature (°C)" \
+--width 480 \
+--height 200 \
+--slope-mode \
+--y-grid 1:2 \
+--watermark "plot created $(date +"%F %T %Z"); duration $DURATION, endtime $ENDTIME" \
+--disable-rrdtool-tag \
+DEF:pl_reg=/var/log/imt/temperature.rrd:pl_reg:AVERAGE \
+DEF:sam1=/var/log/imt/temperature.rrd:sam1:AVERAGE \
+DEF:sam2=/var/log/imt/temperature.rrd:sam2:AVERAGE \
+DEF:sam3=/var/log/imt/temperature.rrd:sam3:AVERAGE \
+DEF:dist=/var/log/imt/temperature.rrd:dist:AVERAGE \
+DEF:pc=/var/log/imt/temperature.rrd:pc:AVERAGE \
+LINE2:pl_reg#9966FF:pl_reg \
+LINE1:sam1#990000:sam1 \
+LINE1:sam2#CC3300:sam2 \
+LINE1:sam3#FF6633:sam3 \
+LINE1:dist#006600:dist \
+LINE1:pc#3366FF:pc > /dev/null
+
+if [[ "$4" != "nodisplay" ]]; then
+    display $FILE &
+fi

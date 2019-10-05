@@ -1,0 +1,189 @@
+#! /usr/bin/wish
+
+package require Tk
+
+# Copyright 2003-2013 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+# All rights reserved
+
+# req - move the robot handle by tracking mouse requests
+
+# most code dervied from the sim program
+
+global ob
+
+set ob(crobhome) $::env(CROB_HOME)
+
+source $ob(crobhome)/shm.tcl
+
+proc current_robot {} {
+    exec cat $::env(IMT_CONFIG)/current_robot
+}
+
+set ob(current_robot) [current_robot]
+
+wm protocol . WM_DELETE_WINDOW done
+start_lkm
+start_shm
+start_loop
+
+proc zero_all {} {
+    set ::pos_x 0.0
+    set ::pos_y 0.0
+    set ::last_x 0.0
+    set ::last_y 0.0
+}
+
+# raise the planar stiffness and damping, because we want the
+# handle to track pretty closely
+
+wshm stiff 400
+wshm damp 20
+
+set ob(scale) 1000.0
+
+#
+# Example 37-1
+# A large scrolling canvas.
+#
+
+proc Scrolled_Canvas { c args } {
+	frame $c
+	eval {canvas $c.canvas \
+		-xscrollcommand [list $c.xscroll set] \
+		-yscrollcommand [list $c.yscroll set] \
+		-highlightthickness 0 \
+		-borderwidth 0} $args
+	scrollbar $c.xscroll -orient horizontal \
+		-command [list $c.canvas xview]
+	scrollbar $c.yscroll -orient vertical \
+		-command [list $c.canvas yview]
+	grid $c.canvas $c.yscroll -sticky news
+	grid $c.xscroll -sticky ew
+	grid rowconfigure $c 0 -weight 1
+	grid columnconfigure $c 0 -weight 1
+	return $c.canvas
+}
+
+proc UnScrolled_Canvas { c args } {
+	frame $c
+	eval canvas $c.canvas $args
+	pack $c.canvas
+	return $c.canvas
+}
+
+#
+# Example 37-2
+# The canvas "Hello, World!" example.
+#
+
+proc CanvasHello {} {
+	global ob
+
+	zero_all
+	
+	set can [UnScrolled_Canvas .c -width 600 -height 600 \
+		-scrollregion {-300 -300 300 300}]
+	pack .c -fill both -expand true
+	$can create rect [centxy 0.0 0.0 .2] -tag scale -outline red
+	$can create oval [centxy 0 0 .012] -tag scale
+	# Create a text object on the canvas
+	$can create oval [centxy 0 0 .012] -fill yellow \
+	    -tag "movable cursor scale"
+	# Bind actions to objects with the movable tag
+	$can bind movable <Button-1> {CanvasMark %x %y %W}
+	$can bind movable <B1-Motion> {CanvasDrag %x %y %W}
+
+	$can scale scale 0 0 $ob(scale) $ob(scale)
+
+	bind . <Key-q> done
+
+	# this controller tracks pl_req_pos_[xy]
+	# will need to be expanded to work with wrist, etc
+	movebox 0 27 {0 1 0} {0 0 0 0} {0 0 0 0}
+}
+proc CanvasMark { x y can} {
+	global canvas
+	# Map from view coordinates to canvas coordinates
+	set x [$can canvasx $x]
+	set y [$can canvasy $y]
+	# Remember the object and its location
+	set canvas($can,obj) [$can find closest $x $y]
+	set canvas($can,x) $x
+	set canvas($can,y) $y
+}
+proc CanvasDrag { x y can} {
+	global canvas ob
+	# puts "passed x $x y $y"
+	# Map from view coordinates to canvas coordinates
+	set x [$can canvasx $x]
+	set y [$can canvasy $y]
+	# puts "canvas x $x y $y"
+	# Move the current object
+	set dx [expr $x - $canvas($can,x)]
+	set dy [expr $y - $canvas($can,y)]
+	# puts "dx $dx dy $dy"
+	$can move $canvas($can,obj) $dx $dy
+	set canvas($can,x) $x
+	set canvas($can,y) $y 
+	# find center of current object
+	set bbox [$can bbox $canvas($can,obj)]
+	foreach {x1 y1 x2 y2} $bbox break
+	set cx [expr {($x1 + $x2) / 2.}]
+	set cy [expr {($y1 + $y2) / 2.}]
+	# puts "bbox $bbox"
+	# puts "center x $cx y $cy"
+	# convert center to world space
+	set ::pos_x [expr {$cx / $ob(scale)}]
+	set ::pos_y [expr {-($cy / $ob(scale))}]
+	wm title . "$::ob(current_robot) ($::pos_x, $::pos_y)"
+
+	switch $ob(current_robot) {
+	    planar {
+		wshm pl_req_pos_x $::pos_x
+		wshm pl_req_pos_y $::pos_y
+	    }
+	    planarhand {
+		wshm pl_req_pos_x $::pos_x
+		wshm pl_req_pos_y $::pos_y
+	    }
+	    wrist {
+		set ::pos_x [expr {$::pos_x * 2.0}]
+		wshm wr_req_pos_fe $::pos_x
+		wshm wr_req_pos_ps $::pos_x
+		wshm wr_req_pos_aa $::pos_y
+	    }
+	    linear {
+		wshm li_req_pos_y $::pos_y
+	    }
+	}
+
+	# puts "new x $x y $y"
+	# puts ""
+}
+
+proc init {c} {
+	global ob
+	# bind $c <Configure> [list after idle chwin $c %w %h]
+	bind $c <Motion> {CanvasDrag %W %x %y}
+	bind $c <Button-1> {CanvasMark %W %x %y}
+
+	bind . <Key-q> done
+
+	# dampzone
+	$c create rect [centxy 0.0 0.0 .2] -tag rect -outline red
+	$c scale rect 0 0 $ob(scale) $ob(scale)
+}
+
+proc done {} {
+
+	after 100
+	stop_loop
+	catch {stop_shm} result
+	stop_lkm
+	exit
+}
+
+# init $c
+CanvasHello

@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>Sending Open Loop Torques</title>
+</head>
+<body>
+
+<h1>Sending Open Loop Torques</h1>
+Wed Feb  9 11:26:09 EST 2005
+<p>
+Closed loop control systems operate based on feedback from the system
+that they are controlling, open loop control systems do not use
+feedback.  For a familiar example, if you are heating food in a
+microwave oven, if you just set the oven to run for two minutes, that
+is open loop control.  If the oven has a thermometer or other sensor
+that tells you when the food is heated up, that is closed loop control.
+<p>
+
+In normal operation, InMotion robots operate with closed loop control.
+The forces sent to the motors are calculated based on feedback from
+position sensors (and perhaps other sensors) in the robot system.  In
+some cases, especially for debugging, you might want to send a force to
+a robot motor without having it dependent on a sensor.  Usually, you
+will want to send a fixed force to a motor.
+<p>
+To send fixed voltage open loop controls, set the shm variable
+test_raw_torque to 1.  Then set the following variables to the desired
+voltage, depending on which robot you are controlling:
+.
+<p>
+<ul>
+<li>raw_torque_volts_s
+<li>raw_torque_volts_e
+<p>
+<li>wrist_left_test_volts
+<li>wrist_right_test_volts
+<li>wrist_ps_test_volts
+<p>
+<li>ankle_left_test_volts
+<li>ankle_right_test_volts
+</ul>
+
+<p>
+(raw_torque_volts_s should be renamed planar_shoulder_test_volts, but it
+isn't, at least for now.)
+</body></html>

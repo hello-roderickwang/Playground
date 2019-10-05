@@ -1,0 +1,39 @@
+#! /bin/bash
+
+# run all uc commands that don't change state
+# also serves as a uc command reference card
+
+uc() { echo $1 | nc -q 1 localhost imtuc; }
+
+# decorate uc command with descriptive text and stuff
+# if command has an arg, quote the command, see below.
+duc() { echo "command ($1): $2"; uc "$2"; echo; }
+
+# split line at white space to make it easier to read lists
+spline() { sed 's/  */\n/g'; }
+
+# don't run this uc command, just echo
+nope() { echo "command ($1): $2 (nope)"; echo; }
+
+duc backlight "b 0"
+duc Celsius C
+duc death d
+duc Death-SFT_PWR D
+duc echo "e 42"
+duc fan f
+duc get "g ACT_LAMP"
+duc debuG G | spline
+duc i2c "i 0"
+nope kill k
+nope "Kill watchdog" K
+duc lcd l
+nope modify m
+duc sensors n | spline
+nope seNsors N
+nope dout o
+duc sensor "r status_rdy0"
+nope set s
+duc time t
+duc version v
+duc array y | spline
+nope arraY Y

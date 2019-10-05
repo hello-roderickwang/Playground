@@ -1,0 +1,128 @@
+These are the ankle robot variables from $CROB_HOME/cmdlist.tcl.
+They are shown in Tcl list format.
+
+The first element is the data type:
+
+so_f64 is 64 bit double
+so_u32 is 32 bit unsigned int
+so_s32 is 32 bit signed int
+
+The second element is the Tcl name:
+
+This is converted to a C variable name in shared memory by the
+$CROB_HOME/shm program.
+
+The third element is the corresponding C variable name.
+
+The fourth element is a length - always 1 here.
+
+{so_f64 ankle_stiff &ob->ankle.stiff 1}
+	stiffness constant (in Newton/ meter)
+{so_f64 ankle_damp &ob->ankle.damp 1}
+	damping constant (in Newton*seconds/meter)
+{so_u32 ankle_ueimf &ob->ankle.ueimf 1}
+	if set, this robot uses a UEI PD-MF2 board for motor forces.
+	if not set, it uses a UEI PD-AO8 board.
+{so_f64 ankle_rl_pfomax &ob->ankle.rl_pfomax 1}
+	maximum voltage to send to the right and left motors
+	don't change this one.
+{so_f64 ankle_rl_pfotest &ob->ankle.rl_pfotest 1}
+	maximum voltage to send to the motors,
+	if you want to change the maximum for testing, change this.
+
+These "left" variables have corresponding "right" variables.
+
+{so_u32 ankle_left_enc_channel &rob->ankle.left.enc_channel 1}
+	channel index for axis encoder input
+{so_f64 ankle_left_disp &rob->ankle.left.disp 1}
+	position of shaft
+{so_f64 ankle_left_devtrq &rob->ankle.left.devtrq 1}
+	measured (calculated) torque of motor
+{so_f64 ankle_left_xform &rob->ankle.left.xform 1}
+	tranform to convert desired torque to motor command voltage
+{so_f64 ankle_left_volts &rob->ankle.left.volts 1}
+	voltage sent to motor
+{so_f64 ankle_left_force &rob->ankle.left.force 1}
+	measured force for axis
+{so_f64 ankle_left_test_volts &rob->ankle.left.test_volts 1}
+	set this to send a raw voltage to axis
+{so_u32 ankle_left_ao_channel &rob->ankle.left.ao_channel 1}
+	channel index for axis motor voltage output
+{so_u32 ankle_left_csen_channel &rob->ankle.left.csen_channel 1}
+	current sensor input channel (not used)
+{so_u32 ankle_left_rot_enc_channel &rob->ankle.left.rot_enc_channel 1}
+	channel index for axis rotary encoder
+{so_f64 ankle_left_rot_disp &rob->ankle.left.rot_disp 1}
+	axis rotary encoder position
+{so_f64 ankle_left_rot_lin_disp &rob->ankle.left.rot_lin_disp 1}
+	axis rotary encoder linear position
+{so_f64 ankle_left_vel &rob->ankle.left.vel 1}
+	axis shaft velocity
+{so_f64 ankle_left_rot_lin_vel &rob->ankle.left.rot_lin_vel 1}
+	axis rotary encoder linear velocity
+
+{so_u32 have_ankle &ob->have_ankle 1}
+	if set, this is an ankle robot
+
+These "ie" (inversion/eversion) variables have corresponding "dp" variables.
+
+{so_f64 ankle_ie_pos &ob->ankle.pos.ie 1}
+	position in radians
+{so_f64 ankle_ie_vel &ob->ankle.vel.ie 1}
+	velocity in radians/second
+{so_f64 ankle_ie_fvel &ob->ankle.fvel.ie 1}
+	velocity in radians/second with butterworth filter
+{so_f64 ankle_ie_accel &ob->ankle.accel.ie 1}
+	accelleration in radians/second^2
+{so_f64 ankle_ie_torque &ob->ankle.torque.ie 1}
+	torque calculated by the slot controller
+{so_f64 ankle_ie_moment_csen &ob->ankle.moment_csen.ie 1}
+	current sensor measured moment (not used)
+{so_f64 ankle_ie_moment_cmd &ob->ankle.moment_cmd.ie 1}
+	measured moment, as calculated from the command torque
+{so_f64 ankle_ie_offset &ob->ankle.offset.ie 1}
+	a physical constant of the device.
+{so_f64 ankle_ie_norm &ob->ankle.norm.ie 1}
+	unused
+{so_f64 ankle_ie_back &ob->ankle.back.ie 1}
+	unused
+
+{so_f64 ankle_accel_mag &ob->ankle.accel_mag 1}
+	magnitude of ankle accelleration vector
+{so_f64 ankle_vel_mag &ob->ankle.vel_mag 1}
+	magnitude of ankle veliocity vector
+{so_f64 ankle_safety_vel &ob->ankle.safety_vel 1}
+	safety velocity threshold, used to see if shaft hit stops
+{so_f64 ankle_safety_accel &ob->ankle.safety_accel 1}
+	safety accelleration threshold, used to see if shaft hit stops
+{so_f64 ankle_slip_thresh &rob->ankle.trans.slip_thresh 1}
+	threshold for shaft slip
+
+{so_u32 ankle_uei_ao_board_handle &rob->ankle.uei_ao_board_handle 1}
+	channel index for UEI data aquisition board
+
+{so_u32 ankle_knee_channel &rob->ankle.knee.channel 1}
+	channel index for knee pot data
+{so_f64 ankle_knee_raw &rob->ankle.knee.raw 1}
+	knee pot voltage
+{so_f64 ankle_knee_angle &rob->ankle.knee.angle 1}
+	knee angle in degrees
+	(not radians, unless you change the knee xforms)
+
+These variables are all physical constants describing the ankle robot
+dimensions and should be documented in mechanical documentation.
+
+{so_f64 ankle_trans_lead &rob->ankle.trans.lead 1}
+{so_f64 ankle_trans_ratio &rob->ankle.trans.ratio 1}
+{so_f64 ankle_ankle_ball_length &rob->ankle.trans.ankle_ball_length 1}
+{so_f64 ankle_ball_ball_width &rob->ankle.trans.ball_ball_width 1}
+{so_f64 ankle_av_actuator_length &rob->ankle.trans.av_actuator_length 1}
+{so_f64 ankle_av_shin_length &rob->ankle.trans.av_shin_length 1}
+{so_f64 ankle_enc_xform &rob->ankle.trans.enc_xform 1}
+
+These are constants describing the conversion of the knee pot voltage
+to knee pot angle:
+
+{so_f64 ankle_knee_xform1 &rob->ankle.knee.xform1 1}
+{so_f64 ankle_knee_xform2 &rob->ankle.knee.xform2 1}
+{so_f64 ankle_knee_bias &rob->ankle.knee.bias 1}

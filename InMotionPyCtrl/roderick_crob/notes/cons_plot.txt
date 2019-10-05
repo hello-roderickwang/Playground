@@ -1,0 +1,180 @@
+IMT Console Games Plot Menu
+
+Thu Oct  6 18:02:49 EDT 2005
+
+When you press the "Plot" button on the Robot Games Console menu screen,
+a menu is presented with buttons marked as follows:
+
+==============================
+* Screen * Printer
+
+* Position
+* Time
+* Phase
+* Circle
+* Z Force
+* Custom
+
+x axis    y axis
+* time
+* x
+* y
+* vx
+* vy
+* fx
+* fy
+* fz
+* grasp
+
+[Cancel]
+[File]
+==============================
+
+The top menu choice is for display device: Screen or Printer.
+
+By default, plots are displayed on the graphical screen.  There is
+experimental code in the system to plot to a computer printer, but
+this code is not yet stable and is not available on most systems, so
+choose Screen.
+
+The next menu choice is for Plot Type, the types are: Position, Time,
+Phase, Circle, Z Force, or Custom.
+
+All plot displays have a file name label at the top that indicates data
+about the particular plot, for example the file name:
+
+/home/imt/therapist/test/therapy/20050301_Tue/oneway_rec_1_150729_Nt1.dat
+
+means:
+
+/home/imt/therapist - the home directory of the data
+test - the patient ID - test
+therapy - therapy or evaluation
+20050301_Tue - the date - Tuesday, March, 1, 2005
+oneway_rec_1 - the protocol - Oneway Record #1
+150729 - the time of day - 15:07:29 in the afternoon
+Nt1 - the segment of the run - North, To (center to north), #1
+
+Times are shown in seconds
+Positions are shown in meters.
+Velocities are shown in meters per second.
+Forces are shown in newtons.
+
+
+Position:
+
+The Position plot shows a set of up to 16 per-slot plots on one screen, for
+instance Point-to-Point or Oneway-Record plots.  The display covers the full
+window, and is labeled x position vs y position, in meters.  The name of the
+set of plots is show above the plot.  Each of the 16 segments is shown in a
+different color, and they are labeled at right, for example:
+
+Nt1 (red)
+Nb1 (green)
+NEt2 (blue)
+NEb2 (magenta)
+Et3 (cyan)
+Eb3 (brown)
+etc.
+
+There are 8 different colors, so for a 16 segment plot, each color is used
+twice.
+
+Time:
+
+The Time plot shows eight different sets of data values for a single
+segment, plotted vs time.  From upper left to lower right, these plots are:
+
+x position vs time (red)
+y position vs time (red)
+x velocity vs time (blue)
+y velocity vs time (blue)
+
+x force vs time (magenta)
+y force vs time (magenta)
+z force vs time (magenta)
+x position vs y position (red)
+
+These are shown as eight small plots on one display, four columns wide,
+two rows tall.
+
+Phase:
+
+The Phase plot shows three different phase plots for a single segment.
+
+x position vs y position (red)
+x velocity vs y velocity (blue)
+x force vs y force (magenta)
+
+These are shown as three small plots, two columns wide and two columns tall.
+
+Circle:
+
+The Circle plot shows a single display with five circle paths plotted on it,
+that are results of the Evaluation Circle protocols.  The circles are shown
+on a display of x vs y position, and are numbered 1 to 5.
+
+Z Force:
+
+The Z force plot shows a single display with five force tests plotted on it,
+that are results of the Evaluation Shoulder protocols.  Force data is shown
+on a display of Time vs Z force, and are numbered 1 to 5.
+
+Custom:
+The Custom plot allows you to specify which fields are plotted
+on which axes.  For each of the X and Y axes, there is a choice of:
+
+time
+x (position x)
+y (position y)
+vx (velocity x)
+vy (velocity y)
+fx (force x)
+fy (force y)
+fz (force z)
+grasp (force)
+
+For instance, to see a full screen plot with time on the X axis and Z force on
+the Y axis, choose Custom, and then "time" in the first column, and "fz" in
+the second column.
+
+Some plots are only sensible for certain kinds of data, for instance:
+
+Position plots are for multiple single-segment data files, like oneway record,
+point to point, or round dynamic data files.
+Time and phase plots are for all kinds of data files.
+Circle plots are for circle data files.
+Z force plots are for shoulder data files.
+Custom plots are for all kinds of data files.
+
+
+Choosing a file name to plot:
+
+After choosing the Plot Type, press the File button in the lower
+left corner to choose a file to plot.  This opens a file dialog,
+to plot the set of oneway record segments associated with this file:
+
+/home/imt/therapist/test/therapy/20050301_Tue/oneway_rec_1_150729_Nt1.dat
+
+Click down the list:
+
+Directory:
+/home/imt/therapist
+therapist
+test
+therapy
+20050301_Tue
+
+and then file:
+oneway_rec_1_150729_Nt1.dat
+
+After clicking the file name, click the Open button, and the file will plot to
+the display screen.  When you are finished looking at the plot, mouse over the
+plot and type q on your keyboard, to close the plot display screen.
+
+At the bottom of the Open file dialog, there is a "Files of Type" menulist, to
+narrow the file types displayed.  For instance, to see only shoulder files,
+choose: Shoulder data files (*shoulder*.dat).
+
+To cancel the Plot operation before you finish choosing the
+plot type, press the Cancel button.

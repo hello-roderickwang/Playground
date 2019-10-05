@@ -1,0 +1,79 @@
+Description of Ankle robot control loop C functions
+
+
+
+an_sensact.c - Sensor and actuator functions:
+
+ankle_init() - Set ankle variables to safe initial values.
+
+ankle_sensor() - Copy data from the hardware sensors into the ankle
+data structures.  This is position data, read from encoders and
+potentiometers.  It is used to calculate world-space positions for the
+inversion/eversion (ie) and dosiflexion/plantarflexion (dp) axes, as
+well as for the knee angle.  Device space velocities are also computed
+here.
+
+ankle_calc_vel() - World space velocities are computed here.
+
+ankle_moment() - Compute the forces on the ankle, from the motor
+commands, emulating a force sensor.
+
+dac_ankle_actuator() - Convert the force values from the slot
+controller to motor torques, and then to motor voltages, and send the
+voltages to the motors.
+
+ankle_after_compute_controls() - Data handling for butterworth filter
+used for fvel (filtered velocity).
+
+ankle_set_zero_torque() - Set control loop torque variables to zero.
+
+ankle_write_zero_torque() - Write zeros to ankle motors
+
+ankle_check_safety_fn() - No longer required.  In older versions, the
+code checked for large accellerations, to see if the shafts hit the
+stops.  The code also checked for shafts slipping.
+
+
+
+an_ulog.c - logging functions, may be modified by the research user.
+
+ankle_write_to_refbuf() - This is the "reference logging" function
+used by roborec when running "Record from Robot" to write one sample
+to the in-memory reference array (refarr).  It does not write to a log
+file pipe.  It writes sample number, position, and velocity.
+
+write_ankle_fifo_fn() - The normal ankle logging function.  It writes
+one sample to a log file, saving sample number, position, velocity,
+sensed torque, and other robot data.
+
+write_ankle_accel_fifo_fn() - This was another ankle logging function,
+currently unused.
+
+read_ankle_fifo_sample_fn() - This is used by roborec when running
+"Playback to Robot" to read the desired ankle position from the
+in-memory reference input (refin) array.
+
+
+
+an_uslot.c - Slot control functions, may be modified by the research
+user.
+
+ankle_ctl() - A moving-box slot controller, which can be invoked by
+calling the Tcl movebox proc.
+
+ankle_point_ctl() - A very basic controller, which imposes control at
+a single fixed point.
+
+
+
+
+The code that manages the record and playback of the roborec
+reference array is in main.c.
+
+write_to_refbuf() - Calls ankle_write_to_refbuf (see above)
+
+refbuf_to_refin() - Copies one row from refarr to refin
+
+refarr_switchback() - appends some data to the end of a refarr
+recording so there is a smooth transition from the end position to the
+start position during a looped playback.

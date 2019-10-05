@@ -1,0 +1,179 @@
+#!/bin/bash
+# initialize CAN and the robot
+
+# these functions allow us to source a calfile
+s() {
+eval s_$1=$2;
+}
+ok() {
+:
+}
+
+# has make been run in $CROB_HOME ?
+if ! $CROB_HOME/checkexist; then
+        echo 18
+        exit
+fi
+
+ORIG_PENABLE=$(echo p | nc -q 1 localhost imtuc | sed 's/v/p/')
+
+uccmd() {
+    echo $1 | nc -q 1 localhost imtuc > /dev/null
+}
+
+reset_samwatch() {
+    uccmd "$ORIG_PENABLE"
+}
+
+# disable sam watching
+uccmd "p 0 0 0 0"
+
+ROBOTTYPE=$(cat $IMT_CONFIG/current_robot)
+source $IMT_CONFIG/robots/$ROBOTTYPE/imt2.cal
+
+$CROB_HOME/tools/ucplc -q check-ready-lamp
+READY57=$?
+if [[ $READY57 -ne 0 && $IGNORE57 = "" ]]; then
+    echo 17
+    reset_samwatch
+    exit
+fi
+
+$CROB_HOME/tools/uccheckdips
+READYDIPS=$?
+if [[ $READYDIPS -ne 0 && $IGNOREDIPS = "" ]]; then
+    echo 21
+    reset_samwatch
+    exit
+fi
+
+
+rtcanconfig rtcan0 --baudrate=1000000 start
+
+sleep .5
+
+rtcansend rtcan0 -i 0 0x81 0                  # NMT reset
+
+NAVAILAXES=$($CROB_HOME/tools/axiscount)
+if (( NAVAILAXES < 1 )); then
+    echo 14
+    reset_samwatch
+    exit
+fi
+
+# which axes do we actually want?
+
+case "$ROBOTTYPE" in
+    "planar")
+    AXES=($s_shoulder_angle_channel $s_elbow_angle_channel)
+    PENABLE="p 1 1 0 0"
+    ;;
+
+    "planarhand")
+    AXES=($s_shoulder_angle_channel $s_elbow_angle_channel $s_hand_enc_channel)
+    PENABLE="p 1 1 1 0"
+    ;;
+
+    "hand")
+    AXES=($s_hand_enc_channel)
+    PENABLE="p 0 0 1 0"
+    ;;
+
+    "wrist")
+    AXES=($s_wrist_left_enc_channel $s_wrist_right_enc_channel $s_wrist_ps_enc_channel)
+    PENABLE="p 1 1 1 0"
+    ;;
+
+    "ankle")
+    AXES=($s_ankle_left_enc_channel $s_ankle_right_enc_channel)
+    PENABLE="p 1 1 0 0"
+    ;;
+
+    "linear")
+    AXES=($s_linear_enc_channel)
+    PENABLE="p 0 0 0 1"
+    ;;
+
+    *)
+    echo 15
+    reset_samwatch
+    exit
+    ;;
+esac
+
+# do we have enough axes?
+if (( ${#AXES[@]} > NAVAILAXES )); then
+    echo 16
+    reset_samwatch
+    exit
+fi
+
+
+$CROB_HOME/rtcansendmulti rtcan0 -f - -i 0x600 <<EOF
+0x22 0x00 0x1a 0x00 0x00 0x00 0x00 0x00       # stop TPDO1
+0x22 0x00 0x18 0x03 0xD0 0x07 0x00 0x00       # set TPDO1 inhibit time to 200 ms
+0x22 0x00 0x1a 0x00 0x01 0x00 0x00 0x00       # restart TPDO1
+
+# configure TPDO3 1a02 to respond to sync trigger
+0x22 0x02 0x1a 0x00 0x00 0x00 0x00 0x00       # stop TPDO3
+0x22 0x02 0x18 0x02 0x01 0x00 0x00 0x00       # set TPDO3 Trigger 01
+EOF
+
+# TPDO2 for position
+if [[ "$ROBOTTYPE" == "ankle" ]]; then
+$CROB_HOME/rtcansendmulti rtcan0 -f - -i 0x600 <<EOF
+0x22 0x02 0x1a 0x01 0x20 0x00 0xA0 0x20       # map 0x20A0 = PY in the 1st subindex
+EOF
+
+    if [[ "$ANKLE_DEBUG_POSITION" == "1" ]]; then # instead of analog, PX 
+    $CROB_HOME/rtcansendmulti rtcan0 -f - -i 0x600 <<EOF
+0x22 0x02 0x1a 0x02 0x20 0x00 0x64 0x60       # map 0x6064 = PX in the 2nd subindex
+EOF
+    else
+    $CROB_HOME/rtcansendmulti rtcan0 -f - -i 0x600 <<EOF
+0x22 0x02 0x1a 0x02 0x10 0x01 0x05 0x22       # map 0x2205 sub 1 (analog 1) in the 2nd subindex
+EOF
+    fi
+
+else # all other robot types
+$CROB_HOME/rtcansendmulti rtcan0 -f - -i 0x600 <<EOF
+0x22 0x02 0x1a 0x01 0x20 0x00 0x64 0x60       # map 0x6064 = PX in the 1st subindex
+0x22 0x02 0x1a 0x02 0x10 0x01 0x05 0x22       # map 0x2205 sub 1 (analog 1) in the 2nd subindex
+EOF
+fi
+
+$CROB_HOME/rtcansendmulti rtcan0 -f - -i 0x600 <<EOF
+0x22 0x02 0x1a 0x00 0x02 0x00 0x00 0x00       # enable mapping for 2 items
+EOF
+
+# set up RPDO3
+for node in ${AXES[@]}; do
+$CROB_HOME/rtcansendmulti rtcan0 -f - -i 0x60${node} <<EOF
+0x23 0x02 0x14 0x01 0x0${node} 0x04 0x00 0x80 # invalidate RPDO3 comm param 1402
+0x23 0x02 0x16 0x00 0x00 0x00 0x00 0x00       # invalidate RPDO3 map param 1602
+0x23 0x02 0x16 0x01 0x10 0x00 0x71 0x60       # setup 1602 with 6071 (target torque)
+0x23 0x02 0x16 0x00 0x01 0x00 0x00 0x00       # RPDO3 activate a single object
+0x23 0x02 0x14 0x01 0x0${node} 0x04 0x00 0x00 # validate RPDO3; set COBID 40${node} on RPDO3 1402
+0x2F 0x60 0x60 0x00 0x04 0x00 0x00 0x00       # set 0x6060 = 4 Profile Torque Mode
+0x23 0x87 0x60 0x00 0xD1 0x07 0x00 0x00       # set torque slope
+
+# heartbeat 
+0x23 0x07 0x60 0x00 0x02 0x00 0x00 0x00       # heartbeat failure disables motor
+#0x23 0x07 0x60 0x00 0x00 0x00 0x00 0x00       # heartbeat failure does NOT disable motor
+EOF
+done
+
+rtcansend rtcan0 -i 0 0x01 0                  # nmt start
+
+sleep .1
+
+$CROB_HOME/rtcansendmulti rtcan0 -f - -i 0x200 <<EOF
+0x06 0x00                                     # control word 6: ready to switch on
+0x07 0x00                                     # control word 7: switched on
+0x0F 0x00                                     # control word F: operation enabled
+EOF
+
+sleep .1
+uccmd "$PENABLE"
+$CROB_HOME/tools/ucplc -q robsetup-done
+echo ${#AXES[@]}

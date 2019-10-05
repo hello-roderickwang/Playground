@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+
+import sys
+import struct
+from subprocess import call
+
+if len(sys.argv) != 5:
+    print('''
+usage: sdobincmd NODE COMMAND INDEX VALUE
+where VALUE can be 'q' to specify that this is a QUERY
+''')
+    exit(1)
+
+node = int(sys.argv[1])
+command = sys.argv[2].upper()
+index = int(sys.argv[3])
+try:
+    value = float(sys.argv[4])
+    query_or_setting = 128  # setting. byte 3, bit 7 = 1 - float. see CAN301 9.1.1.1
+except ValueError:
+    if sys.argv[4] == 'q':
+        value = 0
+        query_or_setting = 192  # query. byte 3, bit 6 = 1 - see CAN301 9.1.1.1
+    else:
+        raise ValueError
+
+cmdstring = 'rtcansend rtcan0 --loopback=0 -i 0x30{} 0x{:02X} 0x{:02X} 0x{:02X} 0x{:02X} '.format(
+    node,
+    ord(command[0]),
+    ord(command[1]),
+    index,
+    query_or_setting
+)
+
+cmdstring += ' '.join(["0x%02X" % ord(x) for x in reversed(struct.pack('>f',value))])
+
+call(cmdstring, shell=True)

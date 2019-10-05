@@ -1,0 +1,114 @@
+#!/usr/bin/python
+
+# monitor the error fifo and display errors/take actions
+# Inmotion2 robot software
+# Copyright 2012-2013 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+
+from __future__ import division, absolute_import, print_function  # Python 3
+import argparse
+import logging
+import signal
+from subprocess import call, CalledProcessError, Popen
+from time import sleep
+import os
+from os.path import join as pjoin
+import daemon
+
+try:
+    CROB_HOME = os.environ['CROB_HOME']
+    IMT_CONFIG = os.environ['IMT_CONFIG']
+except KeyError:
+    print('The CROB_HOME or IMT_CONFIG environment variable is not set. Exiting.')
+    exit(1)
+
+UCPLC = pjoin(CROB_HOME, 'tools', 'ucplc')
+
+
+def say_goodbye():
+    logging.info('notifyerror: killed, stopping.')
+    exit(0)
+
+
+signal.signal(signal.SIGINT, lambda signum, frame: say_goodbye())
+signal.signal(signal.SIGTERM, lambda signum, frame: say_goodbye())
+
+parser = argparse.ArgumentParser(
+    description='Monitor the errors fifo, display them to the user, take required actions.')
+parser.add_argument('-f', '--fifo', type=str, default='/proc/xenomai/registry/native/pipes/crob_error')
+parser.add_argument('-d', '--daemon', action='store_true', help='daemonize')
+parser.add_argument('-v', '--verbose', action='store_const', const=logging.DEBUG, default=logging.INFO,
+                    help='verbose logging')
+
+args = parser.parse_args()
+
+logging.basicConfig(format='%(levelname)s:%(message)s', level=args.verbose)
+
+if open('/opt/imt/personality').read().strip() == 'ce':
+    logging.info('notifyerror: this program is not used on CE-style hardware, exiting.')
+    exit(0)
+
+try:
+    fifo = open(args.fifo, 'r')
+except IOError:
+    logging.critical('Could not open the error fifo, exiting.')
+    exit(1)
+
+
+def mainloop(fifo):
+    while True:
+        line = fifo.readline().rstrip()
+        if not line:
+            logging.debug('fifo closed, exiting.')
+            exit(1)
+        try:
+            action, message = line.split(';', 1)  # maxsplit=1 so ; IS allowed in the message
+            action = action.split('=', 1)[1]
+            message = message.split('=', 1)[1]  # maxsplit=1, so = IS allowed in the message
+            message = message.replace('\\n', '\n')
+        except ValueError:
+            logging.critical('malformed error message, exiting.')
+            exit(1)
+
+        try:
+            calibrated = not call([UCPLC, '-q', 'check-cal'])
+            if "Encoder kick" in message and not calibrated:
+                continue
+
+            if "failed to respond" in message:
+                call([UCPLC, '-q', 'set-cal-dis'])
+                logging.debug('failed to respond... set-cal-dis')
+
+            if action == "set-cal-dis":
+                call([UCPLC, '-q', 'set-cal-dis'])
+                logging.debug('got set-cal-dis')
+
+            if action == "set-ready-dis":
+                call([UCPLC, '-q', 'set-ready-dis'])
+                call([UCPLC, '-q', 'set-cal-dis'])
+                logging.debug('got set-ready-dis')
+
+        except CalledProcessError:
+            message += "\n\nSending kill command to microcontroller failed!"
+
+
+        logging.debug('running zenity')
+        Popen(['/usr/bin/zenity', '--display', ':0.0', '--warning', '--text', message])
+
+    try:
+        close(fifo)
+    except IOError:
+        pass
+
+    exit(0)
+
+
+context = daemon.DaemonContext()
+context.files_preserve = [fifo]
+
+if args.daemon:
+    with context:
+        mainloop(fifo)
+else:
+    mainloop(fifo)

@@ -1,0 +1,34 @@
+<html>
+<head>
+<title>InMotion2 Programming Examples</title>
+</head>
+<body>
+
+<h2>InMotion2 Programming Examples</h2>
+Mon May 19 18:16:17 EDT 2003
+<p>
+There are several programming examples in ~imt/crob/examples/ .
+They should help get you started writing programs for the
+InMotion2 robot arm.
+
+<ul>
+<li>xy1 - a command line interface Tcl program that prints position and
+velocity data to standard output every time the user hits the enter
+key.
+<li>xy2 - a command line interface Tcl program that prints position and
+velocity data to standard output once per second using an asynchronous
+loop with Tcl's "after" command.
+<li>xy3 - a graphical user interface Tcl/Tk program that prints position and
+velocity data to the GUI window when a button is pressed.
+<li>xy4 - a graphical user interface Tcl/Tk program that prints position and
+velocity data to the GUI window continuously
+<li>chase.tcl - a graphical user interface Tcl/Tk program that shows a mouse
+cursor chasing an object around the screen.  This program does not access the
+robot arm, you may want to modify it to get x/y position from the manipulandum
+instead of the mouse.
+<li>getpos.c - a C program that queries the InMotion2 Linux Kernel Module
+for x/y position data.  Note, it assumes that the LKM is already running and
+is not paused.
+</ul>
+
+</body></html>

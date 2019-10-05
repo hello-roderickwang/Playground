@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# check for and log a uc-forced system poweroff
+# Inmotion2 robot software
+# Copyright 2014 Interactive Motion Technologies, Inc.
+# Watertown, MA, USA
+# http://www.interactive-motion.com
+
+LOGFILE=/var/log/imt/uc-forced-poweroffs
+UCPLC=/opt/imt/robot/crob/tools/ucplc
+
+REASON=$($UCPLC check-shutdown-reason)
+echo $REASON | grep -q cleared
+ret=$?
+if [[ $ret -ne 0 ]]; then
+    echo -n $(date): >> $LOGFILE
+    echo $REASON  [cleared]>> $LOGFILE
+    $UCPLC -q clear-shutdown-reason
+fi
