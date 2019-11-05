@@ -1,0 +1,5 @@
+
+cd $LGAMES_HOME/pick
+
+# echo runcons: starting pick from $PWD
+./pick.tcl

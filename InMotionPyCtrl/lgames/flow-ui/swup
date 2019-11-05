@@ -1,0 +1,15 @@
+#! /bin/bash
+
+# software update
+
+set -x
+
+npm run clean
+echo type github password here.
+git pull
+npm install
+npm run build
+
+set +x
+
+echo now run ./run-fs.sh

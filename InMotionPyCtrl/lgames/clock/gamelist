@@ -1,0 +1,35 @@
+therapy:
+
+ok?
+oneway rec 1 (no force, one circuit, 30 seconds per path, log per slot)
+adaptive (forces, write parameters to log as they change)
+oneway rec 2
+adaptive
+oneway rec 3
+# if time permits
+adaptive
+oneway rec 4
+
+not yet
+eval
+circle west cw (no force, 1 log per circle with space bar, 5 circles)
+circle west ccw
+circle east cw
+circle east ccw
+
+point to point (like oneway, x5, log per slot, no force, 30 sec per path)
+
+ok
+playback static (1x, star forces, patient holds in center,
+	point controller, one log
+
+	no moving dots, leave target in the center.
+
+ok
+round dynamic (1x, controller holds in center, patient moves in star,
+	log per slot)
+
+shoulder abduction (side no forces, 5 up (z force) 5 log files)
+shoulder adduction (side no forces, 5 down (z force))
+shoulder extension (front no forces, 5 up (z force))
+shoulder flexion (front no forces, 5 up (z force))

@@ -1,0 +1,10 @@
+cd $LGAMES_HOME/clock
+
+pgrep -x cons > /dev/null
+if [ $? = 0 ]; then
+    zenity --error --title="Duplicate Clock Games Console" --text="Clock Games console already running."
+    exit 1
+fi
+
+# echo runclock: starting Robot Console from $PWD
+./cons

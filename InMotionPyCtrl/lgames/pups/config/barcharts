@@ -1,0 +1,112 @@
+planar:
+  point_to_point2d:
+    smoothness:
+      norm: 0.543
+      limit: 1
+    reach_error:
+      norm: 0
+      limit: 0.1
+    mean_vel:
+      norm: 0.15
+      limit: 0.2
+    max_vel:
+      norm: 0.27
+      limit: 0.2
+    path_error:
+      norm: 0.007
+      limit: 0.1
+    initiation_time:
+      norm: 0.15
+      limit: 0.5
+  playback_static2d:
+    hold_deviation:
+      norm: 0.001
+      limit: 0.2
+  round_dynamic2d:
+    displacement:
+      norm: 0.149
+      limit: 0.2
+  circle:
+    circle_size:
+      norm: 0.28
+      limit: 0.04
+    independence:
+      norm: 0.83
+      limit: 1
+
+  shoulder_abduction:
+    max_change_in_force:
+      norm: 75.5
+      limit: 60
+  shoulder_adduction:
+    max_change_in_force:
+      norm: 93.9
+      limit: 60
+  shoulder_flexion:
+    max_change_in_force:
+      norm: 79.2
+      limit: 60
+  shoulder_extension:
+    max_change_in_force:
+      norm: 98.8
+      limit: 60
+
+wrist:
+  point_to_point2d:
+    smoothness:
+      norm: 0.42
+      limit: 1
+    reach_error:
+      norm: 0
+      limit: 0.5
+    mean_vel:
+      norm: 0.52
+      limit: 2
+    max_vel:
+      norm: 1.31
+      limit: 3
+    path_error:
+      norm: 0.021039
+      limit: 0.1
+    initiation_time:
+      norm: 0.15
+      limit: 0.5
+  playback_static2d:
+    hold_deviation:
+      norm: 0.01
+      limit: 0.5
+  round_dynamic2d:
+    displacement:
+      norm: 0.42
+      limit: 0.5
+  point_to_pointps:
+    smoothness:
+      norm: 0.43
+      limit: 1
+    reach_error:
+      norm: 0
+      limit: 0.5
+    mean_vel:
+      norm: 0.89
+      limit: 2
+    max_vel:
+      norm: 2.13
+      limit: 3
+    initiation_time:
+      norm: 0.15
+      limit: 0.5
+  playback_staticps:
+    L:
+      norm: 0.01
+      limit: 0.5
+    R:
+      norm: 0.01
+      limit: 0.5
+  round_dynamicps:
+    L:
+      norm: 0.5
+      limit: 0.75
+    R:
+      norm: 0.5
+      limit: 0.75
+

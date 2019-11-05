@@ -1,0 +1,84 @@
+Wed Jan  5 11:56:48 EST 2005
+
+The clinical clock games are started by the cons program, which runs
+the clock.tcl program.  clock.tcl is not usually run from the
+command line.
+
+clock.tcl is run with two command line args:
+
+1) which game to play (i.e.: clock/games/therapy/playback)
+2) which patient (i.e.: p123)
+
+
+* About log files:
+
+The cons program writes a log entry each time a game is run, 
+for example in the patient's log file directory, for instance, it might
+write an entry in /home/imt/therapist/p123/cons.log:
+
+	cons: 2004.12.29.Wed 17:38:06 games/therapy/playback p123
+
+If requested, log data is written in /home/imt/therapist per patient
+per game, with timestamp and other identifier information encoded in
+the filename, for instance:
+
+	/home/imt/therapist/p123/therapy/20041229_Wed/playback_174113_Eb13.dat
+
+The log file timestamp is taken once at the beginning of a game.  if a
+game writes 100 per-slot log files, they all have the same date/time
+in the filename.  (this timestamp is the one in the filename, NOT the
+file-system timestamp).
+
+
+* Adding a new game:
+
+cons has two lists of games, evaluation and therapy.
+These lists are in the files: clock/games/therapy_list and
+clock/games/evel_list.  These lists show the filename of each game and an
+ascii game name to be displayed in the game list windows.
+
+
+*** When you add a new game, you need to add an entry in one of these lists
+so that it shows on the screen.
+
+The parameters of the games are set in variabes in the clock/games directory
+tree.  there are three sub-directories, base, therapy, and eval.  these
+directories contain files that are really tcl scripts, they contain a very
+limited set of tcl to describe the games.
+
+they may contain a "source" command - they inherit the parameters of other
+games by sourcing their parameters (like #include in C).
+
+Parameters are changed with the s (set) command.  For instance, if you already
+have a game called therapy/playback with a stiffness of 200.0 and you want to
+make a new one that has a stiffness value of 50.0, you can make a new file
+called therapy/playback_50 containing:
+
+	source ../therapy/playback
+	s stiff 50.0
+
+This new game would inherit the parameters from therapy/playback, then change
+the parameter called stiff.
+
+The s command sets variables in clock.tcl's global ob() array - the command
+above sets $ob(stiff).
+
+
+* clinical games Panel Launcher
+
+In the clinical setting, the clock games console is started from a
+window manager control panel "launcher" button on the bottom of the
+window screen.
+
+If you need to add it, right-click on the panel at the bottom of the window,
+and mouse to: Panel:Add to Panel:Launcher...
+
+Launcher Properties:
+[Basic]
+
+Name: Robot Console
+Comment:Robot Console
+Command: su -c ~imt/lgames/choosegame/runcg
+Type: Application
+Icon: [/home/imt/lib/clock64.png]
+[x] Run in Terminal

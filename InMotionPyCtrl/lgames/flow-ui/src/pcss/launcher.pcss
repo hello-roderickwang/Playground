@@ -1,0 +1,150 @@
+.launcher {
+	padding-bottom: 5em;
+	& button {
+		display: block;
+		margin: 15px 0;
+
+	}
+	& h1 {
+		text-transform: uppercase;
+		text-align: center;
+		font-family: 'rubiklight';
+		font-size: 2.75em; /* 44px */
+		margin-bottom: 0;
+		margin-top: 1.636em;
+	}
+
+	& .hr {
+		/* margin-top: 1.875em; */ /* 30px */
+		/* margin-bottom: 1.875em; */ /* 30px */
+	}
+	&.patient-dashboard {
+		& .hr {
+			margin-top: 0;
+		}
+	}
+
+	& .launch-grid {
+		display: flex;
+		margin: 0 -0.9375em; /* -15px */
+		text-transform: uppercase;
+		margin-bottom: 1.875em; /* 30px */
+		& > button {
+			margin: 0 0.9375em; /* 15px */
+			flex-grow: 1;
+			flex-basis: 0;
+			display: block;
+			background-color: rgba(0, 0, 0, 0.4);
+			border: 1px solid #577c93;
+			box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+			border-radius: 0.5em;
+			max-width: 24.125em; /* 386px */
+			&:hover {
+				background: linear-gradient(to top, rgba(25,102,157,1) 0%,rgba(32,129,168,1) 100%);
+				/* border: 1px solid #389ec8; */
+				border: 1px solid white;
+				box-shadow: 0 0 1px 1px rgba(255,255,255,0.4);
+			}
+			&:focus {
+				border: 1px solid white;
+				box-shadow: 0 0 1px 1px rgba(255,255,255,0.4);
+			}
+			&:active {
+				background: linear-gradient(to bottom, rgba(25,102,157,1) 0%,rgba(32,129,168,1) 100%);
+				border: 1px solid white;
+				box-shadow: 0 0 1px 1px rgba(255,255,255,0.4);
+			}
+
+			& .icon {
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: center;
+			}
+			& .text {
+				font-family: 'latobold';
+				font-size: 1.3125em;
+				text-transform: uppercase;
+				letter-spacing: 0.1em;
+			}
+		}
+	}
+
+	& .launch-grid-top {
+
+		& > button {
+			height: 20.875em;
+			& .icon {
+				width: 7.5em;
+				height: 7.5em;
+				margin-left: auto;
+				margin-right: auto;
+				margin-bottom: 1.875em; /* 30px */
+				display: block;
+				transform: translateX(1em);
+			}
+			& .text {
+				position: relative;
+				&:before {
+					content: '';
+					width: 2.095em;
+					height: 0.1em;
+					background: #18bafb;
+					display: block;
+					position: absolute;
+					bottom: -0.7em;
+					left: 0;
+					display: block;
+				}
+			}
+			&:first-child {
+				& .icon {
+					transform: none;
+				}
+
+			}
+		}
+	}
+
+	& .launch-grid-bottom {
+		margin-bottom: 0;
+		& button {
+			height: 5em;
+			& .icon {
+				width: 1.7em;
+				height: 1.7em;
+				margin-right: 1em;
+				display: inline-block;
+				vertical-align: middle;
+			}
+			& .text {
+				display: inline-block;
+				vertical-align: middle;
+			}
+		}
+	}
+
+	& .additional-options-wrapper {
+		padding: 1.875em;
+	}
+
+	& .btn-pill-blue-wrapper {
+		position: relative;
+		& button {
+			position: absolute;
+			right: 0;
+			font-family: 'rubikregular';
+			text-transform: uppercase;
+			border-radius: 1.611em;
+			font-size: 1.125em;
+			padding: 0 2em;
+			line-height: 3.222em;
+			width: auto;
+			margin: 0;
+		}
+	}
+
+	&.home {
+		position: relative;
+	}
+}
+

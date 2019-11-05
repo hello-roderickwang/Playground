@@ -1,0 +1,28 @@
+positionplanar:
+  axhline: true
+  axis: image
+  axvline: true
+  xlabel: x position (m)
+  xlim: [-0.2, 0.2]
+  ylabel: y position (m)
+  ylim: [-0.2, 0.2]
+positionwrist:
+  axhline: true
+  axvline: true
+  xlabel: fe position (rad)
+  xlim: [-0.7, 0.7]
+  ylabel: aa position (rad)
+  ylim: [-0.35, 0.35]
+pswrist:
+  axvline: true
+  invert: true
+  xlabel: ps position (rad)
+  xlim: [-0.7, 0.7]
+  ylabel: time since start (s)
+  ylim: [0, 6]
+shoulderplanar:
+  axhline: true
+  xlabel: time (s)
+  xlim: [0, 6]
+  ylabel: z force (N)
+  ylim: [-80, 80]

@@ -1,0 +1,12 @@
+#! /bin/sh
+
+cd $LGAMES_HOME/choosegame
+
+# if anything is running, kill it quietly.
+$CROB_HOME/stop > /dev/null
+# kill other instances of cg.tcl
+pkill -f "./cg.tcl"
+echo
+date
+echo runcg: starting choosegame from $PWD
+./cg.tcl

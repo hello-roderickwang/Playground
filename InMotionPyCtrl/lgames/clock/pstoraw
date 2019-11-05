@@ -1,0 +1,35 @@
+#! /bin/sh
+
+# Copyright 2004-2013 Interactive Motion Technologies, Inc
+# trb 6/2004
+
+# convert ps file to raw format and copy/print to usb lp0
+# the raw format is gdi for epson 1710
+
+PATH=$PATH:/sbin
+
+u=$(id -u)
+if [ "$u" != 0 ]; then
+    echo "user is $u, must be 0 (root)."
+    exit 1
+fi
+
+# this will insmod the usb drivers if not done already.
+
+modprobe usbcore
+modprobe usb-uhci
+modprobe printer
+
+ps=$1
+raw=$1.gsraw
+
+# outside the USA
+# gs -sDEVICE=gdi -sOutputFile=$raw -sPAPERSIZE=a4 - < $ps
+# inside the USA
+# gs -sDEVICE=gdi -sOutputFile=$raw -sPAPERSIZE=letter - < $ps
+# default
+gs -sDEVICE=gdi -sOutputFile=$raw - < $ps
+
+# >> seems to allow multi prints without trashing.
+cat $raw >> /dev/usb/lp0 
+rm $raw

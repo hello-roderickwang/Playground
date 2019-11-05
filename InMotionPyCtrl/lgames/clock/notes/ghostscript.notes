@@ -1,0 +1,63 @@
+Mon Sep 13 11:03:16 EDT 2004
+
+The help output from ghostscript shows the devices it supports.
+(see below).
+
+The Samsung ML-1710 printer takes gdi format.
+To change printer type to a4 paper on epson (for instance), go into
+/home/imt/lgames/clock/pstoraw and change this line:
+
+gs -sDEVICE=gdi -sOutputFile=$raw -sPAPERSIZE=letter - < $ps
+
+to 
+
+gs -sDEVICE=epson -sOutputFile=$raw -sPAPERSIZE=a4 - < $ps
+
+(paper inside USA is letter format, outside USA  is a4).
+
+<<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
+
+# gs --help
+GNU Ghostscript 6.52 (2001-10-20)
+Copyright (C) 2001 artofcode LLC, Benicia, CA.  All rights reserved.
+Usage: gs [switches] [file1.ps file2.ps ...]
+Most frequently used switches: (you can use # in place of =)
+ -dNOPAUSE           no pause after page   | -q       `quiet', fewer messages
+ -g<width>x<height>  page size in pixels   | -r<res>  pixels/inch resolution
+ -sDEVICE=<devname>  select device         | -dBATCH  exit after last file
+ -sOutputFile=<file> select output file: - for stdout, |command for pipe,
+                                         embed %d or %ld for page #
+Input formats: PostScript PostScriptLevel1 PostScriptLevel2 PDF
+Available devices:
+   x11 bbox x11alpha x11cmyk x11gray2 x11gray4 x11mono bmpmono bmpgray
+   bmpsep1 bmpsep8 bmp16 bmp256 bmp16m bmp32b deskjet djet500 laserjet
+   ljetplus ljet2p ljet3 ljet3d ljet4 ljet4d lj5mono lj5gray cdeskjet
+   cdjcolor cdjmono cdj550 pj pjxl pjxl300 uniprint omni bj10e bj200 bjc600
+   bjc800 faxg3 faxg32d faxg4 pcxmono pcxgray pcx16 pcx256 pcx24b pcxcmyk
+   pbm pbmraw pgm pgmraw pgnm pgnmraw pnm pnmraw ppm ppmraw pkm pkmraw pksm
+   pksmraw tiffcrle tiffg3 tiffg32d tiffg4 tifflzw tiffpack tiff12nc
+   tiff24nc psmono psgray psrgb bit bitrgb bitcmyk pngmono pnggray png16
+   png256 png16m jpeg jpeggray pdfwrite pswrite epswrite pxlmono pxlcolor
+   dmprt cdj880 ap3250 appledmp atx23 atx24 atx38 bmpa16 bmpa16m bmpa256
+   bmpa32b bmpamono bmpasep1 bmpasep8 ccr cdj1600 cdj500 cdj670 cdj850
+   cdj890 cdj970 cfax cgm24 cgm8 cgmmono cljet5pr coslw2p coslwxl cp50
+   declj250 dfaxlow dfaxhigh djet500c dl2100 dnj650c eps9high eps9mid epson
+   epsonc escp fs600 hl1250 hl7x0 ibmpro imagen inferno iwhi iwlo iwlq
+   jetp3852 la50 la70 la75 la75plus lbp8 lj250 lj3100sw lj4dith ln03 lp2563
+   lp8000 lq850 lxm5700m m8510 mgr4 mgr8 mgrgray2 mgrgray4 mgrgray8 mgrmono
+   miff24 necp6 oce9050 oki182 okiibm paintjet photoex pjetxl plan9bm sgirgb
+   r4081 sj48 st800 stcolor sunhmono t4693d2 t4693d4 t4693d8 tek4696 xes
+   x11cmyk2 x11cmyk4 x11cmyk8 x11rg16x x11rg32x ljet4pjl lj4dithp dj505j
+   picty180 pr201 pr150 pr1000 pr1000_4 jj100 bj10v bj10vh mag16 mag256
+   mj700v2c mj500c mj6000c mj8000c fmpr fmlbp ml600 lbp310 lbp320 lips2p
+   bjc880j lips4 lips4v escpage lp2000 npdl md50Mono md50Eco md1xMono ijs
+   hpijs DJ630 DJ6xx DJ6xxP DJ8xx DJ9xx DJ9xxVIP AP21xx pcl3 md2k md5k stp
+   lxm3200 lx5000 lex7000 lex5700 lex3200 lex2050 gdi epl5800 epl2050
+   epl2050p alc8500 alc2000 chp2200 cljet5 cljet5c nullpage
+Search path:
+   . : /usr/share/ghostscript/6.52/lib : /usr/share/ghostscript/6.52/vflib :
+   /usr/share/ghostscript/fonts : /usr/share/fonts/default/ghostscript :
+   /usr/share/fonts/default/Type1 : /usr/share/fonts/default/amspsfnt/pfb :
+   /usr/share/fonts/default/cmpsfont/pfb
+For more information, see /usr/share/doc/ghostscript-6.52/Use.htm.
+Report bugs to bug-gs@ghostscript.com, using the form in Bug-form.htm.

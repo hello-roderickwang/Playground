@@ -1,0 +1,310 @@
+<html>
+<head>
+<title>InMotion2 Control Panel</title>
+</head>
+<body>
+
+<h1>InMotion2 Control Panel</h1>
+Thu Oct 23 13:41:05 EDT 2003
+<p>
+In normal operation, the InMotion2 control panel door remains locked and
+all controls and indicators are on the front of the panel.
+<h2>Front Door Hardware</h2>
+<p>
+These devices include:
+
+<ul>
+<li>ON/OFF switch - a two-position switch that supplies power to the
+robot.  At upper right on the panel
+<li>POWER ON lamp - lights green when on/off switch is on.  Below the
+ON/OFF switch.  Not a switch.
+<p>
+These are in the middle of the panel door:
+<li>RESET - red switch, releases the brakes, which makes a loud thump (if they were not already released).  Lit when
+brakes are applied (at startup or when EMERGENCY STOP is pressed)
+dark after switch is depressed and brakes are released.
+<li>START - green switch connects motors to D/A outputs, allows motor motion.
+Dark at startup, or when stopped by STOP, RESET, or EMERGENCY STOP,
+lit after START switch is depressed and motors are engaged.
+When you press START, you hear one gentle click, and you will hear some
+continuous motor noise.
+START does not work unless brakes have already been released by RESET.
+
+<li>STOP - red switch disconnects motors from D/A outputs.  Does not apply brakes.
+When you press STOP, you hear one gentle click (if motors were already
+engaged by START).
+ <br>
+Not lit.
+<li>EMERGENCY STOP - this big red switch applies the brakes, which makes a loud thump (if they were not already applied).
+<br>
+Not lit.
+<br>
+There is one EMERGENCY STOP switch on the panel and two others attached to cables.  Keep them handy. 
+<p>
+<li>Latch - keeps panel door shut, panel door is locked if system is
+powered on when latch is closed.  The panel door has no interlock switch,
+it is possible to bypass the safety it provides and run the system with 
+the panel door open, but we recommend that you do not do this, both for
+safety's sake and because the cooling system in the panel is designed to be run with the panel door fully closed.
+</ul>
+<p>
+If the system error checks detect a failure condition, they will apply
+the brakes and the lamps above will behave as though EMERGENCY STOP
+was pressed.
+<p>
+
+<h2>Internal Hardware</h2>
+Danger (Peligro, Gefahr, Perigo, Pericolo), High Voltage.<br>
+No user-serviceable parts inside.<p>
+Do not open the control panel unless you are talking with an IMT
+engineer.  The high voltage necessary to
+drive the robot motors may cause death or discomfort if you come in
+contact with it.
+<p>
+Safety notes:
+<ul>
+<li>
+You should never press the START button unless you are sure that the PC
+is not sending torques to the motors.
+<li>
+You should never turn off the PC without first stopping the robot (make
+sure it is in the STOP state, best with the brakes on.  Powering off the PC
+may cause a robot control board to reset and send spurious voltages, which
+may cause the arm to move is a dangerous and uncontrolled way.
+<li>
+You should always hold on to the manipulandum when you start the motors,
+and whenever the motors are engaged.
+</ul>
+
+In case of hardware failure, if guided by an IMT engineer, you may open
+the control panel door and if you are careful to stay away from the hardware,
+you may gather useful diagnostic information.
+<p>
+Here is an image of the open control panel, with labels identifying its
+hardware components.  These components are discussed below.
+
+<p>
+This picture illustrates the panel contents at the time
+of this writing (May 2003).
+The hardware components and their functioning are subject to change.
+<p>
+Note: the InMotion2 robot has two degrees of freedom, each driven by a motor.
+<br>
+The bottom motor controls the elbow link and is called axis #1.
+<br>
+The top motor controls the shoulder link and is called axis #2.
+
+<p>
+<image src="panelguts.jpg">
+<p>
+
+Power up the system by turning the ON/OFF switch to the vertical ON
+position.  The brakes are already applied.  The PLC will emit two
+gentle clicks as the system initializes its state.  The gentle clicks
+come after about one second, and there is less than one second
+separating the two clicks.
+
+<p>
+
+After power up, it is necessary to move both robot arm links (elbow
+and shoulder) to register the encoder associated with each.  Among
+other things, the notes below refer to system state changes that
+result from this encoder registration.  You can hear two more gentle
+clicks, one for each link, as the system registers the state changes.
+Note that any motion of the manipulandum will probably move both
+links.  (The system is now in the same state as it is when you push
+the EMERGENCY STOP switch while the system is running.)
+
+<p>
+The lamp on the red RESET switch is now lit.  Press this RESET switch, its
+lamp goes dark, and the brakes release with a thump.
+The arm should now move freely when pushed by hand..
+
+<p>
+The lamp on the green START switch is now dark.  Hold on to the
+manipulandum.  Press this START switch, its lamp lights up, and you
+will hear a slight whining noise as the motors are activated.
+Assuming that there are no voltages being sent to the robot motors,
+the arm should still move freely with no command forces.  The robot is now
+ready to have forces sent to it by a control program.
+
+
+<h2>System Components</h2>
+(See image above.)
+
+<ul>
+<li>1 trans - Power Transformers
+<br>
+Two power transformers, labeled 01T1 and 01T2.
+They each have a glass fuse mounted horizontally at the lower front of the package.
+<br>
+No LED indicator.
+<p>
+<li>2 cb - Circuit Breakers
+<br>
+Five circuit breakers, labeled 
+01CB1, 01CB2, 02CB1, 02CB2, 02CB3.  In normal operation, they
+point UP.  If they trip, they may point down or may just be a bit
+loose.  When these breakers trip, these devices go dark:
+<ul>
+<li>01CB1 - IO LED 4
+<li>01CB2 - IO LED 5
+<li>02CB1 - all PLC power
+<li>02CB2 - most of the PLC LEDs off, but RUN,PWR,Y2,3 remain lit
+<li>02CB3 - IO LEDs all off, these PLC LEDs remain list: RUN,PWR,
+Y2,3,5 and X5,7
+</ul>
+No LED indicator.
+<p>
+<li>3 gfi - Ground Fault Interrupt
+<br>
+This switch is labeled 01GFI.
+It runs like the GFCI switch in your kitchen.  There are two
+switches, the top switch is RESET, the bottom is TEST.  In normal
+operation, the RESET switch is pushed in, the TEST switch is out.
+If the On/Off Power Switch is on,
+if you push TEST, it turns off the power (and tests the GFCI).
+To allow normal operation after TEST, depress RESET.
+If you push TEST and the system doesn't power down, the GFCI is faulty.
+<br>
+No LED indicator.
+<br>
+There's a ground strip to the right of the GFCI.
+<p>
+<li>4 pwr - On/Off Power Switch
+<br>
+A two-position rotary power switch, labeled 01MCB, with a stalk projecting out to the
+panel door switch knob.
+When the power switch is turned clockwise to vertical,
+system power is on.  When the switch is turned counterclockwise to
+horizontal, system power is off.
+<br>
+There is a ground strip labeled 01GND to the left of this power switch.
+<br>
+No internal LED indicator, but there is a green lamp on the door, and
+all system function is an indicator of the state of this switch.
+<p>
+<li>5 cap - Capacitors
+<br>
+These two capacitors are labeled 01CAP1 and 01CAP2.
+<br>
+No indicator
+<p>
+<li>6 servo - Servo Amplifiers
+<br>
+The two servos are labeled AXIS#1 (elbow) and AXIS#2 (shoulder).
+Each servo has one LED near the top of the package.
+These LEDs flash green twice per second in normal operation.
+They start flashing at
+power up, and they continue flashing until power down.  At
+power down, the LEDs flash green for another four seconds, then
+flash red and quickly go dark.
+<p>
+<li>7 brake - Brakes
+<br>
+There are four brake modules, labeled M1A, M1B, M2A, M2B.
+There is a red LED above each brake package.
+Each brake package has a small button that travels in and out whether
+the brakes are applied or not.
+<ul>
+<li>When the brakes are applied (stopped), the two B LEDs are lit and the
+B buttons pop in.  The A LEDs go dark and the A buttons pop out.
+<li>When the brakes are released (reset), the two A LEDs are lit and the
+A buttons pop in.  The B LEDs go dark and the B buttons pop out.
+</ul>
+These LEDs light steadily in normal operation.
+<p>
+<li>8 relay - Relays, labeled 03ESR, 03LSR, and 02PWR.
+<br>
+No LED indicator.
+<p>
+<li>9 plc - Programmable Logic Controller (PLC)
+<br>
+The PLC is labeled 02PLC.  It has an array of LEDs on its display.
+There are two rows of red LEDs, the top row of eight, labeled Y0-Y7
+and the bottom row of ten, labeled X0-X11.  (These are labeled with
+octal digits, there are no LEDs Y8 or Y9)  There are three green LEDs
+in the lower right of the PLC display, labeled RUN, PWR, and CPU.
+The CPU LED sits slightly below the other two green ones to make it
+easier to decode them visually.  The RUN and PWR LEDs light steady green 
+during normal operation, and the CPU led is dark.
+
+LED functions:<br>
+Outputs: <ul>
+<li>Y0 - unused
+<li>Y1 - unused
+<li>Y2 - encoder 1 (elbow)
+<li>Y3 - encoder 2 (shoulder)
+<li>Y4 - emergency stop
+<li>Y5 - +24v
+<li>Y6 - unused
+<li>Y7 - servos drive health ok
+</ul>
+Inputs:<br>
+<ul>
+5KHz High Speed X0-X3<br>
+<li>X0 - watchdog
+<li>X1 - unused
+<li>X2 - encoder 1 (elbow)
+<li>X3 - encoder 2 (shoulder)
+</ul>
+<ul>
+Standard X4-X11<br>
+<li>X4 - 24v power
+<li>X5 - 24v power
+<li>X6 - unused
+<li>X7 - unused
+<li>X10 - servo 1 (elbow) amplifier
+<li>X11 - servo 2 (shoulder) amplifier
+</ul>
+With the brakes applied:
+<ul>
+<li>before registering the encoders, these LEDs are lit: Y5,7 and
+X2,3,5,7,10,11
+<li>Registering the elbow encoder lights Y2 and and turns off X2.
+<li>Registering the shoulder encoder lights Y3 and and turns off X3.
+<li>After registering both encoders, these LEDs are lit: Y2,3,5,7 and
+X5,7,10,11
+<li>After hitting RESET to release the brakes, these LEDs are lit: Y2,3,4,5,6,7 and X4,5,7,10,11.
+<li>START and STOP do not change the state of the PLC LEDs.
+</ul>
+These LEDs light steadily in normal operation.<br>
+(there is a relay to the right of this PLC, labeled 06SSR.)
+
+<p>
+<li>10 i/o - Opto-coupled Discrete I/O Modules
+<br>
+The five I/O modules have a LED below each small red package, they are labeled OPT 1-5.
+<ul>
+<li>Before registering the encoders, LEDs 1,2,4,5 are lit red.
+LED 3 is dark, and is never lit.
+<li>Registering the elbow encoder turns off LED 1.
+<li>Registering the shoulder encoder turns off LED 2.
+<li>After registering both encoders, LEDs 4,5 are lit and LEDs 1,2,3 are dark.
+</ul>
+These LEDs light steadily in normal operation.
+<p>
+
+<li>11 pwr - Power Supply
+<br>
+There are two power supply packages, labeled 02PWS1 and 02PWS2.
+<br>
+Each has a green LED that remains lit during normal operation.
+<p>
+<li>12 enc - Encoder I/O interface
+<br>
+This is an I/O interface for the encoders.
+The actual encoders are packaged in the
+motor housings outside the panel.
+Labeled 05ENC1.
+<br>
+No indicators.
+<p>
+<li>13 connectors - Connectors
+<br>
+There are many connecting wires here.  The main cooling fan for the
+control panel sits to the right of these connectors.
+<br>
+No indicators.
+</ul>
+</body></html>

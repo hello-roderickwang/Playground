@@ -1,0 +1,5 @@
+
+cd $LGAMES_HOME/cs
+
+# echo runcs: starting pick from $PWD
+./cs.tcl

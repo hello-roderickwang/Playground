@@ -1,0 +1,12 @@
+use
+set terminal format
+and
+set output filename
+
+to direct output to a file or pipe instead of x11.
+
+for instance:
+       set term postscript
+       set output "|lpr -Plaser filename"
+
+set term should come before set output.

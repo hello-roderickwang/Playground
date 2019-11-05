@@ -1,0 +1,5 @@
+cd $LGAMES_HOME/race
+
+# echo runrace: starting pick from $PWD
+# echo sorry, not ready yet.
+./race.tcl

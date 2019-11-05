@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html>
+<head>
+  <title>Report for Patient ${patid}</title>
+</head>
+
+<body>
+  <!-- htmldoc settings -->
+  <!-- MEDIA SIZE Universal -->
+  <!-- HEADER LEFT "" -->
+  <!-- HEADER CENTER "" -->
+  <!-- HEADER RIGHT "" -->
+  <!-- FOOTER LEFT "$$DATE $$TIME" -->
+  <!-- FOOTER CENTER "Report for Patient ${patid}" -->
+  <!-- FOOTER RIGHT "Page $$PAGE/$$PAGES" -->
+  <!-- banner -->
+
+  <div style="text-align: center;">
+    <img style="margin-top: 99px;" alt="" src=
+    "${PUPS_HOME}/inmo.gif"><br>
+    <br>
+
+    <div style="text-align: left; margin-left: 133px;">
+      <br>
+
+      <h1>Patient Report<br>
+      ${patid}</h1>
+
+      <h3>Contents:</h3>${tableofcontentshtml}<br>
+
+      <p><br></p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,603 @@
+#!/usr/bin/wish
+
+# Copyright 2000-2013 Interactive Motion Technologies, Inc
+# trb 2/2004
+
+# the framework of this code is derived from
+# a standard Tk application template, see:
+# http://wiki.tcl.tk/8288
+
+package require Tk
+
+global ob env
+
+source $::env(LGAMES_HOME)/common/util.tcl
+source $::env(CROB_HOME)/shm.tcl
+source $::env(I18N_HOME)/i18n.tcl
+source $::env(LGAMES_HOME)/pups/consreport.tcl
+source $::env(LGAMES_HOME)/clock/constools.tcl
+source $::env(LGAMES_HOME)/clock/conssetup.tcl
+
+font create default -family sans-serif -size -18
+
+set ob(scriptname) [info script]
+
+set ob(current_robot) planar
+
+proc fnstring {str} {
+        set str [string tolower $str]
+        regsub -all {[^0-9a-z]} $str {} str
+	return $str
+}
+
+proc do_ft_test {} {
+    global ob
+    set stamp $::env(IMT_CONFIG)/last_ft_test
+    set now [clock seconds]
+    catch {set last [file mtime $stamp]}
+    # one week
+    set limit [expr {7*24*60*60}]
+    if {![file exists $stamp] || (($now - $last) > $limit)} {
+        tk_messageBox -title Info -message "Running weekly Force Transducer Test."
+        update idletasks
+        exec echo "ft_test time stamp" > $stamp
+        exec $::env(CROB_HOME)/tools/ft_test
+    }
+}
+
+#--------------------------------------------------
+#
+#  consMain
+#
+#  Performs basic initialization of cons.
+#
+#--------------------------------------------------
+proc consMain { argc argv } {
+
+    #--------------------------------------------------
+    #  Construct the UI
+    #--------------------------------------------------
+    consInitGui .
+}
+
+#--------------------------------------------------
+#
+#  consInitGui
+#
+#  Construct and initialize UI
+#
+#--------------------------------------------------
+proc consInitGui { root } {
+    global ob
+
+    #--------------------------------------------------
+    #  treat root window "." as a special case
+    #--------------------------------------------------
+    if {$root == "."} {
+        set base ""
+    } else {
+        set base $root
+    }
+
+    bind . <q> consExit
+    bind . <Escape> consExit
+    bind . <Return> consRun
+    bind . <Alt-f> consFont
+
+    # the games lists are populated based on the current robot
+    # and current protocol.  these are read at startup, and the
+    # protocol be changed with the Protocols menu.
+    # current robot is changed with the config.tcl program.
+
+    # extract list of selected protocols from current robot.cfg
+    set ob(current_robot) [current_robot]
+    source [file join $::env(IMT_CONFIG) robots $ob(current_robot) robot.cfg]
+    set protolist $cfg($ob(current_robot),clock,proto,sellist)
+
+    set curtime [clock seconds]
+    set ob(yearstamp) [clock format $curtime -format "%Y"]
+    set ob(datestamp) [clock format $curtime -format "%Y%m%d_%a"]
+    set ob(timestamp) [clock format $curtime -format "%H%M%S"]
+    set ob(crobdir) $::env(CROB_HOME)
+    set ob(lgamesdir) $::env(LGAMES_HOME)
+    set ob(tbasedir) $::env(THERAPIST_HOME)
+
+    set ob(pdfs) $::env(HOME)/reports/pdfs
+    set ob(initdir) $ob(tbasedir)
+    set ob(pupsdir) $ob(lgamesdir)/pups
+
+    # the 2nd arg to current_protocol is a fallback default.
+    set ob(proto,current) [current_protocol clock [lindex $protolist 0]]
+
+    #--------------------------------------------------
+    #  Define the menu bar
+    #--------------------------------------------------
+    menu $base.menu
+    $root config -menu $base.menu
+    foreach m {Protocol Reports Tools Setup Help} {
+        # Use [string tolower] to ensure magic menu names are right - DKF
+        set $m [menu $base.menu.[string tolower $m] -tearoff 0]
+        $base.menu add cascade -label [imes $m] -underline 0 -menu [set $m]
+    }
+    # don't show Setup unless clinident is special
+    if {[lsearch {"admin"} $::env(CLINID)] == -1} {
+	$base.menu entryconfigure [imes "Setup"] -state disabled
+    }
+
+    if {$ob(current_robot) != "planar"
+	&& $ob(current_robot) != "wrist"} {
+	$base.menu entryconfigure [imes "Reports"] -state disabled
+    }
+
+    foreach p $protolist {
+	$Protocol add radio -variable ::ob(proto,menu) -underline 0 -label [imes "$ob(current_robot) $p"] -command [list protocol_cb $p]
+    }
+    set ob(proto,menu) "$ob(current_robot) $ob(proto,current)"
+
+    $Reports add command -label [imes "Calculate"] -command consRptCalc
+    $Reports add command -label [imes "Show"] -command consRptShow
+    $Reports add command -label [imes "Browse"] -command [list consBrowseFolders $::ob(pdfs)]
+    $Reports add separator
+    $Reports add command -label [imes "Reports Help"] -command [list consRptHelp performance-reports]
+
+    $Tools add command -label [imes "Calibrate Robot"] -command consToolsChooseRobot
+    $Tools add separator
+    $Tools add command -label [imes "FT Test"] -command consToolsFTTest
+    $Tools add command -label [imes "Plot Graphs"] -command consToolsPlot
+    $Tools add command -label [imes "Copy Patient Folders"] -command consToolsUSBCopy
+    $Tools add command -label [imes "Browse Patient Folders"] -command [list consBrowseFolders $::ob(tbasedir)]
+    $Tools add command -label [imes "Add Note"] -command consToolsAddNote
+    $Tools add command -label [imes "Show Last Metrics"] -command consToolsShowPM4
+    $Tools add command -label [imes "Long Test"] -command consToolsLongTest
+    $Tools add separator
+    $Tools add command -label [imes "Delete Patient Folders"] -command consToolsDelete
+
+    $Help add command -label [imes "About"] -command consHelpAbout
+    $Help add command -label [imes "User Manual"] -command consRptHelp
+
+    $Setup add command -label [imes "Choose Robot Version"] -command consSetupChooseVer
+    $Setup add command -label [imes "Move Motors"] -command consSetupMove
+    $Setup add command -label [imes "Move Box"] -command consSetupMvbox
+    $Setup add command -label [imes "Motor Tests"] -command consSetupMTest
+    $Setup add command -label [imes "Strip Chart"] -command consSetupRStrip
+    $Setup add command -label [imes "Edit Calibration File"] -command consSetupEditCalFile
+    $Setup add command -label [imes "Numeric Display"] -command consSetupDisplay
+    $Setup add command -label [imes "Vector Display"] -command consSetupVex
+    $Setup add command -label [imes "Slot Demonstration"] -command consSetupSlotDemo
+    $Setup add command -label [imes "Force Calibration"] -command consSetupFCal
+#    $Setup add command -label [imes "Old Planar Calibration"] -command consSetupOldPlanarCal
+    $Setup add command -label [imes "Reconfigure Robot"] -command consSetupReconf
+
+    #--------------------------------------------------
+    #  Set window manager properties for cons
+    #--------------------------------------------------
+    wm protocol $root WM_DELETE_WINDOW { consExit }
+    wm title $root "Games Console"
+
+    #--------------------------------------------------
+    #  insert code defining cons main window
+    #--------------------------------------------------
+    ### text .t
+    ### bind .t <Key> {set consChangedFlag 1}
+    ### pack .t
+
+    main_window
+
+    show_pm4
+
+    # plot vars
+    set ob(plot,screenprint) screen
+    set ob(plot,graphtype) custom
+    set ob(plot,xaxis) x
+    set ob(plot,yaxis) y
+}
+
+# called when a Protocols menu radio button is pressed
+# clears and repopulates game lists,and sets cfg
+
+proc protocol_cb {proto} {
+    global ob
+
+    set protocols_base $::env(PROTOCOLS_HOME)
+    set ob(protocol_dir) [file join $protocols_base \
+	$ob(current_robot) clock $proto]
+
+    populate_protocols therapy
+    populate_protocols eval
+
+    # we've changed the current protocol, write this out to the cfg
+    exec echo $proto > [file join $::env(IMT_CONFIG) robots \
+	$ob(current_robot) clock current_protocol.cfg]
+}
+
+# repopulates one games listbox
+# call with lc = therapy or eval
+
+# games are mapped from on-screen strings to prognames,
+# and the on-screen names may be in English or not,
+# hence the ::gamelist([imes $longname]) business.
+
+proc populate_protocols {lc} {
+    global ob
+
+    set f [file join $ob(protocol_dir) ${lc}_list]
+    if {![file exists $f]} {
+	# zero these on error
+	$ob(listbox,therapy) delete 0 end 
+	$ob(listbox,eval) delete 0 end 
+	error "$f does not exist.  Please run \$LGAMES_HOME/config/config.tcl."
+    }
+    source $f
+    $ob(listbox,$lc) delete 0 end 
+
+    set have_ft [expr {[file exists $::env(IMT_CONFIG)/have_atinetft] || [file exists $::env(IMT_CONFIG)/have_ft]}]
+
+    foreach {i longname} $ob(${lc}list) {
+	if {! $have_ft && [string match Shoulder* $longname]} {
+	    # if no FT, then don't show shoulder games
+	    continue
+	}
+	$ob(listbox,$lc) insert end [imes $longname]
+	set ::gamelist($longname) [file join $ob(protocol_dir) $i]
+	set ::gamelist([imes $longname]) [file join $ob(protocol_dir) $i]
+    }
+}
+
+proc main_window {} {
+    global ob env
+
+    if {[info exists env(PATID)]} {
+	    set ob(patident) [fnstring $::env(PATID)]
+    }
+    if {[info exists env(CLINID)]} {
+	    set ob(clinident) [fnstring $::env(CLINID)]
+    }
+    set wd [pwd]
+
+    # patient id entry box
+
+    label .idlab -text [imes "Patient ID:"] -font default
+    label .ident -textvariable ob(patident) -font default
+    label .protolab1  -text "     Protocol: " -font default
+    label .protolabcur -textvariable ob(proto,menu) -font default
+    label .clinlab1 -text [imes "     Clinician:"] -font default
+    label .clinent -textvariable ob(clinident) -font default
+    label .dummy1 -font default -width 10
+    grid .idlab .ident .protolab1 .protolabcur .clinlab1 .clinent .dummy1
+    grid columnconfig . 6 -weight 1
+    label .dummy2
+    grid .dummy2
+
+    # two scrolled listboxes.
+    # label them eval and therapy, and fill with
+    # game names that you can double-click to run.
+
+    set protocols_base $::env(PROTOCOLS_HOME)
+    set ob(protocol_dir) $protocols_base/$ob(current_robot)/clock/$ob(proto,current)
+
+    foreach {lc full} {therapy Therapy eval Evaluation} {
+	label .lab_${lc} -text [imes $full] -font default
+	set ob(listbox,$lc) [Scrolled_Listbox .listbox_$lc -height 10 -font default]
+
+	populate_protocols $lc
+
+	grid .lab_$lc - - - - - -
+	grid .listbox_$lc - - - - - - -sticky news
+    }
+    # cd $wd
+
+# dkf: [file join [pwd] [file dirname [info script]]]
+
+    # some buttons on the bottom
+    button .run -text [imes Run] -command consRun -font default
+    label .dummy3 -text "          "
+    button .quit -text [imes Quit] -command consExit -font default
+
+    bind .run <Double-1> {after 2000 {error [imes "Please don't double-click the buttons"]}; break}
+    bind .run <Triple-1> {after 2000 {error [imes "Please don't triple-click the buttons"]}; break}
+    bind .quit <Double-1> {after 2000 {error [imes "Please don't double-click the buttons"]}; break}
+    bind .quit <Triple-1> {after 2000 {error [imes "Please don't triple-click the buttons"]}; break}
+
+    grid x x .run .dummy3 .quit - - - -pady 30
+
+    set ob(runbutton) .run
+}
+
+proc procname {} {
+	lindex [info level 1] 0
+}
+
+proc run_game {game} {
+    global ob env
+
+    # log entry has been moved to inside clock.tcl
+
+    set ob(patident) [fnstring $ob(patident)]
+    set env(PATID) $ob(patident)
+    # puts "cons: $logfile $ldatestamp $ltimestamp $game $ob(patident)"
+    
+    exec ./clock.tcl $game $ob(patident) > /dev/tty &
+}
+
+set ob(fontsize) 0
+proc consFont {} {
+    global ob
+    if {!$ob(fontsize)} {
+        font configure default -size -28
+        font configure TkMenuFont -size -18
+        $ob(listbox,therapy) configure -height 5
+        $ob(listbox,eval) configure -height 5
+    } else {
+        font configure default -size -18
+        font configure TkMenuFont -size -12
+        $ob(listbox,therapy) configure -height 10
+        $ob(listbox,eval) configure -height 10
+    }
+    set ob(fontsize) [expr {!$ob(fontsize)}]
+}
+
+# run a game, then increment the list entry
+proc consRun {} {
+    global ob env
+
+    # reap zombies
+    exec true 
+
+    set ob(patident) [fnstring $ob(patident)]
+    if {$ob(patident) == ""} {
+	error "[procname]: [imes "Please enter patient ID"]"
+    }
+    set env(PATID) $ob(patident)
+
+    if {![check_newpat $ob(patident)]} {
+	return
+    }
+
+    set curlist [selection own]
+    if {![winfo exists $curlist] || [winfo class $curlist] != "Listbox"} {
+	error "[procname]: [imes "no game selected"]"
+    }
+
+    if {![is_robot_cal_done]} {
+        do_calibration request
+    }
+
+    if {![is_robot_cal_done]} {
+        return
+    }
+
+    # must be after calibration
+    set have_ft [expr {[file exists $::env(IMT_CONFIG)/have_atinetft] || [file exists $::env(IMT_CONFIG)/have_ft]}]
+    if {$have_ft} {
+        do_ft_test
+    }
+
+    set cursel [$curlist curselection]
+    if {$cursel == ""} {
+	error "[procname]: [imes "no game selected"]"
+    }
+
+    set curget [selection get]
+
+    # delay this, to make it less confusing
+    set ob(run_cursel) $cursel
+    set ob(run_curlist) $curlist
+    $ob(runbutton) configure -state disabled
+    after 5000 {
+	# bump selection on screen, keep it visible.
+	$ob(run_curlist) selection clear $ob(run_cursel)
+	incr ob(run_cursel)
+	$ob(run_curlist) selection set $ob(run_cursel)
+	$ob(run_curlist) see $ob(run_cursel)
+	$ob(runbutton) configure -state normal
+    }
+
+    # puts "game $curlist $cursel $curget"
+    run_game $::gamelist($curget)
+}
+
+#--------------------------------------------------
+#
+#  File Procedures
+#
+#  Note that opening, saving, and closing files
+#  are all intertwined.  This code assumes that
+#  new/open/close/exit may lose some data.
+#
+#--------------------------------------------------
+set consFileName ""
+set consChangedFlag 0
+set consFileTypes {
+    {{Single-data files}   *\\[0-9\\].dat}
+    {{Multi-data files}   *multi.dat}
+    {{One Way data files}   *oneway*.dat}
+    {{Point to Point data files}   *point_to_point*.dat}
+    {{Circle data files}   *circle*.dat}
+    {{Round Dynamic data files}   *round_dyn*.dat}
+    {{Playback Static data files}   *playback_static*.dat}
+    {{Circle data files}   *circle*.dat}
+    {{Shoulder data files}   *shoulder*.dat}
+    {{North-to data files}   *_N\\[t\\]*.dat}
+    {{All data files}   *.dat}
+    {{All Files}   *}
+}
+
+proc consToolsPlot { {filename ""} } {
+    global ob
+
+    # reap zombies
+    exec true 
+
+    toplevel .plottop
+    wm title .plottop "$ob(current_robot) plot"
+    make_plot_window .plottop
+}
+
+proc consToolsPlot1 { {filename ""} } {
+    global consFileName
+    global consChangedFlag
+    global consFileTypes
+    global ob env
+    if { $consChangedFlag } {
+        consPromptForSave
+    }
+
+    set ob(patident) [fnstring $ob(patident)]
+    set env(PATID) $ob(patident)
+    if {$filename == ""} {
+	# use it if you got it.
+	if {![info exists ob(initdir)]} {
+	    set ob(initdir) [file join $ob(tbasedir) $ob(patident)]
+	}
+	destroy .plottop
+        set filename [tk_getOpenFile -filetypes $consFileTypes \
+	    -initialdir $ob(initdir)]
+    }
+
+    if {$filename != ""} {
+        if { [catch {open $filename r} fp] } {
+            error "Cannot Open File $filename for Reading"
+        }
+
+	# for next time
+        set ob(initdir) [file dirname $filename]
+        #--------------------------------------------------
+        # insert code for "open" operation
+        #--------------------------------------------------
+
+	set ps $ob(plot,screenprint)
+	switch $ob(plot,graphtype) {
+	    dir		{exec ./gp1xy.tcl $filename $ps > /dev/tty &}
+	    time	{exec ./gptime.tcl $filename $ps > /dev/tty &}
+	    trace	{exec ./gptrace.tcl $filename $ps > /dev/tty &}
+	    5zforce	{exec ./gp5zforce.tcl $filename $ps > /dev/tty &}
+	    5circle	{exec ./gp5circle.tcl $filename $ps > /dev/tty &}
+	    custom	{exec ./gpcust.tcl $filename $ob(plot,xaxis) $ob(plot,yaxis) $ps > /dev/tty &}
+
+	}
+
+        # close $fp
+        set consFileName $filename
+        set consChangedFlag 0
+    }
+}
+
+proc consBrowseFolders { {dirname ""} } {
+        global ob
+        exec thunar $dirname &
+}
+
+
+proc make_plot_window {w} {
+    global ob
+    radiobutton $w.screen -variable ob(plot,screenprint) -text [imes Screen] -value screen -font default
+    radiobutton $w.print -variable ob(plot,screenprint) -text [imes Printer] -value print -font default
+    grid $w.screen $w.print -sticky w
+    grid $w.print -columnspan 3
+
+    radiobutton $w.dir -variable ob(plot,graphtype) -text [imes "Position"] -value dir
+    radiobutton $w.time -variable ob(plot,graphtype) -text [imes "Time"] -value time
+    radiobutton $w.trace -variable ob(plot,graphtype) -text [imes "Path Trace"] -value trace
+    radiobutton $w.5circle -variable ob(plot,graphtype) -text [imes "Circle"] -value 5circle
+    radiobutton $w.5zforce -variable ob(plot,graphtype) -text [imes "Z Force"] -value 5zforce
+    radiobutton $w.custom -variable ob(plot,graphtype) -text [imes "Custom"] -value custom
+
+    switch $ob(current_robot) {
+    planar {
+	set vlist {time x y vx vy fx fy fz grasp}
+	set canrow 9
+	set filerow 11
+    }
+    planarhand {
+	set vlist {time x y vx vy fx fy fz grasp}
+	set canrow 9
+	set filerow 11
+    }
+    wrist {
+	set vlist {time fe aa ps vfe vaa vps tfe taa tps}
+	set canrow 10
+	set filerow 12
+    }
+    linear {
+	set vlist {time pos vel frc fx fy fz}
+	set canrow 7
+	set filerow 9
+    }
+    }
+
+    label $w.dummy1
+    button $w.cancel -text [imes Cancel] -command {destroy .plottop} -font default
+    button $w.file -text [imes File] -command consToolsPlot1 -font default
+
+    grid $w.dummy1
+    foreach i {dir time trace 5circle 5zforce} {
+	grid $w.$i -sticky w
+        $w.$i configure -bg gray75 -font default
+    }
+    grid $w.cancel -row $canrow -rowspan 3
+    grid $w.file -row $filerow -rowspan 3
+    $w.custom configure -bg gray75 -font default
+
+    grid $w.custom -column 1 -row 2 -columnspan 3
+
+    label $w.lx -text [imes "x axis"] -font default
+    label $w.ly -text [imes "y axis"] -font default
+    grid $w.lx -column 1 -row 4
+    grid $w.ly -column 2 -row 4
+
+    set j 0
+
+    foreach i $vlist {
+	set row [expr {$j + 5}]
+	radiobutton $w.xaxis,$i -variable ob(plot,xaxis) -text [imes $i] -value $i -font default
+	radiobutton $w.yaxis,$i -variable ob(plot,yaxis) -text [imes $i] -value $i -font default
+	grid $w.xaxis,$i -sticky w -column 1 -row $row
+	grid $w.yaxis,$i -sticky w -column 2 -row $row
+	incr j
+    }
+}
+
+proc consExit { } {
+    exit
+}
+
+#--------------------------------------------------
+#  Help Operations
+#--------------------------------------------------
+
+proc consHelpAbout { } {
+    # current robot type
+    set cur [current_robot]
+    # current cal file name
+    set cal $::env(IMT_CONFIG)/robots/$cur/imt2.cal
+    # ID and serial number info
+    set cal_line [exec grep -i calibration.file.for $cal]
+    regsub -nocase ".*for: " $cal_line "" namestr
+
+    # software version
+    set ver [file tail [exec readlink /opt/imt/robot]]
+    regsub "robot" $ver "" ver
+
+    tk_messageBox -message \
+"IMT Robot Game Console
+
+All IMT Robot Software and Documentation is
+
+\u00A9 2000-$::ob(yearstamp)
+Interactive Motion Technologies, Inc.
+
+For customer support, email:
+support@interactive-motion.com
+
+Serial Number:
+$cur
+$namestr
+
+Software Version:
+$ver"
+}
+
+#--------------------------------------------------
+#  Execute the main procedure
+#--------------------------------------------------
+consMain $argc $argv

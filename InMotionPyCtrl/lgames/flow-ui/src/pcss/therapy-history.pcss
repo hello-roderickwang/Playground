@@ -1,0 +1,150 @@
+.therapy-history {
+	& .single-col {
+		padding-left: 1.875em; /* 30px */
+		padding-right: 1.875em; /* 30px */
+		height: 39.25em;
+	}
+
+	& .btn-blue {
+		background: linear-gradient(to bottom, rgba(24,191,251,1) 0%,rgba(18,150,248,1) 100%);
+		border: 1px solid #18befb;
+		/* line-height: 2em; */
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
+		padding-left: 3em;
+		padding-right: 3em;
+		border-radius: 0.25em;
+	}
+
+	& table {
+		border-collapse: collapse;
+		width: 100%;
+		font-family: rubikregular;
+
+		& th, & td {
+			font-weight: normal;
+			padding-top: 1.1667em; /* 21px */
+			padding-bottom: 1.1667em; /* 21px */
+			text-align: left;
+			&:last-child {
+				text-align: right;
+			}
+		}
+		& th {
+			font-size: 1.375em; /* 22px */
+			font-family: latobold;
+			&:first-child {
+				width: 17.2727272727em;
+			}
+			&:nth-child(2) {
+				width: 17.2727272727em;
+			}
+		}
+		& td {
+			font-size: 1.125em; /* 18px */
+			&:first-child {
+				width: 21.1111111111em; /* 380px */
+			}
+			&:nth-child(2) {
+				width: 21.1111111111em; /* 380px */
+			}
+			&:last-child {
+				padding-right: 1.875em;
+			}
+		}
+		& tr {
+			border-top: 1px solid #637887;
+			border-bottom: 1px solid #637887;
+		}
+
+		& thead {
+			display: table;
+			width: 100%;
+			table-layout: fixed;
+			& tr {
+				border-top: 0;
+			}
+		}
+
+		& tbody {
+			display: block;
+			height: 33em;
+			overflow-y: auto;
+			&::-webkit-scrollbar {
+				height: 0.6875em; /* 11px */
+				width: 0.6875em; /* 11px */
+				background: #405a6f;
+			}
+			&::-webkit-scrollbar-thumb {
+				background: #16b0fa;
+			}
+			&::-webkit-scrollbar-corner {
+				background: orange;
+			}
+
+			& tr {
+				display: table;
+				width: 100%;
+				table-layout: fixed;
+			}
+		}
+	}
+
+	& table.session {
+		& th, & td {
+			width: 15em;
+			&:last-child {
+				text-align: left;
+			}
+		}
+	}
+}
+
+.manage-patient-files {
+	& .input-wrapper {
+		padding-left: 1.875em;
+		padding-right: 1.875em;
+		margin-bottom: 1.875em;
+		& input {
+			color: #FFF;
+			background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%,rgba(0,0,0,0.2) 100%);
+			border: 1px solid #637887;
+			font-size: 1.125em;
+			width: 100%;
+			border-radius: 0.25em;
+			padding-top: 0.5em;
+			padding-bottom: 0.5em;
+			padding-left: 1.1667em;
+			padding-right: 1.1667em;
+			&::placeholder {
+				color: #FFF;
+			}
+		}
+	}
+
+
+	& .left-col {
+		& .list-wrapper {
+			/* max-height: 21.5em; */
+		}
+	}
+
+	& .right-col {
+		& .list-wrapper {
+			max-height: 21em;
+		}
+	}
+
+	& .btns-wrapper {
+		padding: 0 1.875em;
+		& .btn-pill-blue {
+			min-width: 0;
+			width: calc(50% - 0.9375em);
+			display: inline-block;
+			&:first-child {
+				margin-right: 1.875em;
+			}
+		}
+
+	}
+}

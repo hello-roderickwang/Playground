@@ -1,0 +1,51 @@
+#!/usr/bin/python
+
+# takes a protocol filename on the command line
+# outputs on stdout a new version, where lines in that protocol
+# which are unneccesary because they have identical values to those
+# from ancestor files have been removed.
+# you must be in the same dir as the filename.
+# this is a hack.
+
+import sys
+d = dict()
+
+
+def process(filename, level):
+    global d
+    with open(filename) as f:
+        for line in f.readlines():
+            try:
+                if not (line.startswith("source ") or line.startswith("s ")):
+                    if level == 0:
+                        print line,
+                    continue
+                (command, args) = line.strip().split(' ', 1)
+                if command == 'source':
+                    filename = args
+                    process(filename, level + 1)
+                    if level == 0:
+                        print line,
+                elif command == 's':
+                    (key, val) = args.split(' ', 1)
+                    if key in d:
+                        if d[key] == val:
+                            if level == 0:
+                                pass
+                                #print("### s {} {}".format(key,d[key]))
+                        else:
+                            d[key] = val
+                            if level == 0:
+                                print("s {} {}".format(key,d[key]))
+                    else:
+                        d[key] = val
+                        if level == 0:
+                            print("s {} {}".format(key,d[key]))
+
+            except ValueError:
+                pass
+
+
+
+if __name__ == '__main__':
+    process(sys.argv[1], 0)

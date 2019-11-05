@@ -1,0 +1,218 @@
+.patient-management {
+	& .single-col {
+		padding: 1.875em;
+		/* overflow-y: auto; */
+		&::-webkit-scrollbar {
+			height: 0.6875em; /* 11px */
+			width: 0.6875em; /* 11px */
+			background: #405a6f;
+			}
+		&::-webkit-scrollbar-thumb {
+			background: #16b0fa;
+		}
+		&::-webkit-scrollbar-corner {
+			background: orange;
+		}
+		& .h2-wrapper {
+			padding-left: 0;
+			height: 4.3125em;
+		}
+
+		& h2 {
+			padding-top: 0;
+		}
+
+		& .input-container {
+			/* padding-top: 1.875em; */
+			padding-bottom: 1.875em;
+		}
+
+		& .input-container-dob {
+			max-width: 10em;
+			display: inline-block;
+			margin-right: 1em;
+		}
+
+		& .input-container-age {
+			max-width: calc(100% - 11em);
+			display: inline-block;
+		}
+
+		& .input-container-month {
+			display: inline-block;
+			width: 8.2em;
+			margin-right: 1em;
+		}
+
+		& .input-container-day {
+			display: inline-block;
+			width: 7em;
+			margin-right: 1em;
+		}
+
+		& .input-container-month,  & .input-container-day {
+			& .mithril-select-head {
+				padding-left: 1em;
+				padding-right: 1em;
+				&:after {
+					right: 1.1em;
+				}
+			}
+
+			& .mithril-select-options {
+				max-height: 10em;
+			}
+		}
+
+		& .input-container-year {
+			display: inline-block;
+			width: calc(100% - 17.2em);
+		}
+
+		& .h2-wrapper + .input-container, & .mw13 .input-container:first-child {
+			padding-top: 0;
+		}
+
+		& label {
+			text-transform: uppercase;
+			margin-bottom: 0.5em;
+			display: block;
+			font-size: 0.85em;
+		}
+
+		& input {
+			/* height: 1.5em; */
+			padding-top: 0;
+			padding-bottom: 0;
+			line-height: 1.5em;
+		}
+
+		& input, & textarea {
+			color: #FFF;
+			background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%,rgba(0,0,0,0.2) 100%);
+			border: 1px solid #637887;
+			font-size: 1.125em;
+			width: 100%;
+			border-radius: 0.25em;
+			padding-top: 0.5em;
+			padding-bottom: 0.5em;
+			padding-left: 1.1667em;
+			padding-right: 1.1667em;
+			display: block;
+			/* margin-bottom: 1.6667em; */
+			&::placeholder {
+				color: #FFF;
+			}
+		}
+
+		& textarea {
+			height: 2.6111em;
+		}
+
+		& .patient-info-left-col {
+			display: inline-block;
+			width: 30%;
+			width: calc(33.333% - 1.25em);
+			width: calc(33.333% - 1.5em);
+			vertical-align: top;
+			margin-right: 1.875em;
+		}
+
+		& .patient-info-right-col {
+			display: inline-block;
+			width: 60%;
+			width: calc(66.667% - 2.5em);
+			width: calc(66.667% - 1.25em);
+			width: calc(66.667% - 1em);
+			vertical-align: top;
+		}
+
+		& .halved-inputs {
+			& .input-container {
+				width: calc(50% - 0.9375em);
+				display: inline-block;
+				vertical-align: top;
+				&:nth-child(even) {
+					margin-left: 1.875em;
+				}
+			}
+		}
+		& .mithril-select-head {
+			padding-top: 0.5em;
+			padding-bottom: 0.5em;
+			border-radius: 0.25em;
+			line-height: 1.5em;
+			&:after {
+				top: 0.87em;
+			}
+			&[aria-expanded=true] {
+				border-radius: 0.25em 0.25em 0 0;
+				&:after {
+					top: 1.1em;
+				}
+			}
+		}
+
+		& .mithril-select-options {
+			border-radius: 0 0 0.25em 0.25em;
+			background: #1c2d38;
+			z-index: 99;
+		}
+
+		& .mw13 {
+			width: calc(33.333% - 1.25em);
+			margin-bottom: 1.875em;
+		}
+
+		& .btn-pill-blue {
+			min-width: 10em;
+			&:after {
+				display: none;
+			}
+			&.nmt {
+				margin-top: 0;
+			}
+		}
+
+		&.flexdiv {
+			display: flex;
+		}
+
+		& .subcol-left {
+			margin-right: 1.875em;
+			width: 21em;
+			min-width: 15em;
+		}
+
+		& .input-container {
+			padding-bottom: 1em;
+		}
+	}
+
+	/* Non-editable details view styles */
+
+	& .view-field {
+		padding-top: 0;
+		padding-bottom: 0;
+		line-height: 1.5em;
+		min-height: 2.6em;
+		color: #FFF;
+		background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%,rgba(0,0,0,0.2) 100%);
+		border: 1px solid #637887;
+		font-size: 1.125em;
+		width: 100%;
+		border-radius: 0.25em;
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
+		padding-left: 1.1667em;
+		padding-right: 1.1667em;
+		display: block;
+	}
+
+	& .view-label {
+		text-transform: uppercase;
+		margin-bottom: 0.5em;
+		display: block;
+		font-size: 0.85em;
+	}
+}

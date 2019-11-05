@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<html>
+<head>
+  <title>Evaluation Report 2D - ${patid}</title>
+</head>
+
+<body>
+  <!-- htmldoc settings -->
+  <!-- MEDIA SIZE Universal -->
+  <!-- HEADER LEFT "" -->
+  <!-- HEADER CENTER "" -->
+  <!-- HEADER RIGHT "" -->
+  <!-- FOOTER LEFT "$$DATE $$TIME" -->
+  <!-- FOOTER CENTER "Evaluation for Patient ${patid}" -->
+  <!-- FOOTER RIGHT "Page $$PAGE/$$PAGES" -->
+  <!-- banner -->
+
+  <table width="680">
+    <tr>
+      <td valign="top"><img src="${PUPS_HOME}/inmo.gif" width="215"
+      height="50"></td>
+
+      <td valign="top">
+        <h1>Evaluation<br>
+        Report<br>
+        2D</h1>
+      </td>
+
+      <td valign="top"><b>Patient ID: ${patid}</b><br>
+      Joint: wrist<br>
+      Side: ${side}<br>
+      Clinician: ${clinician}<br>
+      Date: ${date}<br>
+      Evaluation: ${xofy}<br>
+      <br></td>
+    </tr>
+  </table>
+
+  <table border="1" cellpadding="5">
+    <tr>
+      <th width="50%" colspan="3">Point to Point (fe,aa rad)</th>
+
+      <th width="50%" colspan="3">&nbsp;</th>
+    </tr>
+
+    <tr align="center">
+      <td colspan="3"><img width="250" src=
+      "${dateprefix}_point_to_point2d.gif"></td>
+
+      <td colspan="3">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td colspan="3">Smoothness ${point_to_point2d_smoothness}
+      Reach Error ${point_to_point2d_reach_error}</td>
+
+      <td colspan="3">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td colspan="3">Mean Vel ${point_to_point2d_mean_vel} Max Vel
+      ${point_to_point2d_max_vel}</td>
+
+      <td colspan="3">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td colspan="3">Path Error ${point_to_point2d_path_error}
+      Init Time ${point_to_point2d_initiation_time} s</td>
+
+      <td colspan="3">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <th colspan="3">Playback Static (fe,aa rad)</th>
+
+      <th colspan="3">Round Dynamic (fe,aa rad)</th>
+    </tr>
+
+    <tr align="center">
+      <td colspan="3"><img width="250" src=
+      "${dateprefix}_playback_static2d.gif"></td>
+
+      <td colspan="3"><img width="250" src=
+      "${dateprefix}_round_dynamic2d.gif"></td>
+    </tr>
+
+    <tr>
+      <td colspan="3">Hold Deviation
+      ${playback_static2d_hold_deviation}</td>
+
+      <td colspan="3">Displacement
+      ${round_dynamic2d_displacement}</td>
+    </tr>
+
+    <tr>
+      <td>NW ${playback_static2d_NW}</td>
+
+      <td>N ${playback_static2d_N}</td>
+
+      <td>NE ${playback_static2d_NE}</td>
+
+      <td>NW ${round_dynamic2d_NW}</td>
+
+      <td>N ${round_dynamic2d_N}</td>
+
+      <td>NE ${round_dynamic2d_NE}</td>
+    </tr>
+
+    <tr>
+      <td>W ${playback_static2d_W}</td>
+
+      <td>&nbsp;</td>
+
+      <td>E ${playback_static2d_E}</td>
+
+      <td>W ${round_dynamic2d_W}</td>
+
+      <td>&nbsp;</td>
+
+      <td>E ${round_dynamic2d_E}</td>
+    </tr>
+
+    <tr>
+      <td>SW ${playback_static2d_SW}</td>
+
+      <td>S ${playback_static2d_S}</td>
+
+      <td>SE ${playback_static2d_SE}</td>
+
+      <td>SW ${round_dynamic2d_SW}</td>
+
+      <td>S ${round_dynamic2d_S}</td>
+
+      <td>SE ${round_dynamic2d_SE}</td>
+    </tr>
+  </table>
+
+  <p><b>IMPORTANT: aa position is plotted at twice the scale of fe
+  position</b><br>
+</p>
+</body>
+</html>

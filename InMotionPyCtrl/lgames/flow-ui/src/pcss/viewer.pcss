@@ -1,0 +1,67 @@
+.viewer-bg {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.5);
+	background: rgba(55, 110, 152, 0.8);
+	transition: opacity 0.3s;
+	opacity: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	& .viewer {
+		margin: 10em;
+		width: 100%;
+		height: 100%;
+
+		& .header {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 3em;
+			background-color: rgba(0,0,0,0.25);
+
+			& .title {
+				position: absolute;
+				left: 0;
+				top: 0;
+				user-select: none;
+			}
+
+			& .close {
+				position: absolute;
+				right: 0;
+				top: 0;
+				font-size: 2em;
+				padding: 0.25em 0.36em;
+				border: none;
+				border-radius: 0;
+				color: #CCC;
+				background-color: rgba(0,0,0,0.5);
+				user-select: none;
+				cursor: pointer;
+			}
+			& .close:hover {
+				color: EEE;
+				background-color: rgba(0,0,0,0.75);
+			}
+		}
+
+		& iframe {
+			position: absolute;
+			top: 3em;
+			left: 0em;
+			width: 100%;
+			height: 90%;
+			border: none;
+		}
+	}
+}
+
+.viewer-bg.show {
+	opacity: 1;
+}

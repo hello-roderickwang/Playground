@@ -1,0 +1,140 @@
+header {
+	display: flex;
+	font-family: 'rubikregular';
+	text-transform: uppercase;
+	background-color: rgba(0,0,0,0.3);
+	height: 7.1875em; /* 115px */
+	box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.1);
+	border-bottom: 1px solid #577c93;;
+	@media (max-width: 1400px) {
+		font-size: 0.9em;
+	}
+
+	&>div {
+		flex-grow: 1;
+	}
+
+	& .logo-wrapper {
+		display: flex;
+		flex-grow: 0.8;
+		align-items: center;
+		justify-content: center;
+
+		& img {
+			max-width: 10.1875em;
+			user-select: none;
+		}
+
+		@media (max-width: 1400px) {
+			& img {
+				/* max-width: 50%; */
+				max-width: 5em;
+			}
+		}
+	}
+	& button {
+		border: none;
+		text-align: left;
+		text-transform: uppercase;
+		font-size: 1.125em; /* 18px */
+		padding: 0;
+		height: 3em;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding-left: 1.5em;
+		padding-right: 1.8em;
+		background-color: rgba(0, 0, 0, 0.4);
+		border: 1px solid #577c93;
+		box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+		border-radius: 0.35em;
+		max-width: 24.125em; /* 386px */
+		&:hover {
+			background: linear-gradient(to top, rgba(25,102,157,1) 0%,rgba(32,129,168,1) 100%);
+			/* border: 1px solid #389ec8; */
+			border: 1px solid white;
+			box-shadow: 0 0 1px 1px rgba(255,255,255,0.4);
+		}
+		&:focus {
+			border: 1px solid white;
+			box-shadow: 0 0 1px 1px rgba(255,255,255,0.4);
+		}
+		&:active {
+			background: linear-gradient(to bottom, rgba(25,102,157,1) 0%,rgba(32,129,168,1) 100%);
+			border: 1px solid white;
+			box-shadow: 0 0 1px 1px rgba(255,255,255,0.4);
+		}
+	}
+
+	& .home-btn-wrapper, & .patient-dashboard-btn-wrapper, & .help-btn-wrapper {
+		display: flex;
+		flex-grow: 1;
+		justify-content: center;
+		align-items: center;
+		& button:before {
+			display: inline-block;
+			margin-right: 0.75em;
+			content: '';
+			width: 1.8125em; /* 29px */
+			height: 1.6875em; /* 27px */
+			background-image: url('../img/icon-home.png');
+			background-repeat: no-repeat;
+			background-size: contain;
+			background-position: center;
+		}
+	}
+
+	& .home-btn-wrapper {
+		flex-grow: 0.7;
+	}
+
+	& .patient-dashboard-btn-wrapper {
+		flex-grow: 2.5;
+		& button:before {
+			background-image: url('../img/icon-person.png');
+			width: 1.375em; /* 22px */
+			height: 1.5em; /* 24px */
+		}
+	}
+
+	& .help-btn-wrapper {
+		flex-grow: 2.5;
+		&:before {
+			background-image: url('../img/icon-question.png');
+			width: 1.625em; /* 26px */
+			height: 1.625em; /* 26px */
+		}
+	}
+
+
+	& .time-status-div {
+		font-size: 1.2375em;
+		line-height: 1.4em;
+		display: flex;
+		justify-content: center;
+ 		align-items: center;
+		flex-grow: 1;
+		& .robot-status-wrapper {
+			white-space: nowrap;
+			vertical-align: middle;
+			color: var(--clr-status-green);
+			&.red {
+				color: var(--clr-status-red);
+			}
+			&.yellow {
+				color: var(--clr-status-yellow);
+			}
+		}
+		& .patient-id {
+			font-family: 'rubikbold';
+		}
+	}
+	@media (max-width: 1800px) {
+		& .home-btn-wrapper, & .patient-dashboard-btn-wrapper, & .help-btn-wrapper, & .time-status-div, & .logo-wrapper{
+			flex-grow: 1;
+		}
+/* 		& .logo-wrapper {
+			flex-grow: 0.1;
+		} */
+	}
+}

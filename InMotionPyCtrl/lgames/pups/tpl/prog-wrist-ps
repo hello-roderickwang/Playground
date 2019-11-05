@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<html>
+<head>
+  <title>PS Progress Report - ${patid}</title>
+</head>
+
+<body>
+  <!-- htmldoc settings -->
+  <!-- MEDIA SIZE Universal -->
+  <!-- HEADER LEFT "" -->
+  <!-- HEADER CENTER "" -->
+  <!-- HEADER RIGHT "" -->
+  <!-- FOOTER LEFT "$$DATE $$TIME" -->
+  <!-- FOOTER CENTER "PS Progress for Patient ${patid}" -->
+  <!-- FOOTER RIGHT "Page $$PAGE/$$PAGES" -->
+  <!-- banner -->
+
+  <table width="680">
+    <tr>
+      <td valign="top"><img src="${PUPS_HOME}/inmo.gif" width="215"
+      height="50"></td>
+
+      <td valign="top">
+        <h1>Progress<br>
+        Report<br>
+        Pronation /<br>
+        Supination</h1>
+      </td>
+
+      <td valign="top"><b>Patient ID: ${patid}</b><br>
+      First Date: ${first}<br>
+      Last Date: ${last}<br>
+      <br></td>
+    </tr>
+  </table>
+
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>Point to Point<br>
+      Smoothness [^]</th>
+
+      <th>Point to Point<br>
+      Reach Error (rad) [<font size='-2'>v<font size='+2'>]</font></font></th>
+
+      <th>Point to Point<br>
+      Mean Velocity (rad/s) [^]</th>
+    </tr>
+
+    <tr>
+      <td><img src="prog_point_to_pointps_smoothness.gif" width="200"></td>
+
+      <td><img src="prog_point_to_pointps_reach_error.gif" width="200"></td>
+
+      <td><img src="prog_point_to_pointps_mean_vel.gif" width="200"></td>
+    </tr>
+
+    <tr>
+      <th>Point to Point<br>
+      Max Velocity (rad/s) [^]</th>
+
+      <th>Playback Static<br>
+      Hold Deviation L (rad) [<font size='-2'>v<font size='+2'>]</font></font></th>
+
+      <th>Playback Static<br>
+      Hold Deviation R (rad) [<font size='-2'>v<font size='+2'>]</font></font></th>
+    </tr>
+
+    <tr>
+      <td><img src="prog_point_to_pointps_max_vel.gif" width="200"></td>
+
+      <td><img src="prog_playback_staticps_L.gif" width="200"></td>
+
+      <td><img src="prog_playback_staticps_R.gif" width="200"></td>
+    </tr>
+
+    <tr>
+      <th>Point to Point<br>
+      Init Time (s) [<font size='-2'>v<font size='+2'>]</font></font></th>
+
+      <th>Round Dynamic<br>
+      Displacement L (rad) [^]</th>
+
+      <th>Round Dynamic<br>
+      Displacement R (rad) [^]</th>
+    </tr>
+
+    <tr>
+      <td><img src="prog_point_to_pointps_initiation_time.gif" width="200"></td>
+
+      <td><img src="prog_round_dynamicps_L.gif" width="200"></td>
+
+      <td><img src="prog_round_dynamicps_R.gif" width="200"></td>
+    </tr>
+  </table>
+<p><small>Dotted lines indicate typical value for a healthy person.<br>
+For some values, the dotted line may be higher than visible in the plot.</small></p>
+
+</body>
+</html>

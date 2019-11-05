@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<html>
+<head>
+  <title>Daily Therapy Report - ${patid}</title>
+</head>
+
+<body>
+  <!-- htmldoc settings -->
+  <!-- MEDIA SIZE Universal -->
+  <!-- HEADER LEFT "" -->
+  <!-- HEADER CENTER "" -->
+  <!-- HEADER RIGHT "" -->
+  <!-- FOOTER LEFT "$$DATE $$TIME" -->
+  <!-- FOOTER CENTER "Daily Therapy Report for Patient ${patid}" -->
+  <!-- FOOTER RIGHT "Page $$PAGE/$$PAGES" -->
+  <!-- banner -->
+
+  <table width="680">
+    <tr>
+      <td valign="top"><img src="${PUPS_HOME}/inmo.gif" width="215"
+      height="50"></td>
+
+      <td valign="top">
+        <h1>Daily<br>
+        Therapy<br>
+        Report</h1>
+      </td>
+
+      <td valign="top"><b>Patient ID: ${patid}</b><br>
+      Joint: shoulder/elbow<br>
+      Side: ${side}<br>
+      Clinician: ${clinician}<br>
+      Date: ${date}<br>
+      Session: ${xofy}<br>
+      <br></td>
+    </tr>
+  </table>
+
+  <table border="1" cellpadding="5">
+    <tr>
+      <th width="50%" colspan="3">One Way Record 1 (x,y m)</th>
+
+      <th width="50%" colspan="3">One Way Record 2 (x,y m)</th>
+    </tr>
+
+    <tr align="center">
+      <td colspan="3"><img width="250" src=
+      "${dateprefix}_1_oneway_rec.gif"></td>
+
+      <td colspan="3"><img width="250" src=
+      "${dateprefix}_2_oneway_rec.gif"></td>
+    </tr>
+
+    <tr>
+      <td colspan="3">Smoothness ${oneway_rec_smoothness_1} Reach
+      Error ${oneway_rec_reach_error_1}</td>
+
+      <td colspan="3">Smoothness ${oneway_rec_smoothness_2} Reach
+      Error ${oneway_rec_reach_error_2}</td>
+    </tr>
+
+    <tr>
+      <td colspan="3">Mean Vel ${oneway_rec_mean_vel_1} Max Vel
+      ${oneway_rec_max_vel_1}</td>
+
+      <td colspan="3">Mean Vel ${oneway_rec_mean_vel_2} Max Vel
+      ${oneway_rec_max_vel_2}</td>
+    </tr>
+
+    <tr>
+      <td colspan="3">Path Error ${oneway_rec_path_error_1} Init
+      Time ${oneway_rec_initiation_time_1} s</td>
+
+      <td colspan="3">Path Error ${oneway_rec_path_error_2} Init
+      Time ${oneway_rec_initiation_time_2} s</td>
+    </tr>
+
+    <tr>
+      <th colspan="3">One Way Record 3 (x,y m)</th>
+
+      <th colspan="3">One Way Record 4 (x,y m)</th>
+    </tr>
+
+    <tr align="center">
+      <td colspan="3"><img width="250" src=
+      "${dateprefix}_3_oneway_rec.gif"></td>
+
+      <td colspan="3"><img width="250" src=
+      "${dateprefix}_4_oneway_rec.gif"></td>
+    </tr>
+
+    <tr>
+      <td colspan="3">Smoothness ${oneway_rec_smoothness_3} Reach
+      Error ${oneway_rec_reach_error_3}</td>
+
+      <td colspan="3">Smoothness ${oneway_rec_smoothness_4} Reach
+      Error ${oneway_rec_reach_error_4}</td>
+    </tr>
+
+    <tr>
+      <td colspan="3">Mean Vel ${oneway_rec_mean_vel_3} Max Vel
+      ${oneway_rec_max_vel_3}</td>
+
+      <td colspan="3">Mean Vel ${oneway_rec_mean_vel_4} Max Vel
+      ${oneway_rec_max_vel_4}</td>
+    </tr>
+
+    <tr>
+      <td colspan="3">Path Error ${oneway_rec_path_error_3} Init
+      Time ${oneway_rec_initiation_time_3} s</td>
+
+      <td colspan="3">Path Error ${oneway_rec_path_error_4} Init
+      Time ${oneway_rec_initiation_time_4} s</td>
+    </tr>
+  </table>
+
+</body>
+</html>

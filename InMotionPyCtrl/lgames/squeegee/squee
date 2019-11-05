@@ -1,0 +1,36 @@
+#!/bin/bash -e
+# take arbitrary jpegs and convert them for use with squeegee
+
+SOURCEFILE=$1
+HSIZE=${2:-1000}
+VSIZE=${3:-800}
+
+if [[ -z "$SOURCEFILE" ]]; then
+   echo "No source file specified."
+   exit 1
+fi
+
+CTMP=$(mktemp /tmp/${USER}-squeegeec-XXXXXXXXX.jpg)
+GTMP=$(mktemp /tmp/${USER}-squeegeeg-XXXXXXXXX.jpg)
+# these files get deleted in squeegee.tcl right after $w create image
+
+QUALITY=90
+GM=/usr/bin/gm
+
+# make resized
+$GM convert                    \
+    -size ${HSIZE}x${VSIZE}    \
+    $SOURCEFILE                \
+    -resize ${HSIZE}x${VSIZE}  \
+    -quality $QUALITY          \
+    $CTMP
+
+# make grayscale
+$GM convert $CTMP              \
+    -gamma 6.0                 \
+    -modulate 100,0            \
+    -quality $QUALITY          \
+    $GTMP
+
+echo $CTMP $GTMP
+

@@ -1,0 +1,26 @@
+#! /bin/bash
+
+# we must not be root
+if [[ $EUID -eq 0 ]]; then
+    cecho "=====  This script must not be run as root. Exiting." 1>&2
+    exit 1
+fi
+
+# install flow-ui
+
+OID=/opt/imt/distro
+OIR=/opt/imt/robot
+
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
+cd $OIR/lgames/flow-ui
+
+sudo chown -R imt:imt .
+sudo npm i -g npm
+sudo chown -R imt:imt ~/.config/configstore
+npm install
+npm run build
+
+sudo chown -R root:root .
+
+# flow-tweaks get done later in imt-setup-robot-user

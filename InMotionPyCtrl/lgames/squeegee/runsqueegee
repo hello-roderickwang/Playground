@@ -1,0 +1,4 @@
+cd $LGAMES_HOME/squeegee
+
+# echo runsqueegee: starting pick from $PWD
+./squeegee.tcl

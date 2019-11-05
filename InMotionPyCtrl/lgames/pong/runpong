@@ -1,0 +1,5 @@
+
+cd $LGAMES_HOME/pong
+
+# echo runpong: starting pick from $PWD
+./pong.tcl

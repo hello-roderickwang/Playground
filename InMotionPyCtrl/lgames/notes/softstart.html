@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>InMotion2 Software Startup</title>
+</head>
+<body>
+
+<h1>InMotion2 Software Startup</h1>
+Wed Apr 28 16:26:51 EDT 2004
+
+If the robot and PC are already both powered on,
+
+<h2>Power on and Login</h2>
+If the PC is powered off, make sure the robot control panel is also powered
+off before turning the PC on.
+ <p>
+
+You may then turn the PC on by pushing the power button on its front, and
+wait for it to boot into the Linux operating system.  This will take a
+minute or two, and will finally show a graphical user interface (GUI)
+display that prompts for a login name and password.  The login name and
+password will be supplied by your system administrator.
+ <p>
+
+<h2>Turn on the Robot</h2>
+With the PC on, you may turn the robot control panel on.
+You do this by turning the red power switch from the horizontal off
+position to the vertical on position.  The panel fans will start
+running, and green "power on" lamp will light, and the red "reset" lamp
+will light.
+<p>
+
+<h2>Register the Encoders</h2>
+Now you must move both links of the robot arm to register the robot's
+two encoders.  As each encoder is registered, the control panel will
+click quietly, there will be two quiet clicks.  If you move the arm
+around some more, you will feel that dynamic braking is applying some
+damped braking to the arm.
+<p>
+
+If you press the yellow "stop" button during normal robot
+operation, the robot would be in this state, and you could contiue
+from here to start the robot again.
+
+<h2>Release the Brakes</h2>
+Now press the red "reset" button.  It will make a loud clunk noise as
+the damped brakes release.  The red light on the "reset" button will
+go dark.  Now when you move the robot arm around, there will be no
+damped braking, and the arm will move with very low friction.
+
+<h2>Start the Motors</h2>
+Now press the green "start" button.  This will prepare the motors to
+accept command voltages.  You will hear a quiet whine from the motors
+when this happens.  The green "start" button will light up.  The robot
+is now ready to run.
+
+<h2>Game selection menu </h2>
+After you enter the correct password, the system will start a GUI
+windowing system, which will include a toolbar along the bottom edge
+of the display.  One of the buttons on this toolbar is a round green
+icon that is a miniatore version of the display on the "clock" game
+used for therapy and evaluation.
+<p>
+
+If you click on this green button, it will display a picture menu that
+allows you to choose from a variety of graphical games.
+
+These games include:
+
+<ul>
+<li> clock
+<li> maze
+<li> pick
+<li> pong
+<li> race
+<li> squeegee
+</ul>
+
+<p>
+
+<h2>Choosing a robot</h2>
+
+These games work with either the planar or wrist robots.  By default,
+they work with the planar.  To use the wrist, active the call to the
+"use_wrist" proc (by removing the # comment character) in
+/home/imt/lgames/common/local.tcl .  This gets read by
+/home/imt/lgames/common/util.tcl:localize_robot , which is called by all
+the clinic games.
+
+</body></html>

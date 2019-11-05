@@ -1,0 +1,21 @@
+#! /bin/sh
+
+# prpm print performance metrics from therapist/adaptive*.asc files
+
+if [ $# -ne 1 ]; then
+echo "usage: prpm Patient-ID"
+exit 1
+fi
+
+if [ ! -d $THERAPIST_HOME/$1 ]; then
+echo "prpm: no patient ID $1"
+exit 1
+fi
+
+for i in $THERAPIST_HOME/$1/therapy/*/a*.asc
+do
+echo "### $i"
+cat $i
+echo
+done
+exit 0

@@ -1,0 +1,119 @@
+.welcome {
+	position: relative;
+	text-align: center;
+	padding: 2em;
+
+	& .logo {
+		margin: 15em 0 8em 0;
+		font-size: 1em;
+		& img {
+			width: 32em;
+			user-select: none;
+		}
+	}
+
+	& .clinician-id {
+		margin: 2em 0;
+
+		& label {
+			margin-right: 1em;
+		}
+	}
+
+	& input {
+		line-height: 1.5em;
+		color: #FFF;
+		background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%,rgba(0,0,0,0.2) 100%);
+		border: 1px solid #637887;
+		font-size: 1.125em;
+		width: 8em;
+		border-radius: 0.25em;
+		padding: 0.5em 1.1667em;
+	}
+
+	& .btn-blue {
+		background-color: rgba(0, 0, 0, 0.4);
+		border: 1px solid #577c93;
+		box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+		border-radius: 0.5em;
+		font-family: 'latobold';
+		font-size: 1.3125em;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		padding: 1em 4em;
+		margin-bottom: 1.875em;
+		&:hover {
+			background: linear-gradient(to top, rgba(25,102,157,1) 0%,rgba(32,129,168,1) 100%);
+			/* border: 1px solid #389ec8; */
+			border: 1px solid white;
+			box-shadow: 0 0 1px 1px rgba(255,255,255,0.4);
+		}
+		&:focus {
+			border: 1px solid white;
+			box-shadow: 0 0 1px 1px rgba(255,255,255,0.4);
+		}
+		&:active {
+			background: linear-gradient(to bottom, rgba(25,102,157,1) 0%,rgba(32,129,168,1) 100%);
+			border: 1px solid white;
+			box-shadow: 0 0 1px 1px rgba(255,255,255,0.4);
+		}
+	}
+
+	& .btn-shutdown {
+		margin-top: 3.667em;
+		padding: 1em;
+		font-size: 0.8em;
+		margin-bottom: 0.2em;
+		& img {
+			display: inline-block;
+			vertical-align: middle;
+			width: 1.444em;
+			height: 1.444em;
+			margin-right: 0.5em;
+		}
+	}
+
+	& .small-note {
+		font-size: 0.8em;
+		margin: 0.75em 0;
+	}
+
+	& .version {
+		font-size: 0.7em;
+		margin: 12em 0 0 0;
+	}
+
+	& .hr {
+		max-width: 30em;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	& .font-preloader {
+		position: absolute;
+		top: 0;
+		left: 0;
+		opacity: 0;
+	}
+
+	&.animation {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%,-50%);
+		& .logo {
+			margin-top: 15em;
+			margin-top: 0;
+		}
+		& img {
+			width: 52.5em;
+		}
+		& .hr {
+			max-width: 52.5em;
+		}
+		& h1 {
+			text-transform: uppercase;
+			font-size: 2.4em;
+		}
+	}
+}

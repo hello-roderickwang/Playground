@@ -1,0 +1,341 @@
+.nav-tabs {
+	overflow: hidden;
+	padding-left: 0;
+	text-transform: uppercase;
+	display: flex;
+	border-radius: 0.5em;
+	margin-bottom: 1.875em; /* 30px */
+	border: 1px solid #577c93;
+	box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+	& li {
+		flex-grow: 1;
+		flex-basis: 0;
+		list-style: none;
+		border-left: 1px solid #577c93;
+		& button {
+			width: 100%;
+			height: 100%;
+			border: 0;
+			text-transform: uppercase;
+			font-family: 'rubikregular';
+			background-color: #2c4a5d;
+			background-color: rgba(42, 72, 91, 0.8);
+			background-color: rgba(0, 0, 0, 0.4);
+			line-height: 3.056em; /* 55px */
+			font-size: 1.125em; /* 18px */
+			padding: 0;
+			border-radius: 0;
+			&.active {
+				background: linear-gradient(to bottom, rgba(24,191,251,1) 0%,rgba(18,150,248,1) 100%);
+				border: 1px solid #18befb;
+				border-radius: 0;
+			}
+			&:hover{
+				background: linear-gradient(to bottom, rgba(25,102,157,1) 0%,rgba(32,129,168,1) 100%);
+				border: 1px solid #389ec8;
+			}
+		}
+		&:first-child {
+			border-left: 0;
+			& button {
+				&.active {
+					&::first-child {
+						border-radius: 0.444em 0 0 0.444em;
+					}
+				}
+			}
+		}
+		&:last-child {
+			border-right: 0;
+			& button {
+				&.active {
+					&::first-child {
+						border-radius: 0 0.444em 0 0.444em;
+					}
+				}
+			}
+		}
+	}
+}
+.tab-content {
+	& .img-wrapper {
+		width: 100%;
+		height: 21.5em;
+		background-repeat: no-repeat;
+		background-position: center center;
+		/* background-size: contain; */
+		background-size: 14em 14em;
+		margin-bottom: 1.3125em;
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+
+	& .select-wrapper {
+		padding-left: 1.875em; /* 30px */
+		padding-right: 1.875em; /* 30px */
+	}
+
+	& .list-wrapper {
+		height: 26.9em;
+		overflow-y: auto;
+		margin-left: 1.875em; /* 30px */
+		margin-right: 1.875em; /* 30px */
+		&::-webkit-scrollbar {
+			height: 0.6875em; /* 11px */
+			width: 0.6875em; /* 11px */
+			background: #405a6f;
+			}
+		&::-webkit-scrollbar-thumb {
+			background: #16b0fa;
+		}
+		&::-webkit-scrollbar-corner {
+			background: orange;
+		}
+
+		& .list-item {
+			position: relative;
+		}
+		& .list-item:first-child {
+			& .radio-wrapper, & .checkbox-wrapper {
+				border-top: 0;
+				padding-top: 0;
+			}
+		}
+	}
+
+	/* Column styles for Orientation tab */
+	& .left-col {
+		border: 1px solid #577c93;
+		display: inline-block;
+		vertical-align: top;
+		margin-right: 1.875em;
+		background-color: rgba(0, 0, 0, 0.4);
+		height: 34.0625em; /* 545px */
+		width: 30.4375em; /* 487px */
+		border-radius: 0.5em;
+		box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+	}
+	& .right-col {
+		border: 1px solid #577c93;
+		display: inline-block;
+		position: relative;
+		vertical-align: top;
+		border-radius: 0.5em;
+		width: calc(100% - 32.3125em);
+		height: 34.0625em; /* 545px */
+		background-color: rgba(0, 0, 0, 0.4);
+		box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+	}
+
+	/* Column style for Evaluation tab */
+	& .single-col {
+		position: relative;
+		height: 34.0625em; /* 545px */
+		background-color: rgba(0, 0, 0, 0.4);
+		box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+		border-radius: 0.5em;
+		border: 1px solid #577c93;
+
+		& .right-cta {
+			position: absolute;
+			right: 1.667em;
+			top: 1.4em;
+		}
+	}
+
+	/* Column styles for therapy tab */
+	& .category-col {
+		border: 1px solid #577c93;
+		display: inline-block;
+		vertical-align: top;
+		margin-right: 1.875em;
+		background-color: rgba(0, 0, 0, 0.4);
+		width: 20em; /* 487px */
+		height: 34.0625em; /* 545px */
+		border-radius: 0.5em;
+		box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+	}
+
+	& .subcategory-col {
+		border: 1px solid #577c93;
+		display: inline-block;
+		vertical-align: top;
+		margin-right: 1.875em;
+		background-color: rgba(0, 0, 0, 0.4);
+		width: 25em; /* 487px */
+		height: 34.0625em; /* 545px */
+		border-radius: 0.5em;
+		box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+	}
+
+	& .activity-col {
+		border: 1px solid #577c93;
+		display: inline-block;
+		position: relative;
+		vertical-align: top;
+		border-radius: 0.5em;
+		width: 27.125em;
+		height: 34.0625em; /* 545px */
+		background-color: rgba(0, 0, 0, 0.4);
+		box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+	}
+
+	& .h2-wrapper {
+		font-family: 'latobold';
+		text-transform: uppercase;
+		height: 5.3125em; /* 85px */
+		padding-left: 1.875em; /* 30px */
+		margin: 0;
+
+		& h2 {
+			padding-top: 1em;
+			font-size: 1.3125em; /* 21 px */
+			position: relative;
+			letter-spacing: 0.15em;
+			&:before {
+				content: '';
+				width: 2.095em;
+				height: 0.1em;
+				background: #18bafb;
+				display: block;
+				position: absolute;
+				bottom: -0.7em;
+				left: 0;
+			}
+
+		}
+	}
+
+	& .btn-pill-blue {
+		font-family: 'rubikregular';
+		text-transform: uppercase;
+		border-radius: 1.611em;
+		font-size: 1.125em; /* 18px */
+		padding: 0 2em;
+		line-height: 3.222em; /* 58px */
+		width: auto;
+		min-width: 17.78em;
+		margin-top: 1.5em;
+	}
+
+}
+
+.orientation {
+	& .list-wrapper {
+		height: auto;
+		overflow-y: visible;
+	}
+
+}
+
+.therapy {
+	& .tab-content {
+		& .left-col {
+			width: 24.1875em; /* 387px */
+			width: 22.1875em;
+			width: 30.4375em; /* 487px */
+
+			& .list-wrapper {
+				height: 25.5em;
+				&.range-of-motion-list {
+					height: auto;
+				}
+			}
+
+			& .img-wrapper + .list-wrapper {
+				height: auto;
+			}
+		}
+
+		& .right-col {
+			width: calc(100% - 26.0625em);
+			width: calc(100% - 24.0625em);
+			width: calc(100% - 32.3125em);
+
+			& .therapy-wrapper {
+				width: calc(50% - 1.875em);
+				width: calc(50% - 3.75em);
+				margin-left: 1.875em;
+				margin-right: 1.875em;
+				display: inline-block;
+
+				& .list-wrapper {
+					margin: 0;
+					height: 21.5em;
+				}
+
+				& .h3-wrapper {
+					font-family: 'rubikregular';
+					text-transform: uppercase;
+					/* height: 3.3125em; */
+					margin: 0;
+
+					& h3 {
+						font-size: 1.1125em; /* 18 px */
+						position: relative;
+						letter-spacing: 0.15em;
+						text-transform: uppercase;
+						line-height: 2.778em;
+						background-color: rgba(0,0,0,0.5);
+						padding-left: 1.667em;
+						padding-right: 1.667em;
+
+					}
+				}
+
+				& .list-wrapper {
+					background-color: rgba(0,0,0,0.15);
+					padding-left: 1.667em;
+					padding-right: 1.667em;
+
+					& .list-item:first-child {
+						& .radio-wrapper {
+							padding-top: 1.3125em;
+						}
+					}
+				}
+			}
+
+			& .h2-wrapper + .therapy-wrapper {
+				margin-right: 0;
+			}
+		}
+	}
+}
+
+.reports {
+	& .tab-content {
+		& .btn-pill-blue {
+			position: absolute;
+			bottom: 1.875em;
+			right: 1.875em;
+		}
+
+		& .left-col {
+			width: 37em; /* 592px */
+			position: relative;
+		}
+
+		& .right-col {
+			width: calc(100% - 38.875em);
+			position: relative;
+		}
+	}
+}
+
+.evaluation {
+	& .list-wrapper {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: wrap;
+
+		& .radio-wrapper, & .checkbox-wrapper {
+			&:nth-child(6) {
+				border-bottom: 1px solid #637887;
+			}
+			&:nth-child(7) {
+				border-top: 0;
+				padding-top: 0;
+			}
+		}
+	}
+}

@@ -1,0 +1,51 @@
+.page-breaker {
+display: block;
+page-break-after: always;
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.header {
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 1em;
+}
+
+.header h1 {
+  font-size: 1.3em;
+  margin: 0;
+  color: #000;
+}
+
+.data-header {
+  color: #666;
+  font-size: 1.1em;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.data {
+  margin-bottom: 10px;
+}
+
+.data th, .data td {
+  padding: 10px;
+  border: 1px solid #eee;
+}
+
+.data th {
+  background: #fff;
+  color: #000;
+  border-top: 5px solid #000;
+}
+
+.data td img {
+  border: 1px solid #ccc;
+  border-radius: 12px; 
+}
+
+.footer {
+  font-size: .8em;
+  color: #888;
+}
