@@ -10,13 +10,17 @@
 # http://www.interactive-motion.com
 # All rights reserved
 
+# PERSONALITY=g2
 PERSONALITY=$(cat /opt/imt/personality)
 
+# Check if there is a valid directory
 if [[ ! -d "$CROB_HOME" ]]; then
     echo "CROB_HOME directory $CROB_HOME does not exist."
     exit 1
 fi
 
+# Define a function that will pop up zenity message box
+# $@ here is the message content
 zmsg() {
     $CROB_HOME/tools/zenity_wrap "$@"
 }
@@ -89,6 +93,8 @@ go_body() {
 
     go_wait_for_robot
 
+    # load shm calibration infomation from imt2.cal
+    # ~/imt_config/robots/planar/imt2.cal
     ./shm < $IMT_CONFIG/robots/$(cat $IMT_CONFIG/current_robot)/imt2.cal
 
     sleep 0.1
