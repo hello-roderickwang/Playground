@@ -123,6 +123,7 @@ rob_log(const char *fmt, ...)
 s32
 main(void)
 {
+    printf("This is main function in main.c\n")
     s32 ret;
     pthread_attr_t attr;
 
@@ -514,6 +515,7 @@ static void
 one_sample(void)
 {
 // if (!(ob->i % 200))rob_log("o %d", ob->i);
+    printf("This is in one_sample function.\n")
     do_time_before_sample();
 
     shm_copy_commands();

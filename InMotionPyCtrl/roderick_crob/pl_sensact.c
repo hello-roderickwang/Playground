@@ -499,6 +499,7 @@ motor_temperature(Tm * tm, f64 volts)
 void
 dac_torque_actuator(void)
 {
+    printf("This is in dac_torque_actuator function.\n")
     se pr;
     se torque;
     se oldvolts, volts;
@@ -509,6 +510,7 @@ dac_torque_actuator(void)
     Tm tm;
     f64 stmax, etmax, tmax;
 
+    // have_planar = 1
     if (!ob->have_planar)
         return;
     // encoder angles
@@ -558,6 +560,7 @@ dac_torque_actuator(void)
     // do this after pfo, so that the ramp is based on pfo voltages.
     volts = planar_back_from_safety_damping(volts);
 
+    // have_thermal_model = 1
     if (ob->have_thermal_model) {
         tm = rob->shoulder.tm;
         stmax = ob->pfomax;
@@ -605,6 +608,7 @@ dac_torque_actuator(void)
         ob->motor_force.y *= volts_ratio;
     }
 
+    // have_ft = 0
     if (!ob->have_ft) {
         rob->ft.world.x = -ob->motor_force.x;
         rob->ft.world.y = -ob->motor_force.y;
@@ -622,6 +626,8 @@ dac_torque_actuator(void)
     // convert it to a number between -1000 and 1000.
 
 
+    // have_uei = 0
+    // have_planar_ao8 = 0
     if (ob->have_uei) {
 	if (ob->have_planar_ao8) {
 	    // new for planar ao8
@@ -633,6 +639,7 @@ dac_torque_actuator(void)
 	    // old for planar mf
 	    uei_aout_write(ob->motor_volts.s, ob->motor_volts.e);
 	}
+	// have_can = 1
     } else if (ob->have_can) {
         s32 svalue, evalue;
 
