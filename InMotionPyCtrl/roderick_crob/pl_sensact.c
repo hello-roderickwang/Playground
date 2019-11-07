@@ -499,7 +499,7 @@ motor_temperature(Tm * tm, f64 volts)
 void
 dac_torque_actuator(void)
 {
-    printf("This is in dac_torque_actuator function.\n")
+    printf("This is in dac_torque_actuator function.\n");
     se pr;
     se torque;
     se oldvolts, volts;
@@ -517,13 +517,23 @@ dac_torque_actuator(void)
     pr.s = As.rad;
     pr.e = Ae.rad;
 
+    printf("pr.s: %f\n", pr.s);
+    printf("pr.e: %f\n", pr.e);
+
     Jp = j_polar_cartesian_2d(pr, rob->link);
     Jt = jacob2d_transpose(Jp);
+
+    printf("motor_force.x: %f\n", ob->motor_force.x);
+    printf("motor_force.y: %f\n", ob->motor_force.y);
 
     if (ob->vibrate) {
         ob->motor_force.x += ob->xvibe;
         ob->motor_force.y += ob->yvibe;
     }
+
+    printf("motor_force.x: %f\n", ob->motor_force.x);
+    printf("motor_force.y: %f\n", ob->motor_force.y);
+
     // torque in Nm
     torque.s = ob->motor_force.x * Jt.e00 + ob->motor_force.y * Jt.e01;
     // torque volts
@@ -531,6 +541,11 @@ dac_torque_actuator(void)
 
     torque.e = ob->motor_force.x * Jt.e10 + ob->motor_force.y * Jt.e11;
     volts.e = (torque.e - Te.offset) / Te.xform;
+
+    printf("volts.s: %f\n", volts.s);
+    printf("volts.e: %f\n", volts.e);
+    printf("torque.s: %f\n", torque.s);
+    printf("torque.e: %f\n", torque.e);
 
     // voltage override, for testing and calibrating motors.
     // this lets us send a constant voltage to each motor
@@ -544,6 +559,16 @@ dac_torque_actuator(void)
         torque.e = volts.e * Te.xform + Te.offset;
     }
     // bracket voltages, preserving force orientation
+
+    volts.s = 1;
+    volts.e = 1;
+    torque.s = 1;
+    torque.e = 1;
+
+    printf("volts.s: %f\n", volts.s);
+    printf("volts.e: %f\n", volts.e);
+    printf("torque.s: %f\n", torque.s);
+    printf("torque.e: %f\n", torque.e);
 
     // volts before attenuation, see below
     oldvolts = volts;

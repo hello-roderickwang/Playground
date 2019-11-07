@@ -123,23 +123,32 @@ rob_log(const char *fmt, ...)
 s32
 main(void)
 {
-    printf("This is main function in main.c\n")
+    printf("This is main function in main.c\n");
     s32 ret;
     pthread_attr_t attr;
 
+    printf("point 1\n");
+    // to get info from printf, daemon() should be (1, 1) instead of (0, 0), 
+    // in which case the program will detach itself from the controlling terminal 
+    // and run in the background as system daemons.
     if (!getenv("NO_ROBOT_DAEMON"))
-	daemon(0, 0);
+	// daemon(0, 0);
+        daemon(1, 1);
 
+    printf("point 2\n");
     openlog("imt-robot", LOG_PID, LOG_USER);
     setlogmask(LOG_UPTO(LOG_INFO));
     rob_log("Starting robot realtime process.\n");
 
+    printf("point 3\n");
     // for rt_printf
     rt_print_auto_init(1);
 
+    printf("point 4\n");
     // init some variables
     main_init();
 
+    printf("point 5\n");
     // install signal handler
     ret = (s32) signal(SIGTERM, cleanup_signal);
     if (ret == (s32) SIG_ERR) {
@@ -153,9 +162,11 @@ main(void)
     if (ret == (s32) SIG_ERR) {
         rob_log("%s:%d %s, signal() returned SIG_ERR\n", __FILE__, __LINE__, __FUNCTION__);
     }
+    printf("point 6\n");
 
     setsid();
 
+    printf("point 7\n");
     ret = pthread_attr_init(&attr);
     ret = pthread_attr_setstacksize(&attr, 64*1024);
 
@@ -169,6 +180,7 @@ main(void)
         pthread_sigmask(SIG_BLOCK, &signalSet, NULL);
     }
 
+    printf("point 8\n");
     ret =
         rt_task_spawn(&thread, ROBOT_LOOP_THREAD_NAME, STACK_SIZE, STD_PRIO, 0,
                       &start_routine, NULL);
@@ -184,6 +196,7 @@ main(void)
         pthread_sigmask(SIG_UNBLOCK, &signalSet, NULL);
     }
 
+    printf("point 9\n");
     pause();
 
     // fflush(NULL);  // TODO: move to someplace where this executes
@@ -213,6 +226,7 @@ set_Hz()
 void
 start_routine(void *arg)
 {
+    printf("Starting routine\n");
     s32 ret;
 
     set_Hz();
@@ -237,6 +251,8 @@ start_routine(void *arg)
 void
 main_init(void)
 {
+    printf("Doing main_init\n");
+
     hrtime_t t, h1, h2;
 
     ob_shmid = shmget(OB_KEY, sizeof(Ob), IPC_CREAT | 0666);
@@ -515,7 +531,7 @@ static void
 one_sample(void)
 {
 // if (!(ob->i % 200))rob_log("o %d", ob->i);
-    printf("This is in one_sample function.\n")
+    printf("This is in one_sample function.\n");
     do_time_before_sample();
 
     shm_copy_commands();
@@ -523,18 +539,24 @@ one_sample(void)
     if (ob->doinit && !ob->didinit) {
         do_init();
     }
+    printf("finished one_sample init\n");
     check_late();
 
     // do all this stuff even when we're paused,
     // so that filters are properly primed when we unpause
     read_sensors();
+    printf("finished read_sensors\n");
     read_reference();
+    printf("finished read_reference\n");
     compute_controls();
+    printf("finished compute_controls\n");
     check_safety();
+    printf("finished check_safety\n");
 
     if (!ob->paused) {
         // only write stuff (including motor forces) when not paused
         if (!ob->test_no_torque) {               // for goofy tests without a robot hooked up
+            printf("about to jump into write_actuators()\n");
             write_actuators();
         }
         write_log();
@@ -554,7 +576,8 @@ one_sample(void)
 	// timeout is 1.25 * interval.  interval is 100 ms.
 	// convert to ticks (20 if 200Hz)
 	if ((ob->i % (ob->Hz * CAN_HEARTBEAT_INTERVAL_MS / 1000)) == 0) {
-	    can_send_heartbeat();
+	    printf("about to jump into can_send_heartbeat()\n");
+            can_send_heartbeat();
 	}
     }
 
@@ -583,6 +606,7 @@ main_loop(void)
 {
     // ticking at 1000 Hz, ob->i (31 bits) will overflow in
     // (2^31)/(1000*60*60*24) == 24.85 days.
+    printf("This is main_loop in main.c\n");
     for (;;) {
         if (!ob->quit) {
 	    one_sample();
@@ -882,6 +906,7 @@ compute_controls(void)
 void
 write_actuators(void)
 {
+    printf("This is write_atuators function in main.c\n");
     if (ob->no_motors) {
         write_zero_torque();
         return;
