@@ -531,8 +531,15 @@ dac_torque_actuator(void)
         ob->motor_force.y += ob->yvibe;
     }
 
-    printf("motor_force.x: %f\n", ob->motor_force.x);
-    printf("motor_force.y: %f\n", ob->motor_force.y);
+    printf("after vibrate motor_force.x: %f\n", ob->motor_force.x);
+    printf("after vibrate motor_force.y: %f\n", ob->motor_force.y);
+	
+    // arbitrary set motor_force.x/y
+    ob->motor_force.x = 1;
+    ob->motor_force.y = 1;
+	
+    printf("arbitrary motor_force.x: %f\n", ob->motor_force.x);
+    printf("arbitrary motor_force.y: %f\n", ob->motor_force.y);
 
     // torque in Nm
     torque.s = ob->motor_force.x * Jt.e00 + ob->motor_force.y * Jt.e01;
@@ -542,11 +549,14 @@ dac_torque_actuator(void)
     torque.e = ob->motor_force.x * Jt.e10 + ob->motor_force.y * Jt.e11;
     volts.e = (torque.e - Te.offset) / Te.xform;
 
-    printf("volts.s: %f\n", volts.s);
-    printf("volts.e: %f\n", volts.e);
-    printf("torque.s: %f\n", torque.s);
-    printf("torque.e: %f\n", torque.e);
+    printf("after computation volts.s: %f\n", volts.s);
+    printf("after computation volts.e: %f\n", volts.e);
+    printf("after computation torque.s: %f\n", torque.s);
+    printf("after computation torque.e: %f\n", torque.e);
 
+    // make sure volts.s/e will not be override
+    ob->test_raw_torque = 0;
+	
     // voltage override, for testing and calibrating motors.
     // this lets us send a constant voltage to each motor
     // in an open loop mode.
@@ -560,15 +570,15 @@ dac_torque_actuator(void)
     }
     // bracket voltages, preserving force orientation
 
-    volts.s = 1;
-    volts.e = 1;
-    torque.s = 1;
-    torque.e = 1;
+    // volts.s = 1;
+    // volts.e = 1;
+    // torque.s = 1;
+    // torque.e = 1;
 
-    printf("volts.s: %f\n", volts.s);
-    printf("volts.e: %f\n", volts.e);
-    printf("torque.s: %f\n", torque.s);
-    printf("torque.e: %f\n", torque.e);
+    printf("after override volts.s: %f\n", volts.s);
+    printf("after override volts.e: %f\n", volts.e);
+    printf("after override torque.s: %f\n", torque.s);
+    printf("after override torque.e: %f\n", torque.e);
 
     // volts before attenuation, see below
     oldvolts = volts;
