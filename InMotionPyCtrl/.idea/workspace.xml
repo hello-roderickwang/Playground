@@ -10,9 +10,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b1c8cc9c-2cf9-4766-bc1a-cdef6cae6ce1" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/roderick_crob/communicator.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roderick_crob/test_communicator.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roderick_crob/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/roderick_crob/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roderick_crob/pl_sensact.c" beforeDir="false" afterPath="$PROJECT_DIR$/roderick_crob/pl_sensact.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roderick_crob/simple_output.py" beforeDir="false" afterPath="$PROJECT_DIR$/roderick_crob/simple_output.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
