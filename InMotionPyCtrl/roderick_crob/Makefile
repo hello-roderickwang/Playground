@@ -52,14 +52,16 @@ SRCS = main.c uei.o can.c fifo.c math.c \
 	pl_sensact.c pl_ulog.c pl_uslot.c \
 	wr_sensact.c wr_ulog.c wr_uslot.c \
 	an_sensact.c an_ulog.c an_uslot.c \
-	ha_sensact.c ha_ulog.c ha_uslot.c
+	ha_sensact.c ha_ulog.c ha_uslot.c \
+        subprocess.c test_subprocess.c
 
 OBJS = main.o uei.o can.o fifo.o math.o \
 	slot.o pci4e.o \
 	pl_sensact.o pl_ulog.o pl_uslot.o \
 	wr_sensact.o wr_ulog.o wr_uslot.o \
 	an_sensact.o an_ulog.o an_uslot.o \
-	ha_sensact.o ha_ulog.o ha_uslot.o
+	ha_sensact.o ha_ulog.o ha_uslot.o \
+        subprocess.o test_subprocess.o
 
 # default:
 
@@ -88,6 +90,9 @@ rwarp: rwarp.c $(INCS)
 
 rtcansendmulti: rtcansendmulti.c $(INCS)
 	$(CC) -Wall $(CFLAGS) -o rtcansendmulti rtcansendmulti.c -lnative -lrtdm -lxenomai
+
+test: subprocess.c test_subprocess.c $(INCS)
+	$(CC) -Wall $(CFLAGS) -o test test_subprocess.c
 
 #mccd:
 #	cd ../mcc/c/; make

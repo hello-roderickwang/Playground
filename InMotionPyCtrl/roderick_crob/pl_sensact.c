@@ -535,8 +535,8 @@ dac_torque_actuator(void)
     printf("after vibrate motor_force.y: %f\n", ob->motor_force.y);
 	
     // arbitrary set motor_force.x/y
-    ob->motor_force.x = 1;
-    ob->motor_force.y = 1;
+    ob->motor_force.x = 5;
+    ob->motor_force.y = 0;
 	
     printf("arbitrary motor_force.x: %f\n", ob->motor_force.x);
     printf("arbitrary motor_force.y: %f\n", ob->motor_force.y);
