@@ -154,7 +154,7 @@ model = nengo.Network(label="NEF Summary")
 with model:
     input = nengo.Node(WhiteSignal(1, high=5), size_out=1)
     input_probe = nengo.Probe(input)
-    A = nengo.Ensemble(1000, dimensions=1, max_rates=Uniform(80, 100))
+    A = nengo.Ensemble(300, dimensions=1, max_rates=Uniform(80, 100))
     nengo.Connection(input, A)
     A_spikes = nengo.Probe(A.neurons)
     A_probe = nengo.Probe(A, synapse=0.01)
@@ -175,6 +175,163 @@ rasterplot(sim.trange(), sim.data[A_spikes], ax)
 plt.xlim(0, 1)
 plt.xlabel("Time (s)")
 plt.ylabel("Neuron")
-plt.show()
+# plt.show()
 
 # Principle 2: Transformation
+model = nengo.Network(label="NEF Summary")
+with model:
+    input = nengo.Node(WhiteSignal(1, high=5), size_out=1)
+    input_probe = nengo.Probe(input, )
+    A = nengo.Ensemble(300, dimensions=1, max_rates=Uniform(80, 100))
+    Asquare = nengo.Node(size_in=1)
+    nengo.Connection(input, A)
+    nengo.Connection(A, Asquare, function=np.square)
+    A_spikes = nengo.Probe(A.neurons)
+    Asquare_probe = nengo.Probe(Asquare, synapse=0.01)
+
+with nengo.Simulator(model) as sim:
+    sim.run(1)
+
+plt.figure(figsize=(10, 3.5))
+plt.subplot(1, 2, 1)
+plt.plot(
+    sim.trange(),
+    sim.data[input_probe],
+    label="Input Signal"
+)
+plt.plot(
+    sim.trange(),
+    sim.data[Asquare_probe],
+    label="Decoded estimate"
+)
+plt.plot(
+    sim.trange(),
+    np.square(sim.data[input_probe]),
+    label="Input Signal Squared"
+)
+plt.legend(loc="best", fontsize="medium")
+plt.xlabel("Time (s)")
+plt.xlim(0, 1)
+
+ax = plt.subplot(1, 2, 2)
+rasterplot(sim.trange(), sim.data[A_spikes])
+plt.xlim(0, 1)
+plt.xlabel("Time (s)")
+plt.ylabel("Neuron")
+# plt.show()
+
+model = nengo.Network(label="NEF Summary")
+with model:
+    input = nengo.Node(lambda t: np.sin(np.pi*t))
+    A = nengo.Ensemble(30, dimensions=1, max_rates=Uniform(80, 100))
+    nengo.Connection(input, A)
+    A_spikes = nengo.Probe(A.neurons)
+    A_probe = nengo.Probe(A, synapse=0.01)
+
+with nengo.Simulator(model) as sim:
+    sim.run(2)
+
+plt.figure(figsize=(10, 3.5))
+plt.subplot(1, 2, 1)
+plt.plot(sim.trange(), sim.data[A_probe])
+plt.title("A")
+plt.xlabel("Time (s)")
+plt.xlim(0, 2)
+
+ax = plt.subplot(1, 2, 2)
+rasterplot(sim.trange(), sim.data[A_spikes], ax)
+plt.xlim(0, 2)
+plt.title("A")
+plt.xlabel("Time (s)")
+plt.ylabel("Neuron")
+# plt.show()
+
+with model:
+    minusA = nengo.Ensemble(30, dimensions=1, max_rates=Uniform(80, 100))
+    nengo.Connection(A, minusA, function=lambda x: -x)
+    minusA_spikes = nengo.Probe(minusA.neurons)
+    minusA_probe = nengo.Probe(minusA, synapse=0.01)
+
+with nengo.Simulator(model) as sim:
+    sim.run(2)
+
+plt.figure(figsize=(10, 5))
+plt.subplot(2, 2, 1)
+plt.plot(sim.trange(), sim.data[A_probe])
+plt.title("A")
+plt.xticks(())
+plt.xlim(0, 2)
+
+plt.subplot(2, 2, 3)
+plt.plot(sim.trange(), sim.data[minusA_probe])
+plt.title("-A")
+plt.xlabel("Time (s)")
+plt.xlim(0, 2)
+
+ax = plt.subplot(2, 2, 2)
+rasterplot(sim.trange(), sim.data[A_spikes], ax)
+plt.xlim(0, 2)
+plt.title("A")
+plt.xticks(())
+plt.ylabel("Neuron")
+
+ax = plt.subplot(2, 2, 4)
+rasterplot(sim.trange(), sim.data[A_spikes], ax)
+plt.xlim(0, 2)
+plt.title("-A")
+plt.xlabel("Time (s)")
+plt.ylabel("Neuron")
+# plt.show()
+
+with model:
+    A_squared = nengo.Ensemble(30, dimensions=1, max_rates=Uniform(80, 100))
+    nengo.Connection(minusA, A_squared, function=lambda x: x**2)
+    A_squared_spikes = nengo.Probe(A_squared.neurons)
+    A_squared_probe = nengo.Probe(A_squared, synapse=0.02)
+
+with nengo.Simulator(model) as sim:
+    sim.run(2)
+
+plt.figure(figsize=(10, 6.5))
+plt.subplot(3, 2, 1)
+plt.plot(sim.trange(), sim.data[A_probe])
+plt.axhline(0, color='k')
+plt.title("A")
+plt.xticks(())
+plt.xlim(0, 2)
+
+plt.subplot(3, 2, 3)
+plt.plot(sim.trange(), sim.data[minusA_probe])
+plt.axhline(0, color='k')
+plt.title("-A")
+plt.xticks(())
+plt.xlim(0, 2)
+
+plt.subplot(3, 2, 5)
+plt.plot(sim.trange(), sim.data[A_squared_probe])
+plt.axhline(0, color='k')
+plt.title("(-A)^2")
+plt.xlabel("Time (s)")
+plt.xlim(0, 2)
+
+ax = plt.subplot(3, 2, 2)
+rasterplot(sim.trange(), sim.data[A_spikes], ax)
+plt.xlim(0, 2)
+plt.title("A")
+plt.xticks(())
+plt.ylabel("Neuron")
+
+ax = plt.subplot(3, 2, 4)
+rasterplot(sim.trange(), sim.data[minusA_spikes], ax)
+plt.xlim(0, 2)
+plt.title("-A")
+plt.xticks(())
+plt.ylabel("Neuron")
+
+ax = plt.subplot(3, 2, 6)
+rasterplot(sim.trange(), sim.data[A_squared_spikes], ax)
+plt.xlim(0, 2)
+plt.title("(-A)^2")
+plt.xlabel("Time (s)")
+plt.ylabel("Neuron")
+plt.show()
