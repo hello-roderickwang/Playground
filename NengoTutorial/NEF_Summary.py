@@ -334,4 +334,34 @@ plt.xlim(0, 2)
 plt.title("(-A)^2")
 plt.xlabel("Time (s)")
 plt.ylabel("Neuron")
+# plt.show()
+
+model = nengo.Network(label="NEF Summary")
+with model:
+    input = nengo.Node(lambda t: [1, 0] if t<0.1 else [0, 0])
+    oscillator = nengo.Ensemble(200, dimensions=2)
+    nengo.Connection(input, oscillator)
+    nengo.Connection(
+        oscillator,
+        oscillator,
+        transform=[[1, 1], [-1, 1]],
+        synapse=0.1
+    )
+    oscillator_probe = nengo.Probe(oscillator, synapse=0.02)
+
+with nengo.Simulator(model) as sim:
+    sim.run(3)
+
+plt.figure(figsize=(10, 3.5))
+plt.subplot(1, 2, 1)
+plt.plot(sim.trange(), sim.data[oscillator_probe])
+plt.ylim(-1.2, 1.2)
+plt.xlabel("Time (s)")
+
+plt.subplot(1, 2, 2)
+plt.plot(sim.data[oscillator_probe][:, 0], sim.data[oscillator_probe][:, 1])
+plt.grid()
+plt.axis([-1.2, 1.2, -1.2, 1.2])
+plt.xlabel("$x_1$")
+plt.ylabel("$x_2$")
 plt.show()
