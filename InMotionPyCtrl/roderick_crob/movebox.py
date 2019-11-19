@@ -39,9 +39,8 @@ def set_command(start_pos, end_pos):
     command['end_pos'] = end_pos
 
 def run_movebox():
-    subprocess.run(['tclsh ./movebox.tcl '+str(command['direction'])+' '+str(command['speed'])+' '\
-        +str(command['start_pos'][0])+' '+str(command['start_pos'][1])+' '+str(command['end_pos'][0])+' '\
-        +str(command['end_pos'][1])], shell=True)
+    subprocess.run(['tclsh ./movebox.tcl '+str(command['start_pos'][0])+' '+str(command['start_pos'][1])\
+    +' '+str(command['end_pos'][0])+' '+str(command['end_pos'][1])], shell=True)
 
 def go_center():
     set_command((0, 0), (0, 0))
@@ -68,6 +67,9 @@ def go(direction):
         set_command((0, 0), (0, -0.3))
         run_movebox()
 
+def stop():
+    subprocess.run(['/opt/imt/robot/crob/stop'], shell=True)
+
 if __name__ == '__main__':
     start_rtl()
     set_default()
@@ -79,3 +81,6 @@ if __name__ == '__main__':
     time.sleep(5)
     go('down')
     time.sleep(5)
+    go_center()
+    time.sleep(5)
+    stop()
