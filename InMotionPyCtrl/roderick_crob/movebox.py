@@ -12,8 +12,6 @@ import time
 shm_path = './shm'
 
 command = {
-    'direction': 'null',
-    'speed': 0,
     'start_pos': (0, 0),
     'end_pos': (0, 0)
 }
@@ -36,9 +34,7 @@ def set_default():
 def set_parameter(target, value):
     command[target] = value
 
-def set_command(direction, speed, start_pos, end_pos):
-    command['direction'] = direction
-    command['speed'] = speed
+def set_command(start_pos, end_pos):
     command['start_pos'] = start_pos
     command['end_pos'] = end_pos
 
@@ -46,16 +42,40 @@ def run_movebox():
     subprocess.run(['tclsh ./movebox.tcl '+str(command['direction'])+' '+str(command['speed'])+' '\
         +str(command['start_pos'][0])+' '+str(command['start_pos'][1])+' '+str(command['end_pos'][0])+' '\
         +str(command['end_pos'][1])], shell=True)
-#    wshm('slot0_go', 1)
+
+def go_center():
+    set_command((0, 0), (0, 0))
+    run_movebox()
+
+def go(direction):
+    print('Re-centering, hold on.')
+    go_center()
+    time.sleep(5)
+    if direction == 'left':
+        print('going '+direction)
+        set_command((0, 0), (-0.3, 0))
+        run_movebox()
+    elif direction == 'right':
+        print('going '+direction)
+        set_command((0, 0), (0.3, 0))
+        run_movebox()
+    elif direction == 'up':
+        print('going '+direction)
+        set_command((0, 0), (0, 0.3))
+        run_movebox()
+    elif direction == 'down':
+        print('going '+direction)
+        set_command((0, 0), (0, -0.3))
+        run_movebox()
 
 if __name__ == '__main__':
     start_rtl()
-#    set_default()
-    set_command('left', 0.05, (0, 0), (0.1, 0))
-    run_movebox()
+    set_default()
+    go('left')
     time.sleep(5)
-    set_command('left', 0.05, (0.1, 0), (-0.2, -0.2))
-    run_movebox()
+    go('right')
     time.sleep(5)
-    set_command('left', 0.05, (-0.2, -0.2), (-0.1, 0.2))
-    run_movebox()
+    go('up')
+    time.sleep(5)
+    go('down')
+    time.sleep(5)

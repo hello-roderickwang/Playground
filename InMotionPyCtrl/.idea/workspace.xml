@@ -9,12 +9,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b1c8cc9c-2cf9-4766-bc1a-cdef6cae6ce1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/roderick_crob/communicator.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roderick_crob/test_communicator.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roderick_crob/simple_output.py" beforeDir="false" afterPath="$PROJECT_DIR$/roderick_crob/simple_output.py" afterDir="false" />
-    </list>
+    <list default="true" id="b1c8cc9c-2cf9-4766-bc1a-cdef6cae6ce1" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,8 +34,11 @@
     </option>
   </component>
   <component name="ProjectId" id="1RydPH3tGpDnDDpuALILf8ltL8a" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -99,5 +97,8 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>
