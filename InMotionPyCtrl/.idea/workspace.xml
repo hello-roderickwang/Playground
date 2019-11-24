@@ -9,7 +9,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
+<<<<<<< Updated upstream
     <list default="true" id="b1c8cc9c-2cf9-4766-bc1a-cdef6cae6ce1" name="Default Changelist" comment="" />
+=======
+    <list default="true" id="b1c8cc9c-2cf9-4766-bc1a-cdef6cae6ce1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+>>>>>>> Stashed changes
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +85,8 @@
       <workItem from="1570643248394" duration="217000" />
       <workItem from="1572899827423" duration="1562000" />
       <workItem from="1572980881136" duration="4308000" />
+      <workItem from="1574240438777" duration="1325000" />
+      <workItem from="1574242450896" duration="1371000" />
     </task>
     <servers />
   </component>
