@@ -8,6 +8,7 @@
 
 import Neurons
 import Synapse
+import Cluster
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -41,3 +42,8 @@ if __name__ == '__main__':
     plt.xlabel('Time Steps')
     plt.ylabel('Voltage')
     plt.show()
+
+    one = Cluster.Cluster(5)
+    print('Size of 1D cluster: ', len(one.cluster))
+    two = Cluster.Cluster(5, 5)
+    print('size of 2D cluster is: ', len(two.cluster), ' * ', len(two.cluster[0]))
