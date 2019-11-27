@@ -30,10 +30,10 @@ if __name__ == '__main__':
     for step in range(0, len(sin)):
         a.stimulate(sin[step])
         a.go()
-        v_a.append(a.v)
+        v_a.append(a.out)
         connection.go()
         b.go()
-        v_b.append(b.v)
+        v_b.append(b.out)
 
     plt.plot(range(len(v_a)), v_a, 'r')
     plt.plot(range(len(v_b)), v_b, 'g')

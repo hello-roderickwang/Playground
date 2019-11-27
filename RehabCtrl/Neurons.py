@@ -10,15 +10,17 @@ class LIF:
     def __init__(self):
         self.v = 0
         self.i = 0
+        self.out = 0
         self.v_threshold = 10
         self.v_rest = 0
         self.r = 1
-        self.c = 5
+        self.c = 10
         self.tau = self.r * self.c
         self.is_firing = False
 
     def update(self):
         self.v = self.v + (-1 * self.v + self.r * self.i) / self.tau
+        self.out = self.v
 
     def stimulate(self, i_new):
         self.i += i_new
