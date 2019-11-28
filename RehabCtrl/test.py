@@ -41,7 +41,7 @@ if __name__ == '__main__':
     plt.plot(range(len(sin)), sin, 'b')
     plt.xlabel('Time Steps')
     plt.ylabel('Voltage')
-    plt.show()
+    # plt.show()
 
     one = Cluster.Cluster(5)
     print('dimension of one: ', one.dimension)
