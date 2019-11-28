@@ -20,7 +20,7 @@ class Synapse:
         self.std_stimulate = 1
         self.type = ''  # 'excite' or 'inhibit'
 
-    def set_weight(self, weight = 0):
+    def set_weight(self, weight=0):
         if weight == 0:
             self.weight = np.random.rand()
         else:

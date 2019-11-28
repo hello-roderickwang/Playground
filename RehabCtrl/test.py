@@ -44,6 +44,11 @@ if __name__ == '__main__':
     plt.show()
 
     one = Cluster.Cluster(5)
+    print('dimension of one: ', one.dimension)
     print('Size of 1D cluster: ', len(one.cluster))
     two = Cluster.Cluster(5, 5)
+    print('dimension of two: ', two.dimension)
     print('size of 2D cluster is: ', len(two.cluster), ' * ', len(two.cluster[0]))
+
+    one.connect((0, 0), (1, 0))
+    two.connect((1, 1), (2, 2))
