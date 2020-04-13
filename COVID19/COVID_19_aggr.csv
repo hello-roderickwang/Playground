@@ -1,0 +1,3367 @@
+Country_Region,WeekOfYear,ConfirmedDaily,FatalitiesDaily
+Afghanistan,4,0,0
+Afghanistan,5,0,0
+Afghanistan,6,0,0
+Afghanistan,7,0,0
+Afghanistan,8,0,0
+Afghanistan,9,1,0
+Afghanistan,10,0,0
+Afghanistan,11,10,0
+Afghanistan,12,13,0
+Afghanistan,13,86,4
+Afghanistan,14,189,3
+Albania,4,0,0
+Albania,5,0,0
+Albania,6,0,0
+Albania,7,0,0
+Albania,8,0,0
+Albania,9,0,0
+Albania,10,0,0
+Albania,11,38,1
+Albania,12,38,1
+Albania,13,121,8
+Albania,14,136,10
+Algeria,4,0,0
+Algeria,5,0,0
+Algeria,6,0,0
+Algeria,7,0,0
+Algeria,8,0,0
+Algeria,9,1,0
+Algeria,10,16,0
+Algeria,11,20,3
+Algeria,12,102,12
+Algeria,13,315,14
+Algeria,14,797,101
+Andorra,4,0,0
+Andorra,5,0,0
+Andorra,6,0,0
+Andorra,7,0,0
+Andorra,8,0,0
+Andorra,9,0,0
+Andorra,10,1,0
+Andorra,11,0,0
+Andorra,12,87,0
+Andorra,13,220,3
+Andorra,14,158,14
+Angola,4,0,0
+Angola,5,0,0
+Angola,6,0,0
+Angola,7,0,0
+Angola,8,0,0
+Angola,9,0,0
+Angola,10,0,0
+Angola,11,0,0
+Angola,12,2,0
+Angola,13,3,0
+Angola,14,5,2
+Antigua and Barbuda,4,0,0
+Antigua and Barbuda,5,0,0
+Antigua and Barbuda,6,0,0
+Antigua and Barbuda,7,0,0
+Antigua and Barbuda,8,0,0
+Antigua and Barbuda,9,0,0
+Antigua and Barbuda,10,0,0
+Antigua and Barbuda,11,1,0
+Antigua and Barbuda,12,0,0
+Antigua and Barbuda,13,6,0
+Antigua and Barbuda,14,8,0
+Argentina,4,0,0
+Argentina,5,0,0
+Argentina,6,0,0
+Argentina,7,0,0
+Argentina,8,0,0
+Argentina,9,0,0
+Argentina,10,8,0
+Argentina,11,26,2
+Argentina,12,124,2
+Argentina,13,532,14
+Argentina,14,761,25
+Armenia,4,0,0
+Armenia,5,0,0
+Armenia,6,0,0
+Armenia,7,0,0
+Armenia,8,0,0
+Armenia,9,0,0
+Armenia,10,1,0
+Armenia,11,17,0
+Armenia,12,142,0
+Armenia,13,247,1
+Armenia,14,363,6
+Australia,4,0,0
+Australia,5,0,0
+Australia,6,0,0
+Australia,7,0,0
+Australia,8,0,0
+Australia,9,0,0
+Australia,10,0,0
+Australia,11,1,0
+Australia,12,8,0
+Australia,13,62,0
+Australia,14,22,2
+Australia,4,0,0
+Australia,5,4,0
+Australia,6,0,0
+Australia,7,0,0
+Australia,8,0,0
+Australia,9,0,0
+Australia,10,24,1
+Australia,11,84,1
+Australia,12,324,4
+Australia,13,1181,2
+Australia,14,876,4
+Australia,4,0,0
+Australia,5,0,0
+Australia,6,0,0
+Australia,7,0,0
+Australia,8,0,0
+Australia,9,0,0
+Australia,10,0,0
+Australia,11,1,0
+Australia,12,2,0
+Australia,13,12,0
+Australia,14,11,0
+Australia,4,0,0
+Australia,5,3,0
+Australia,6,2,0
+Australia,7,0,0
+Australia,8,0,0
+Australia,9,4,0
+Australia,10,4,0
+Australia,11,33,0
+Australia,12,175,0
+Australia,13,404,1
+Australia,14,275,3
+Australia,4,0,0
+Australia,5,1,0
+Australia,6,1,0
+Australia,7,0,0
+Australia,8,0,0
+Australia,9,1,0
+Australia,10,4,0
+Australia,11,12,0
+Australia,12,48,0
+Australia,13,220,0
+Australia,14,120,0
+Australia,4,0,0
+Australia,5,0,0
+Australia,6,0,0
+Australia,7,0,0
+Australia,8,0,0
+Australia,9,0,0
+Australia,10,1,0
+Australia,11,4,0
+Australia,12,11,0
+Australia,13,46,0
+Australia,14,18,2
+Australia,4,0,0
+Australia,5,4,0
+Australia,6,0,0
+Australia,7,0,0
+Australia,8,0,0
+Australia,9,3,0
+Australia,10,4,0
+Australia,11,38,0
+Australia,12,180,0
+Australia,13,456,3
+Australia,14,430,5
+Australia,4,0,0
+Australia,5,0,0
+Australia,6,0,0
+Australia,7,0,0
+Australia,8,0,0
+Australia,9,2,0
+Australia,10,1,1
+Australia,11,14,0
+Australia,12,73,0
+Australia,13,188,1
+Australia,14,158,0
+Austria,4,0,0
+Austria,5,0,0
+Austria,6,0,0
+Austria,7,0,0
+Austria,8,0,0
+Austria,9,9,0
+Austria,10,70,0
+Austria,11,576,1
+Austria,12,2159,7
+Austria,13,5457,60
+Austria,14,3510,118
+Azerbaijan,4,0,0
+Azerbaijan,5,0,0
+Azerbaijan,6,0,0
+Azerbaijan,7,0,0
+Azerbaijan,8,0,0
+Azerbaijan,9,0,0
+Azerbaijan,10,9,0
+Azerbaijan,11,6,1
+Azerbaijan,12,38,0
+Azerbaijan,13,129,3
+Azerbaijan,14,339,1
+Bahamas,4,0,0
+Bahamas,5,0,0
+Bahamas,6,0,0
+Bahamas,7,0,0
+Bahamas,8,0,0
+Bahamas,9,0,0
+Bahamas,10,0,0
+Bahamas,11,0,0
+Bahamas,12,4,0
+Bahamas,13,6,0
+Bahamas,14,18,4
+Bahrain,4,0,0
+Bahrain,5,0,0
+Bahrain,6,0,0
+Bahrain,7,0,0
+Bahrain,8,0,0
+Bahrain,9,41,0
+Bahrain,10,44,0
+Bahrain,11,125,0
+Bahrain,12,95,1
+Bahrain,13,171,3
+Bahrain,14,212,0
+Bangladesh,4,0,0
+Bangladesh,5,0,0
+Bangladesh,6,0,0
+Bangladesh,7,0,0
+Bangladesh,8,0,0
+Bangladesh,9,0,0
+Bangladesh,10,0,0
+Bangladesh,11,3,0
+Bangladesh,12,22,2
+Bangladesh,13,23,3
+Bangladesh,14,22,3
+Barbados,4,0,0
+Barbados,5,0,0
+Barbados,6,0,0
+Barbados,7,0,0
+Barbados,8,0,0
+Barbados,9,0,0
+Barbados,10,0,0
+Barbados,11,0,0
+Barbados,12,6,0
+Barbados,13,20,0
+Barbados,14,26,0
+Belarus,4,0,0
+Belarus,5,0,0
+Belarus,6,0,0
+Belarus,7,0,0
+Belarus,8,0,0
+Belarus,9,1,0
+Belarus,10,5,0
+Belarus,11,21,0
+Belarus,12,49,0
+Belarus,13,18,0
+Belarus,14,346,5
+Belgium,4,0,0
+Belgium,5,0,0
+Belgium,6,1,0
+Belgium,7,0,0
+Belgium,8,0,0
+Belgium,9,0,0
+Belgium,10,168,0
+Belgium,11,520,4
+Belgium,12,2126,63
+Belgium,13,6319,286
+Belgium,14,9297,930
+Belize,4,0,0
+Belize,5,0,0
+Belize,6,0,0
+Belize,7,0,0
+Belize,8,0,0
+Belize,9,0,0
+Belize,10,0,0
+Belize,11,0,0
+Belize,12,0,0
+Belize,13,2,0
+Belize,14,2,0
+Benin,4,0,0
+Benin,5,0,0
+Benin,6,0,0
+Benin,7,0,0
+Benin,8,0,0
+Benin,9,0,0
+Benin,10,0,0
+Benin,11,0,0
+Benin,12,2,0
+Benin,13,4,0
+Benin,14,10,0
+Bhutan,4,0,0
+Bhutan,5,0,0
+Bhutan,6,0,0
+Bhutan,7,0,0
+Bhutan,8,0,0
+Bhutan,9,0,0
+Bhutan,10,1,0
+Bhutan,11,0,0
+Bhutan,12,1,0
+Bhutan,13,1,0
+Bhutan,14,2,0
+Bolivia,4,0,0
+Bolivia,5,0,0
+Bolivia,6,0,0
+Bolivia,7,0,0
+Bolivia,8,0,0
+Bolivia,9,0,0
+Bolivia,10,0,0
+Bolivia,11,10,0
+Bolivia,12,9,0
+Bolivia,13,55,0
+Bolivia,14,65,10
+Bosnia and Herzegovina,4,0,0
+Bosnia and Herzegovina,5,0,0
+Bosnia and Herzegovina,6,0,0
+Bosnia and Herzegovina,7,0,0
+Bosnia and Herzegovina,8,0,0
+Bosnia and Herzegovina,9,0,0
+Bosnia and Herzegovina,10,3,0
+Bosnia and Herzegovina,11,15,0
+Bosnia and Herzegovina,12,75,1
+Bosnia and Herzegovina,13,165,4
+Bosnia and Herzegovina,14,366,16
+Botswana,4,0,0
+Botswana,5,0,0
+Botswana,6,0,0
+Botswana,7,0,0
+Botswana,8,0,0
+Botswana,9,0,0
+Botswana,10,0,0
+Botswana,11,0,0
+Botswana,12,0,0
+Botswana,13,0,0
+Botswana,14,4,1
+Brazil,4,0,0
+Brazil,5,0,0
+Brazil,6,0,0
+Brazil,7,0,0
+Brazil,8,0,0
+Brazil,9,2,0
+Brazil,10,11,0
+Brazil,11,138,0
+Brazil,12,870,15
+Brazil,13,2883,96
+Brazil,14,6456,334
+Brunei,4,0,0
+Brunei,5,0,0
+Brunei,6,0,0
+Brunei,7,0,0
+Brunei,8,0,0
+Brunei,9,0,0
+Brunei,10,0,0
+Brunei,11,40,0
+Brunei,12,43,0
+Brunei,13,37,1
+Brunei,14,15,0
+Bulgaria,4,0,0
+Bulgaria,5,0,0
+Bulgaria,6,0,0
+Bulgaria,7,0,0
+Bulgaria,8,0,0
+Bulgaria,9,0,0
+Bulgaria,10,0,0
+Bulgaria,11,41,2
+Bulgaria,12,122,1
+Bulgaria,13,168,4
+Bulgaria,14,172,10
+Burkina Faso,4,0,0
+Burkina Faso,5,0,0
+Burkina Faso,6,0,0
+Burkina Faso,7,0,0
+Burkina Faso,8,0,0
+Burkina Faso,9,0,0
+Burkina Faso,10,0,0
+Burkina Faso,11,2,0
+Burkina Faso,12,62,2
+Burkina Faso,13,143,9
+Burkina Faso,14,111,5
+Burma,4,0,0
+Burma,5,0,0
+Burma,6,0,0
+Burma,7,0,0
+Burma,8,0,0
+Burma,9,0,0
+Burma,10,0,0
+Burma,11,0,0
+Burma,12,0,0
+Burma,13,8,0
+Burma,14,13,1
+Burundi,4,0,0
+Burundi,5,0,0
+Burundi,6,0,0
+Burundi,7,0,0
+Burundi,8,0,0
+Burundi,9,0,0
+Burundi,10,0,0
+Burundi,11,0,0
+Burundi,12,0,0
+Burundi,13,0,0
+Burundi,14,3,0
+Cabo Verde,4,0,0
+Cabo Verde,5,0,0
+Cabo Verde,6,0,0
+Cabo Verde,7,0,0
+Cabo Verde,8,0,0
+Cabo Verde,9,0,0
+Cabo Verde,10,0,0
+Cabo Verde,11,0,0
+Cabo Verde,12,3,0
+Cabo Verde,13,2,1
+Cabo Verde,14,2,0
+Cambodia,4,0,0
+Cambodia,5,1,0
+Cambodia,6,0,0
+Cambodia,7,0,0
+Cambodia,8,0,0
+Cambodia,9,0,0
+Cambodia,10,0,0
+Cambodia,11,6,0
+Cambodia,12,46,0
+Cambodia,13,46,0
+Cambodia,14,15,0
+Cameroon,4,0,0
+Cameroon,5,0,0
+Cameroon,6,0,0
+Cameroon,7,0,0
+Cameroon,8,0,0
+Cameroon,9,0,0
+Cameroon,10,1,0
+Cameroon,11,1,0
+Cameroon,12,25,0
+Cameroon,13,64,2
+Cameroon,14,464,7
+Canada,4,0,0
+Canada,5,0,0
+Canada,6,0,0
+Canada,7,0,0
+Canada,8,0,0
+Canada,9,0,0
+Canada,10,2,0
+Canada,11,27,0
+Canada,12,166,1
+Canada,13,347,1
+Canada,14,533,16
+Canada,4,0,0
+Canada,5,1,0
+Canada,6,3,0
+Canada,7,0,0
+Canada,8,2,0
+Canada,9,2,0
+Canada,10,13,0
+Canada,11,43,1
+Canada,12,360,9
+Canada,13,460,7
+Canada,14,319,21
+Canada,4,0,0
+Canada,5,0,0
+Canada,6,0,0
+Canada,7,0,0
+Canada,8,0,0
+Canada,9,0,0
+Canada,10,0,0
+Canada,11,4,0
+Canada,12,14,0
+Canada,13,46,1
+Canada,14,118,1
+Canada,4,0,0
+Canada,5,0,0
+Canada,6,0,0
+Canada,7,0,0
+Canada,8,0,0
+Canada,9,0,0
+Canada,10,0,0
+Canada,11,1,0
+Canada,12,16,0
+Canada,13,34,0
+Canada,14,40,0
+Canada,4,0,0
+Canada,5,0,0
+Canada,6,0,0
+Canada,7,0,0
+Canada,8,0,0
+Canada,9,0,0
+Canada,10,0,0
+Canada,11,0,0
+Canada,12,6,0
+Canada,13,114,0
+Canada,14,75,1
+Canada,4,0,0
+Canada,5,0,0
+Canada,6,0,0
+Canada,7,0,0
+Canada,8,0,0
+Canada,9,0,0
+Canada,10,0,0
+Canada,11,0,0
+Canada,12,0,0
+Canada,13,1,0
+Canada,14,3,0
+Canada,4,0,0
+Canada,5,0,0
+Canada,6,0,0
+Canada,7,0,0
+Canada,8,0,0
+Canada,9,0,0
+Canada,10,0,0
+Canada,11,0,0
+Canada,12,21,0
+Canada,13,89,0
+Canada,14,126,0
+Canada,4,0,0
+Canada,5,3,0
+Canada,6,0,0
+Canada,7,0,0
+Canada,8,0,0
+Canada,9,8,0
+Canada,10,17,0
+Canada,11,51,0
+Canada,12,298,3
+Canada,13,767,15
+Canada,14,2486,76
+Canada,4,0,0
+Canada,5,0,0
+Canada,6,0,0
+Canada,7,0,0
+Canada,8,0,0
+Canada,9,0,0
+Canada,10,0,0
+Canada,11,0,0
+Canada,12,2,0
+Canada,13,9,0
+Canada,14,11,0
+Canada,4,0,0
+Canada,5,0,0
+Canada,6,0,0
+Canada,7,0,0
+Canada,8,0,0
+Canada,9,1,0
+Canada,10,2,0
+Canada,11,14,0
+Canada,12,164,5
+Canada,13,2317,17
+Canada,14,3603,39
+Canada,4,0,0
+Canada,5,0,0
+Canada,6,0,0
+Canada,7,0,0
+Canada,8,0,0
+Canada,9,0,0
+Canada,10,0,0
+Canada,11,2,0
+Canada,12,24,0
+Canada,13,108,0
+Canada,14,86,3
+Canada,4,0,0
+Canada,5,0,0
+Canada,6,0,0
+Canada,7,0,0
+Canada,8,0,0
+Canada,9,0,0
+Canada,10,0,0
+Canada,11,0,0
+Canada,12,0,0
+Canada,13,4,0
+Canada,14,2,0
+Central African Republic,4,0,0
+Central African Republic,5,0,0
+Central African Republic,6,0,0
+Central African Republic,7,0,0
+Central African Republic,8,0,0
+Central African Republic,9,0,0
+Central African Republic,10,0,0
+Central African Republic,11,0,0
+Central African Republic,12,3,0
+Central African Republic,13,0,0
+Central African Republic,14,5,0
+Chad,4,0,0
+Chad,5,0,0
+Chad,6,0,0
+Chad,7,0,0
+Chad,8,0,0
+Chad,9,0,0
+Chad,10,0,0
+Chad,11,0,0
+Chad,12,1,0
+Chad,13,2,0
+Chad,14,6,0
+Chile,4,0,0
+Chile,5,0,0
+Chile,6,0,0
+Chile,7,0,0
+Chile,8,0,0
+Chile,9,0,0
+Chile,10,4,0
+Chile,11,57,0
+Chile,12,476,0
+Chile,13,1372,6
+Chile,14,2252,21
+China,4,39,0
+China,5,258,0
+China,6,436,0
+China,7,217,6
+China,8,39,0
+China,9,1,0
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,0,0
+China,14,0,0
+China,4,41,0
+China,5,127,1
+China,6,147,1
+China,7,60,2
+China,8,24,0
+China,9,12,4
+China,10,15,0
+China,11,11,0
+China,12,67,0
+China,13,69,0
+China,14,12,0
+China,4,57,0
+China,5,190,1
+China,6,181,1
+China,7,116,3
+China,8,29,1
+China,9,3,0
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,2,0
+China,14,1,0
+China,4,18,0
+China,5,126,0
+China,6,95,0
+China,7,46,0
+China,8,8,1
+China,9,3,0
+China,10,0,0
+China,11,0,0
+China,12,7,0
+China,13,34,0
+China,14,13,0
+China,4,4,0
+China,5,36,0
+China,6,39,1
+China,7,11,1
+China,8,1,0
+China,9,0,0
+China,10,29,0
+China,11,9,0
+China,12,5,0
+China,13,2,0
+China,14,2,0
+China,4,78,0
+China,5,457,0
+China,6,560,1
+China,7,199,1
+China,8,45,3
+China,9,10,2
+China,10,3,0
+China,11,4,1
+China,12,44,0
+China,13,67,0
+China,14,49,0
+China,4,23,0
+China,5,77,0
+China,6,83,0
+China,7,52,2
+China,8,14,0
+China,9,3,0
+China,10,0,0
+China,11,0,0
+China,12,2,0
+China,13,0,0
+China,14,0,0
+China,4,4,0
+China,5,25,0
+China,6,60,1
+China,7,54,0
+China,8,3,1
+China,9,0,0
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,0,0
+China,14,0,0
+China,4,19,0
+China,5,43,1
+China,6,62,1
+China,7,38,2
+China,8,6,0
+China,9,0,1
+China,10,0,1
+China,11,0,0
+China,12,0,0
+China,13,0,0
+China,14,0,0
+China,4,8,1
+China,5,88,0
+China,6,99,0
+China,7,96,2
+China,8,18,3
+China,9,9,0
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,1,0
+China,14,7,0
+China,4,9,1
+China,5,71,1
+China,6,215,3
+China,7,130,6
+China,8,54,1
+China,9,1,1
+China,10,1,0
+China,11,1,0
+China,12,2,0
+China,13,0,0
+China,14,7,0
+China,4,32,0
+China,5,390,2
+China,6,559,2
+China,7,231,9
+China,8,58,6
+China,9,2,2
+China,10,0,1
+China,11,1,0
+China,12,0,0
+China,13,2,0
+China,14,1,0
+China,4,5,0
+China,5,8,0
+China,6,13,1
+China,7,30,0
+China,8,13,1
+China,9,26,0
+China,10,13,0
+China,11,32,2
+China,12,133,0
+China,13,288,0
+China,14,301,0
+China,4,761,36
+China,5,6392,209
+China,6,19947,531
+China,7,29149,816
+China,8,7835,750
+China,9,2253,381
+China,10,1329,232
+China,11,124,116
+China,12,10,64
+China,13,1,38
+China,14,2,30
+China,4,43,0
+China,5,346,0
+China,6,414,1
+China,7,198,1
+China,8,12,2
+China,9,5,0
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,0,0
+China,14,1,0
+China,4,7,0
+China,5,16,0
+China,6,29,0
+China,7,16,0
+China,8,7,0
+China,9,0,0
+China,10,0,1
+China,11,0,0
+China,12,0,0
+China,13,19,0
+China,14,23,0
+China,4,18,0
+China,5,184,0
+China,6,237,0
+China,7,165,0
+China,8,27,0
+China,9,0,0
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,10,0
+China,14,10,0
+China,4,18,0
+China,5,268,0
+China,6,412,0
+China,7,215,1
+China,8,21,0
+China,9,1,0
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,1,0
+China,14,1,0
+China,4,4,0
+China,5,13,0
+China,6,52,1
+China,7,19,0
+China,8,3,0
+China,9,2,0
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,4,0
+China,14,1,0
+China,4,17,0
+China,5,47,0
+China,6,41,0
+China,7,14,1
+China,8,2,0
+China,9,0,0
+China,10,4,0
+China,11,0,0
+China,12,1,1
+China,13,6,0
+China,14,9,0
+China,4,2,0
+China,5,5,0
+China,6,3,0
+China,7,0,0
+China,8,0,0
+China,9,0,0
+China,10,0,0
+China,11,0,0
+China,12,8,0
+China,13,19,0
+China,14,6,0
+China,4,3,0
+China,5,23,0
+China,6,19,0
+China,7,25,0
+China,8,1,0
+China,9,2,0
+China,10,2,0
+China,11,0,0
+China,12,0,0
+China,13,0,0
+China,14,0,0
+China,4,1,0
+China,5,8,0
+China,6,9,0
+China,7,0,0
+China,8,0,0
+China,9,0,0
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,0,0
+China,14,0,0
+China,4,15,0
+China,5,86,0
+China,6,94,0
+China,7,37,0
+China,8,13,1
+China,9,0,0
+China,10,0,0
+China,11,0,1
+China,12,3,1
+China,13,5,0
+China,14,3,0
+China,4,27,0
+China,5,179,0
+China,6,210,0
+China,7,116,2
+China,8,218,2
+China,9,6,2
+China,10,2,0
+China,11,2,1
+China,12,4,0
+China,13,8,0
+China,14,6,0
+China,4,33,0
+China,5,136,1
+China,6,117,0
+China,7,40,0
+China,8,9,2
+China,9,2,0
+China,10,5,0
+China,11,11,0
+China,12,27,0
+China,13,105,2
+China,14,44,1
+China,4,6,0
+China,5,41,0
+China,6,68,0
+China,7,13,0
+China,8,4,0
+China,9,1,0
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,2,0
+China,14,2,0
+China,4,28,0
+China,5,179,1
+China,6,157,0
+China,7,106,0
+China,8,56,2
+China,9,12,0
+China,10,1,0
+China,11,0,0
+China,12,3,0
+China,13,6,0
+China,14,9,0
+China,4,10,0
+China,5,31,0
+China,6,47,1
+China,7,34,2
+China,8,13,0
+China,9,1,0
+China,10,0,0
+China,11,0,0
+China,12,1,0
+China,13,24,0
+China,14,19,0
+China,4,0,0
+China,5,1,0
+China,6,0,0
+China,7,0,0
+China,8,0,0
+China,9,0,0
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,0,0
+China,14,0,0
+China,4,3,0
+China,5,15,0
+China,6,24,0
+China,7,28,1
+China,8,6,1
+China,9,0,1
+China,10,0,0
+China,11,0,0
+China,12,0,0
+China,13,0,0
+China,14,0,0
+China,4,11,0
+China,5,82,0
+China,6,45,0
+China,7,30,0
+China,8,6,2
+China,9,0,0
+China,10,0,0
+China,11,0,0
+China,12,2,0
+China,13,4,0
+China,14,4,0
+China,4,62,0
+China,5,537,0
+China,6,449,0
+China,7,114,0
+China,8,43,1
+China,9,0,0
+China,10,10,0
+China,11,12,0
+China,12,9,0
+China,13,15,0
+China,14,11,0
+Colombia,4,0,0
+Colombia,5,0,0
+Colombia,6,0,0
+Colombia,7,0,0
+Colombia,8,0,0
+Colombia,9,0,0
+Colombia,10,1,0
+Colombia,11,21,0
+Colombia,12,174,0
+Colombia,13,412,6
+Colombia,14,798,26
+Congo (Brazzaville),4,0,0
+Congo (Brazzaville),5,0,0
+Congo (Brazzaville),6,0,0
+Congo (Brazzaville),7,0,0
+Congo (Brazzaville),8,0,0
+Congo (Brazzaville),9,0,0
+Congo (Brazzaville),10,0,0
+Congo (Brazzaville),11,0,0
+Congo (Brazzaville),12,3,0
+Congo (Brazzaville),13,1,0
+Congo (Brazzaville),14,18,2
+Congo (Kinshasa),4,0,0
+Congo (Kinshasa),5,0,0
+Congo (Kinshasa),6,0,0
+Congo (Kinshasa),7,0,0
+Congo (Kinshasa),8,0,0
+Congo (Kinshasa),9,0,0
+Congo (Kinshasa),10,0,0
+Congo (Kinshasa),11,2,0
+Congo (Kinshasa),12,21,1
+Congo (Kinshasa),13,42,5
+Congo (Kinshasa),14,89,12
+Costa Rica,4,0,0
+Costa Rica,5,0,0
+Costa Rica,6,0,0
+Costa Rica,7,0,0
+Costa Rica,8,0,0
+Costa Rica,9,0,0
+Costa Rica,10,1,0
+Costa Rica,11,25,0
+Costa Rica,12,91,2
+Costa Rica,13,178,0
+Costa Rica,14,140,0
+Cote d'Ivoire,4,0,0
+Cote d'Ivoire,5,0,0
+Cote d'Ivoire,6,0,0
+Cote d'Ivoire,7,0,0
+Cote d'Ivoire,8,0,0
+Cote d'Ivoire,9,0,0
+Cote d'Ivoire,10,0,0
+Cote d'Ivoire,11,1,0
+Cote d'Ivoire,12,13,0
+Cote d'Ivoire,13,87,0
+Cote d'Ivoire,14,144,1
+Croatia,4,0,0
+Croatia,5,0,0
+Croatia,6,0,0
+Croatia,7,0,0
+Croatia,8,0,0
+Croatia,9,6,0
+Croatia,10,6,0
+Croatia,11,26,0
+Croatia,12,168,1
+Croatia,13,451,4
+Croatia,14,469,7
+Cuba,4,0,0
+Cuba,5,0,0
+Cuba,6,0,0
+Cuba,7,0,0
+Cuba,8,0,0
+Cuba,9,0,0
+Cuba,10,0,0
+Cuba,11,4,0
+Cuba,12,17,1
+Cuba,13,98,2
+Cuba,14,169,3
+Cyprus,4,0,0
+Cyprus,5,0,0
+Cyprus,6,0,0
+Cyprus,7,0,0
+Cyprus,8,0,0
+Cyprus,9,0,0
+Cyprus,10,0,0
+Cyprus,11,26,0
+Cyprus,12,58,0
+Cyprus,13,95,5
+Cyprus,14,247,6
+Czechia,4,0,0
+Czechia,5,0,0
+Czechia,6,0,0
+Czechia,7,0,0
+Czechia,8,0,0
+Czechia,9,0,0
+Czechia,10,19,0
+Czechia,11,170,0
+Czechia,12,806,0
+Czechia,13,1636,11
+Czechia,14,1841,48
+Denmark,4,0,0
+Denmark,5,0,0
+Denmark,6,0,0
+Denmark,7,0,0
+Denmark,8,0,0
+Denmark,9,0,0
+Denmark,10,1,0
+Denmark,11,8,0
+Denmark,12,83,0
+Denmark,13,63,0
+Denmark,14,26,0
+Denmark,4,0,0
+Denmark,5,0,0
+Denmark,6,0,0
+Denmark,7,0,0
+Denmark,8,0,0
+Denmark,9,0,0
+Denmark,10,0,0
+Denmark,11,0,0
+Denmark,12,2,0
+Denmark,13,8,0
+Denmark,14,1,0
+Denmark,4,0,0
+Denmark,5,0,0
+Denmark,6,0,0
+Denmark,7,0,0
+Denmark,8,0,0
+Denmark,9,3,0
+Denmark,10,20,0
+Denmark,11,804,1
+Denmark,12,499,12
+Denmark,13,875,52
+Denmark,14,1876,96
+Diamond Princess,4,0,0
+Diamond Princess,5,0,0
+Diamond Princess,6,61,0
+Diamond Princess,7,224,0
+Diamond Princess,8,349,2
+Diamond Princess,9,71,4
+Diamond Princess,10,1,0
+Diamond Princess,11,0,1
+Diamond Princess,12,6,1
+Diamond Princess,13,0,2
+Diamond Princess,14,0,1
+Djibouti,4,0,0
+Djibouti,5,0,0
+Djibouti,6,0,0
+Djibouti,7,0,0
+Djibouti,8,0,0
+Djibouti,9,0,0
+Djibouti,10,0,0
+Djibouti,11,0,0
+Djibouti,12,1,0
+Djibouti,13,13,0
+Djibouti,14,36,0
+Dominica,4,0,0
+Dominica,5,0,0
+Dominica,6,0,0
+Dominica,7,0,0
+Dominica,8,0,0
+Dominica,9,0,0
+Dominica,10,0,0
+Dominica,11,0,0
+Dominica,12,0,0
+Dominica,13,11,0
+Dominica,14,3,0
+Dominican Republic,4,0,0
+Dominican Republic,5,0,0
+Dominican Republic,6,0,0
+Dominican Republic,7,0,0
+Dominican Republic,8,0,0
+Dominican Republic,9,0,0
+Dominican Republic,10,2,0
+Dominican Republic,11,9,0
+Dominican Republic,12,101,2
+Dominican Republic,13,607,26
+Dominican Republic,14,769,40
+Ecuador,4,0,0
+Ecuador,5,0,0
+Ecuador,6,0,0
+Ecuador,7,0,0
+Ecuador,8,0,0
+Ecuador,9,0,0
+Ecuador,10,13,0
+Ecuador,11,15,2
+Ecuador,12,478,5
+Ecuador,13,1317,41
+Ecuador,14,1642,124
+Egypt,4,0,0
+Egypt,5,0,0
+Egypt,6,0,0
+Egypt,7,1,0
+Egypt,8,0,0
+Egypt,9,0,0
+Egypt,10,14,0
+Egypt,11,94,2
+Egypt,12,185,8
+Egypt,13,282,26
+Egypt,14,494,35
+El Salvador,4,0,0
+El Salvador,5,0,0
+El Salvador,6,0,0
+El Salvador,7,0,0
+El Salvador,8,0,0
+El Salvador,9,0,0
+El Salvador,10,0,0
+El Salvador,11,0,0
+El Salvador,12,3,0
+El Salvador,13,16,0
+El Salvador,14,37,3
+Equatorial Guinea,4,0,0
+Equatorial Guinea,5,0,0
+Equatorial Guinea,6,0,0
+Equatorial Guinea,7,0,0
+Equatorial Guinea,8,0,0
+Equatorial Guinea,9,0,0
+Equatorial Guinea,10,0,0
+Equatorial Guinea,11,0,0
+Equatorial Guinea,12,6,0
+Equatorial Guinea,13,6,0
+Equatorial Guinea,14,4,0
+Eritrea,4,0,0
+Eritrea,5,0,0
+Eritrea,6,0,0
+Eritrea,7,0,0
+Eritrea,8,0,0
+Eritrea,9,0,0
+Eritrea,10,0,0
+Eritrea,11,0,0
+Eritrea,12,1,0
+Eritrea,13,5,0
+Eritrea,14,23,0
+Estonia,4,0,0
+Estonia,5,0,0
+Estonia,6,0,0
+Estonia,7,0,0
+Estonia,8,0,0
+Estonia,9,1,0
+Estonia,10,9,0
+Estonia,11,105,0
+Estonia,12,191,0
+Estonia,13,339,1
+Estonia,14,394,12
+Eswatini,4,0,0
+Eswatini,5,0,0
+Eswatini,6,0,0
+Eswatini,7,0,0
+Eswatini,8,0,0
+Eswatini,9,0,0
+Eswatini,10,0,0
+Eswatini,11,1,0
+Eswatini,12,0,0
+Eswatini,13,8,0
+Eswatini,14,0,0
+Ethiopia,4,0,0
+Ethiopia,5,0,0
+Ethiopia,6,0,0
+Ethiopia,7,0,0
+Ethiopia,8,0,0
+Ethiopia,9,0,0
+Ethiopia,10,0,0
+Ethiopia,11,1,0
+Ethiopia,12,8,0
+Ethiopia,13,7,0
+Ethiopia,14,22,0
+Fiji,4,0,0
+Fiji,5,0,0
+Fiji,6,0,0
+Fiji,7,0,0
+Fiji,8,0,0
+Fiji,9,0,0
+Fiji,10,0,0
+Fiji,11,0,0
+Fiji,12,1,0
+Fiji,13,4,0
+Fiji,14,7,0
+Finland,4,0,0
+Finland,5,1,0
+Finland,6,0,0
+Finland,7,0,0
+Finland,8,0,0
+Finland,9,2,0
+Finland,10,12,0
+Finland,11,210,0
+Finland,12,298,1
+Finland,13,644,8
+Finland,14,715,16
+France,4,0,0
+France,5,0,0
+France,6,0,0
+France,7,0,0
+France,8,0,0
+France,9,0,0
+France,10,5,0
+France,11,0,0
+France,12,13,0
+France,13,10,0
+France,14,33,0
+France,4,0,0
+France,5,0,0
+France,6,0,0
+France,7,0,0
+France,8,0,0
+France,9,0,0
+France,10,0,0
+France,11,3,0
+France,12,12,0
+France,13,15,0
+France,14,10,0
+France,4,0,0
+France,5,0,0
+France,6,0,0
+France,7,0,0
+France,8,0,0
+France,9,0,0
+France,10,0,0
+France,11,1,0
+France,12,52,0
+France,13,49,2
+France,14,32,5
+France,4,0,0
+France,5,0,0
+France,6,0,0
+France,7,0,0
+France,8,0,0
+France,9,0,0
+France,10,2,0
+France,11,7,0
+France,12,23,1
+France,13,61,0
+France,14,52,2
+France,4,0,0
+France,5,0,0
+France,6,0,0
+France,7,0,0
+France,8,0,0
+France,9,0,0
+France,10,0,0
+France,11,0,0
+France,12,7,0
+France,13,56,0
+France,14,71,2
+France,4,0,0
+France,5,0,0
+France,6,0,0
+France,7,0,0
+France,8,0,0
+France,9,0,0
+France,10,0,0
+France,11,0,0
+France,12,4,0
+France,13,11,0
+France,14,2,0
+France,4,0,0
+France,5,0,0
+France,6,0,0
+France,7,0,0
+France,8,0,0
+France,9,0,0
+France,10,0,0
+France,11,6,0
+France,12,39,0
+France,13,138,0
+France,14,151,0
+France,4,0,0
+France,5,0,0
+France,6,0,0
+France,7,0,0
+France,8,0,0
+France,9,0,0
+France,10,3,0
+France,11,-2,0
+France,12,2,0
+France,13,2,0
+France,14,1,0
+France,4,0,0
+France,5,0,0
+France,6,0,0
+France,7,0,0
+France,8,0,0
+France,9,0,0
+France,10,0,0
+France,11,2,0
+France,12,2,0
+France,13,7,0
+France,14,13,2
+France,4,3,0
+France,5,3,0
+France,6,5,0
+France,7,1,1
+France,8,0,0
+France,9,88,1
+France,10,849,9
+France,11,3520,80
+France,12,9813,471
+France,13,23293,1752
+France,14,52378,5246
+Gabon,4,0,0
+Gabon,5,0,0
+Gabon,6,0,0
+Gabon,7,0,0
+Gabon,8,0,0
+Gabon,9,0,0
+Gabon,10,0,0
+Gabon,11,1,0
+Gabon,12,3,1
+Gabon,13,3,0
+Gabon,14,14,0
+Gambia,4,0,0
+Gambia,5,0,0
+Gambia,6,0,0
+Gambia,7,0,0
+Gambia,8,0,0
+Gambia,9,0,0
+Gambia,10,0,0
+Gambia,11,0,0
+Gambia,12,1,0
+Gambia,13,2,1
+Gambia,14,1,0
+Georgia,4,0,0
+Georgia,5,0,0
+Georgia,6,0,0
+Georgia,7,0,0
+Georgia,8,0,0
+Georgia,9,1,0
+Georgia,10,3,0
+Georgia,11,26,0
+Georgia,12,19,0
+Georgia,13,41,0
+Georgia,14,72,1
+Germany,4,0,0
+Germany,5,8,0
+Germany,6,5,0
+Germany,7,3,0
+Germany,8,0,0
+Germany,9,63,0
+Germany,10,720,0
+Germany,11,3786,9
+Germany,12,17628,75
+Germany,13,35482,349
+Germany,14,38397,1011
+Ghana,4,0,0
+Ghana,5,0,0
+Ghana,6,0,0
+Ghana,7,0,0
+Ghana,8,0,0
+Ghana,9,0,0
+Ghana,10,0,0
+Ghana,11,3,0
+Ghana,12,16,1
+Ghana,13,122,4
+Ghana,14,64,0
+Greece,4,0,0
+Greece,5,0,0
+Greece,6,0,0
+Greece,7,0,0
+Greece,8,0,0
+Greece,9,4,0
+Greece,10,42,0
+Greece,11,182,3
+Greece,12,302,10
+Greece,13,531,19
+Greece,14,612,36
+Grenada,4,0,0
+Grenada,5,0,0
+Grenada,6,0,0
+Grenada,7,0,0
+Grenada,8,0,0
+Grenada,9,0,0
+Grenada,10,0,0
+Grenada,11,0,0
+Grenada,12,0,0
+Grenada,13,7,0
+Grenada,14,5,0
+Guatemala,4,0,0
+Guatemala,5,0,0
+Guatemala,6,0,0
+Guatemala,7,0,0
+Guatemala,8,0,0
+Guatemala,9,0,0
+Guatemala,10,0,0
+Guatemala,11,1,0
+Guatemala,12,16,1
+Guatemala,13,17,0
+Guatemala,14,27,1
+Guinea,4,0,0
+Guinea,5,0,0
+Guinea,6,0,0
+Guinea,7,0,0
+Guinea,8,0,0
+Guinea,9,0,0
+Guinea,10,0,0
+Guinea,11,1,0
+Guinea,12,1,0
+Guinea,13,6,0
+Guinea,14,103,0
+Guinea-Bissau,4,0,0
+Guinea-Bissau,5,0,0
+Guinea-Bissau,6,0,0
+Guinea-Bissau,7,0,0
+Guinea-Bissau,8,0,0
+Guinea-Bissau,9,0,0
+Guinea-Bissau,10,0,0
+Guinea-Bissau,11,0,0
+Guinea-Bissau,12,0,0
+Guinea-Bissau,13,2,0
+Guinea-Bissau,14,16,0
+Guyana,4,0,0
+Guyana,5,0,0
+Guyana,6,0,0
+Guyana,7,0,0
+Guyana,8,0,0
+Guyana,9,0,0
+Guyana,10,0,0
+Guyana,11,1,1
+Guyana,12,6,0
+Guyana,13,1,0
+Guyana,14,15,3
+Haiti,4,0,0
+Haiti,5,0,0
+Haiti,6,0,0
+Haiti,7,0,0
+Haiti,8,0,0
+Haiti,9,0,0
+Haiti,10,0,0
+Haiti,11,0,0
+Haiti,12,2,0
+Haiti,13,6,0
+Haiti,14,12,0
+Holy See,4,0,0
+Holy See,5,0,0
+Holy See,6,0,0
+Holy See,7,0,0
+Holy See,8,0,0
+Holy See,9,0,0
+Holy See,10,1,0
+Holy See,11,0,0
+Holy See,12,0,0
+Holy See,13,5,0
+Holy See,14,1,0
+Honduras,4,0,0
+Honduras,5,0,0
+Honduras,6,0,0
+Honduras,7,0,0
+Honduras,8,0,0
+Honduras,9,0,0
+Honduras,10,0,0
+Honduras,11,2,0
+Honduras,12,22,0
+Honduras,13,71,1
+Honduras,14,169,14
+Hungary,4,0,0
+Hungary,5,0,0
+Hungary,6,0,0
+Hungary,7,0,0
+Hungary,8,0,0
+Hungary,9,0,0
+Hungary,10,4,0
+Hungary,11,26,0
+Hungary,12,73,4
+Hungary,13,240,7
+Hungary,14,335,21
+Iceland,4,0,0
+Iceland,5,0,0
+Iceland,6,0,0
+Iceland,7,0,0
+Iceland,8,0,0
+Iceland,9,1,0
+Iceland,10,49,0
+Iceland,11,106,0
+Iceland,12,317,1
+Iceland,13,490,1
+Iceland,14,454,2
+India,4,0,0
+India,5,1,0
+India,6,2,0
+India,7,0,0
+India,8,0,0
+India,9,0,0
+India,10,31,0
+India,11,68,2
+India,12,228,2
+India,13,657,20
+India,14,2095,62
+Indonesia,4,0,0
+Indonesia,5,0,0
+Indonesia,6,0,0
+Indonesia,7,0,0
+Indonesia,8,0,0
+Indonesia,9,0,0
+Indonesia,10,4,0
+Indonesia,11,92,5
+Indonesia,12,354,33
+Indonesia,13,705,64
+Indonesia,14,937,89
+Iran,4,0,0
+Iran,5,0,0
+Iran,6,0,0
+Iran,7,0,0
+Iran,8,28,5
+Iran,9,565,38
+Iran,10,5230,102
+Iran,11,6906,466
+Iran,12,7881,945
+Iran,13,14798,961
+Iran,14,20335,935
+Iraq,4,0,0
+Iraq,5,0,0
+Iraq,6,0,0
+Iraq,7,0,0
+Iraq,8,0,0
+Iraq,9,13,0
+Iraq,10,41,4
+Iraq,11,56,6
+Iraq,12,104,7
+Iraq,13,292,25
+Iraq,14,372,14
+Ireland,4,0,0
+Ireland,5,0,0
+Ireland,6,0,0
+Ireland,7,0,0
+Ireland,8,0,0
+Ireland,9,1,0
+Ireland,10,17,0
+Ireland,11,111,2
+Ireland,12,656,1
+Ireland,13,1630,33
+Ireland,14,2189,101
+Israel,4,0,0
+Israel,5,0,0
+Israel,6,0,0
+Israel,7,0,0
+Israel,8,1,0
+Israel,9,6,0
+Israel,10,36,0
+Israel,11,112,0
+Israel,12,557,1
+Israel,13,2907,11
+Israel,14,4232,32
+Italy,4,0,0
+Italy,5,2,0
+Italy,6,1,0
+Italy,7,0,0
+Italy,8,59,2
+Italy,9,1066,27
+Italy,10,4755,204
+Italy,11,15274,1208
+Italy,12,32421,3384
+Italy,13,38894,5198
+Italy,14,32160,5339
+Jamaica,4,0,0
+Jamaica,5,0,0
+Jamaica,6,0,0
+Jamaica,7,0,0
+Jamaica,8,0,0
+Jamaica,9,0,0
+Jamaica,10,0,0
+Jamaica,11,8,0
+Jamaica,12,8,1
+Jamaica,13,14,0
+Jamaica,14,23,2
+Japan,4,2,0
+Japan,5,18,0
+Japan,6,5,0
+Japan,7,18,1
+Japan,8,79,0
+Japan,9,119,4
+Japan,10,220,1
+Japan,11,312,16
+Japan,12,234,13
+Japan,13,686,17
+Japan,14,1446,25
+Jordan,4,0,0
+Jordan,5,0,0
+Jordan,6,0,0
+Jordan,7,0,0
+Jordan,8,0,0
+Jordan,9,0,0
+Jordan,10,1,0
+Jordan,11,0,0
+Jordan,12,84,0
+Jordan,13,161,1
+Jordan,14,77,4
+Kazakhstan,4,0,0
+Kazakhstan,5,0,0
+Kazakhstan,6,0,0
+Kazakhstan,7,0,0
+Kazakhstan,8,0,0
+Kazakhstan,9,0,0
+Kazakhstan,10,0,0
+Kazakhstan,11,6,0
+Kazakhstan,12,47,0
+Kazakhstan,13,175,1
+Kazakhstan,14,303,4
+Kenya,4,0,0
+Kenya,5,0,0
+Kenya,6,0,0
+Kenya,7,0,0
+Kenya,8,0,0
+Kenya,9,0,0
+Kenya,10,0,0
+Kenya,11,1,0
+Kenya,12,6,0
+Kenya,13,31,1
+Kenya,14,88,3
+"Korea, South",4,2,0
+"Korea, South",5,10,0
+"Korea, South",6,12,0
+"Korea, South",7,4,0
+"Korea, South",8,405,2
+"Korea, South",9,2717,14
+"Korea, South",10,3891,28
+"Korea, South",11,1045,28
+"Korea, South",12,713,30
+"Korea, South",13,679,42
+"Korea, South",14,678,33
+Kosovo,4,0,0
+Kosovo,5,0,0
+Kosovo,6,0,0
+Kosovo,7,0,0
+Kosovo,8,0,0
+Kosovo,9,0,0
+Kosovo,10,0,0
+Kosovo,11,0,0
+Kosovo,12,0,0
+Kosovo,13,91,1
+Kosovo,14,44,0
+Kuwait,4,0,0
+Kuwait,5,0,0
+Kuwait,6,0,0
+Kuwait,7,0,0
+Kuwait,8,0,0
+Kuwait,9,45,0
+Kuwait,10,16,0
+Kuwait,11,43,0
+Kuwait,12,72,0
+Kuwait,13,59,0
+Kuwait,14,244,1
+Kyrgyzstan,4,0,0
+Kyrgyzstan,5,0,0
+Kyrgyzstan,6,0,0
+Kyrgyzstan,7,0,0
+Kyrgyzstan,8,0,0
+Kyrgyzstan,9,0,0
+Kyrgyzstan,10,0,0
+Kyrgyzstan,11,0,0
+Kyrgyzstan,12,14,0
+Kyrgyzstan,13,44,0
+Kyrgyzstan,14,86,1
+Laos,4,0,0
+Laos,5,0,0
+Laos,6,0,0
+Laos,7,0,0
+Laos,8,0,0
+Laos,9,0,0
+Laos,10,0,0
+Laos,11,0,0
+Laos,12,0,0
+Laos,13,8,0
+Laos,14,2,0
+Latvia,4,0,0
+Latvia,5,0,0
+Latvia,6,0,0
+Latvia,7,0,0
+Latvia,8,0,0
+Latvia,9,0,0
+Latvia,10,1,0
+Latvia,11,25,0
+Latvia,12,98,0
+Latvia,13,181,0
+Latvia,14,204,1
+Lebanon,4,0,0
+Lebanon,5,0,0
+Lebanon,6,0,0
+Lebanon,7,0,0
+Lebanon,8,1,0
+Lebanon,9,3,0
+Lebanon,10,18,0
+Lebanon,11,71,3
+Lebanon,12,94,1
+Lebanon,13,225,4
+Lebanon,14,108,9
+Liberia,4,0,0
+Liberia,5,0,0
+Liberia,6,0,0
+Liberia,7,0,0
+Liberia,8,0,0
+Liberia,9,0,0
+Liberia,10,0,0
+Liberia,11,0,0
+Liberia,12,3,0
+Liberia,13,0,0
+Liberia,14,7,1
+Libya,4,0,0
+Libya,5,0,0
+Libya,6,0,0
+Libya,7,0,0
+Libya,8,0,0
+Libya,9,0,0
+Libya,10,0,0
+Libya,11,0,0
+Libya,12,0,0
+Libya,13,3,0
+Libya,14,15,1
+Liechtenstein,4,0,0
+Liechtenstein,5,0,0
+Liechtenstein,6,0,0
+Liechtenstein,7,0,0
+Liechtenstein,8,0,0
+Liechtenstein,9,0,0
+Liechtenstein,10,1,0
+Liechtenstein,11,3,0
+Liechtenstein,12,33,0
+Liechtenstein,13,19,0
+Liechtenstein,14,21,1
+Lithuania,4,0,0
+Lithuania,5,0,0
+Lithuania,6,0,0
+Lithuania,7,0,0
+Lithuania,8,0,0
+Lithuania,9,1,0
+Lithuania,10,0,0
+Lithuania,11,7,0
+Lithuania,12,75,1
+Lithuania,13,311,6
+Lithuania,14,377,4
+Luxembourg,4,0,0
+Luxembourg,5,0,0
+Luxembourg,6,0,0
+Luxembourg,7,0,0
+Luxembourg,8,0,0
+Luxembourg,9,1,0
+Luxembourg,10,1,0
+Luxembourg,11,49,1
+Luxembourg,12,619,7
+Luxembourg,13,1161,10
+Luxembourg,14,898,13
+MS Zaandam,4,0,0
+MS Zaandam,5,0,0
+MS Zaandam,6,0,0
+MS Zaandam,7,0,0
+MS Zaandam,8,0,0
+MS Zaandam,9,0,0
+MS Zaandam,10,0,0
+MS Zaandam,11,0,0
+MS Zaandam,12,0,0
+MS Zaandam,13,2,0
+MS Zaandam,14,7,2
+Madagascar,4,0,0
+Madagascar,5,0,0
+Madagascar,6,0,0
+Madagascar,7,0,0
+Madagascar,8,0,0
+Madagascar,9,0,0
+Madagascar,10,0,0
+Madagascar,11,0,0
+Madagascar,12,3,0
+Madagascar,13,23,0
+Madagascar,14,44,0
+Malaysia,4,3,0
+Malaysia,5,5,0
+Malaysia,6,8,0
+Malaysia,7,6,0
+Malaysia,8,0,0
+Malaysia,9,3,0
+Malaysia,10,68,0
+Malaysia,11,145,0
+Malaysia,12,945,4
+Malaysia,13,1137,23
+Malaysia,14,1163,30
+Maldives,4,0,0
+Maldives,5,0,0
+Maldives,6,0,0
+Maldives,7,0,0
+Maldives,8,0,0
+Maldives,9,0,0
+Maldives,10,0,0
+Maldives,11,10,0
+Maldives,12,3,0
+Maldives,13,3,0
+Maldives,14,3,0
+Mali,4,0,0
+Mali,5,0,0
+Mali,6,0,0
+Mali,7,0,0
+Mali,8,0,0
+Mali,9,0,0
+Mali,10,0,0
+Mali,11,0,0
+Mali,12,0,0
+Mali,13,18,0
+Mali,14,23,3
+Malta,4,0,0
+Malta,5,0,0
+Malta,6,0,0
+Malta,7,0,0
+Malta,8,0,0
+Malta,9,0,0
+Malta,10,3,0
+Malta,11,15,0
+Malta,12,55,0
+Malta,13,76,0
+Malta,14,64,0
+Mauritania,4,0,0
+Mauritania,5,0,0
+Mauritania,6,0,0
+Mauritania,7,0,0
+Mauritania,8,0,0
+Mauritania,9,0,0
+Mauritania,10,0,0
+Mauritania,11,1,0
+Mauritania,12,1,0
+Mauritania,13,3,0
+Mauritania,14,1,1
+Mauritius,4,0,0
+Mauritius,5,0,0
+Mauritius,6,0,0
+Mauritius,7,0,0
+Mauritius,8,0,0
+Mauritius,9,0,0
+Mauritius,10,0,0
+Mauritius,11,0,0
+Mauritius,12,14,1
+Mauritius,13,88,1
+Mauritius,14,94,5
+Mexico,4,0,0
+Mexico,5,0,0
+Mexico,6,0,0
+Mexico,7,0,0
+Mexico,8,0,0
+Mexico,9,4,0
+Mexico,10,2,0
+Mexico,11,20,0
+Mexico,12,177,2
+Mexico,13,514,10
+Mexico,14,971,48
+Moldova,4,0,0
+Moldova,5,0,0
+Moldova,6,0,0
+Moldova,7,0,0
+Moldova,8,0,0
+Moldova,9,0,0
+Moldova,10,0,0
+Moldova,11,12,0
+Moldova,12,68,1
+Moldova,13,151,1
+Moldova,14,521,10
+Monaco,4,0,0
+Monaco,5,0,0
+Monaco,6,0,0
+Monaco,7,0,0
+Monaco,8,0,0
+Monaco,9,1,0
+Monaco,10,0,0
+Monaco,11,1,0
+Monaco,12,9,0
+Monaco,13,31,0
+Monaco,14,24,1
+Mongolia,4,0,0
+Mongolia,5,0,0
+Mongolia,6,0,0
+Mongolia,7,0,0
+Mongolia,8,0,0
+Mongolia,9,0,0
+Mongolia,10,0,0
+Mongolia,11,1,0
+Mongolia,12,9,0
+Mongolia,13,2,0
+Mongolia,14,2,0
+Montenegro,4,0,0
+Montenegro,5,0,0
+Montenegro,6,0,0
+Montenegro,7,0,0
+Montenegro,8,0,0
+Montenegro,9,0,0
+Montenegro,10,0,0
+Montenegro,11,0,0
+Montenegro,12,14,0
+Montenegro,13,70,1
+Montenegro,14,117,1
+Morocco,4,0,0
+Morocco,5,0,0
+Morocco,6,0,0
+Morocco,7,0,0
+Morocco,8,0,0
+Morocco,9,0,0
+Morocco,10,2,0
+Morocco,11,15,1
+Morocco,12,79,2
+Morocco,13,306,22
+Morocco,14,517,34
+Mozambique,4,0,0
+Mozambique,5,0,0
+Mozambique,6,0,0
+Mozambique,7,0,0
+Mozambique,8,0,0
+Mozambique,9,0,0
+Mozambique,10,0,0
+Mozambique,11,0,0
+Mozambique,12,0,0
+Mozambique,13,8,0
+Mozambique,14,2,0
+Namibia,4,0,0
+Namibia,5,0,0
+Namibia,6,0,0
+Namibia,7,0,0
+Namibia,8,0,0
+Namibia,9,0,0
+Namibia,10,0,0
+Namibia,11,2,0
+Namibia,12,1,0
+Namibia,13,5,0
+Namibia,14,6,0
+Nepal,4,1,0
+Nepal,5,0,0
+Nepal,6,0,0
+Nepal,7,0,0
+Nepal,8,0,0
+Nepal,9,0,0
+Nepal,10,0,0
+Nepal,11,0,0
+Nepal,12,0,0
+Nepal,13,4,0
+Nepal,14,4,0
+Netherlands,4,0,0
+Netherlands,5,0,0
+Netherlands,6,0,0
+Netherlands,7,0,0
+Netherlands,8,0,0
+Netherlands,9,0,0
+Netherlands,10,0,0
+Netherlands,11,2,0
+Netherlands,12,3,0
+Netherlands,13,41,0
+Netherlands,14,18,0
+Netherlands,4,0,0
+Netherlands,5,0,0
+Netherlands,6,0,0
+Netherlands,7,0,0
+Netherlands,8,0,0
+Netherlands,9,0,0
+Netherlands,10,0,0
+Netherlands,11,1,0
+Netherlands,12,2,1
+Netherlands,13,5,0
+Netherlands,14,3,0
+Netherlands,4,0,0
+Netherlands,5,0,0
+Netherlands,6,0,0
+Netherlands,7,0,0
+Netherlands,8,0,0
+Netherlands,9,0,0
+Netherlands,10,0,0
+Netherlands,11,0,0
+Netherlands,12,1,0
+Netherlands,13,2,0
+Netherlands,14,20,4
+Netherlands,4,0,0
+Netherlands,5,0,0
+Netherlands,6,0,0
+Netherlands,7,0,0
+Netherlands,8,0,0
+Netherlands,9,6,0
+Netherlands,10,182,1
+Netherlands,11,771,11
+Netherlands,12,2672,124
+Netherlands,13,6131,503
+Netherlands,14,6865,1012
+New Zealand,4,0,0
+New Zealand,5,0,0
+New Zealand,6,0,0
+New Zealand,7,0,0
+New Zealand,8,0,0
+New Zealand,9,1,0
+New Zealand,10,4,0
+New Zealand,11,1,0
+New Zealand,12,46,0
+New Zealand,13,399,0
+New Zealand,14,499,1
+Nicaragua,4,0,0
+Nicaragua,5,0,0
+Nicaragua,6,0,0
+Nicaragua,7,0,0
+Nicaragua,8,0,0
+Nicaragua,9,0,0
+Nicaragua,10,0,0
+Nicaragua,11,0,0
+Nicaragua,12,2,0
+Nicaragua,13,2,1
+Nicaragua,14,1,0
+Niger,4,0,0
+Niger,5,0,0
+Niger,6,0,0
+Niger,7,0,0
+Niger,8,0,0
+Niger,9,0,0
+Niger,10,0,0
+Niger,11,0,0
+Niger,12,1,0
+Niger,13,9,1
+Niger,14,134,7
+Nigeria,4,0,0
+Nigeria,5,0,0
+Nigeria,6,0,0
+Nigeria,7,0,0
+Nigeria,8,0,0
+Nigeria,9,1,0
+Nigeria,10,0,0
+Nigeria,11,1,0
+Nigeria,12,20,0
+Nigeria,13,67,1
+Nigeria,14,125,3
+North Macedonia,4,0,0
+North Macedonia,5,0,0
+North Macedonia,6,0,0
+North Macedonia,7,0,0
+North Macedonia,8,0,0
+North Macedonia,9,1,0
+North Macedonia,10,2,0
+North Macedonia,11,11,0
+North Macedonia,12,71,0
+North Macedonia,13,156,4
+North Macedonia,14,242,13
+Norway,4,0,0
+Norway,5,0,0
+Norway,6,0,0
+Norway,7,0,0
+Norway,8,0,0
+Norway,9,15,0
+Norway,10,132,0
+Norway,11,943,3
+Norway,12,1028,4
+Norway,13,1897,16
+Norway,14,1535,39
+Oman,4,0,0
+Oman,5,0,0
+Oman,6,0,0
+Oman,7,0,0
+Oman,8,0,0
+Oman,9,6,0
+Oman,10,10,0
+Oman,11,3,0
+Oman,12,33,0
+Oman,13,100,0
+Oman,14,125,2
+Pakistan,4,0,0
+Pakistan,5,0,0
+Pakistan,6,0,0
+Pakistan,7,0,0
+Pakistan,8,0,0
+Pakistan,9,4,0
+Pakistan,10,2,0
+Pakistan,11,25,0
+Pakistan,12,699,3
+Pakistan,13,765,9
+Pakistan,14,1323,29
+Panama,4,0,0
+Panama,5,0,0
+Panama,6,0,0
+Panama,7,0,0
+Panama,8,0,0
+Panama,9,0,0
+Panama,10,0,0
+Panama,11,36,1
+Panama,12,164,0
+Panama,13,586,13
+Panama,14,887,27
+Papua New Guinea,4,0,0
+Papua New Guinea,5,0,0
+Papua New Guinea,6,0,0
+Papua New Guinea,7,0,0
+Papua New Guinea,8,0,0
+Papua New Guinea,9,0,0
+Papua New Guinea,10,0,0
+Papua New Guinea,11,0,0
+Papua New Guinea,12,1,0
+Papua New Guinea,13,0,0
+Papua New Guinea,14,0,0
+Paraguay,4,0,0
+Paraguay,5,0,0
+Paraguay,6,0,0
+Paraguay,7,0,0
+Paraguay,8,0,0
+Paraguay,9,0,0
+Paraguay,10,0,0
+Paraguay,11,6,0
+Paraguay,12,12,1
+Paraguay,13,38,2
+Paraguay,14,40,0
+Peru,4,0,0
+Peru,5,0,0
+Peru,6,0,0
+Peru,7,0,0
+Peru,8,0,0
+Peru,9,0,0
+Peru,10,1,0
+Peru,11,37,0
+Peru,12,280,5
+Peru,13,353,11
+Peru,14,1075,57
+Philippines,4,0,0
+Philippines,5,1,0
+Philippines,6,2,1
+Philippines,7,0,0
+Philippines,8,0,0
+Philippines,9,0,0
+Philippines,10,3,0
+Philippines,11,105,7
+Philippines,12,196,11
+Philippines,13,768,49
+Philippines,14,2019,76
+Poland,4,0,0
+Poland,5,0,0
+Poland,6,0,0
+Poland,7,0,0
+Poland,8,0,0
+Poland,9,0,0
+Poland,10,5,0
+Poland,11,98,3
+Poland,12,433,2
+Poland,13,1102,13
+Poland,14,1989,61
+Portugal,4,0,0
+Portugal,5,0,0
+Portugal,6,0,0
+Portugal,7,0,0
+Portugal,8,0,0
+Portugal,9,0,0
+Portugal,10,20,0
+Portugal,11,149,0
+Portugal,12,1111,12
+Portugal,13,3890,88
+Portugal,14,5354,166
+Qatar,4,0,0
+Qatar,5,0,0
+Qatar,6,0,0
+Qatar,7,0,0
+Qatar,8,0,0
+Qatar,9,1,0
+Qatar,10,7,0
+Qatar,11,329,0
+Qatar,12,144,0
+Qatar,13,109,1
+Qatar,14,735,2
+Romania,4,0,0
+Romania,5,0,0
+Romania,6,0,0
+Romania,7,0,0
+Romania,8,0,0
+Romania,9,3,0
+Romania,10,6,0
+Romania,11,114,0
+Romania,12,244,0
+Romania,13,1085,37
+Romania,14,2161,109
+Russia,4,0,0
+Russia,5,2,0
+Russia,6,0,0
+Russia,7,0,0
+Russia,8,0,0
+Russia,9,0,0
+Russia,10,11,0
+Russia,11,46,0
+Russia,12,247,1
+Russia,13,958,3
+Russia,14,3467,39
+Rwanda,4,0,0
+Rwanda,5,0,0
+Rwanda,6,0,0
+Rwanda,7,0,0
+Rwanda,8,0,0
+Rwanda,9,0,0
+Rwanda,10,0,0
+Rwanda,11,1,0
+Rwanda,12,16,0
+Rwanda,13,43,0
+Rwanda,14,42,0
+Saint Kitts and Nevis,4,0,0
+Saint Kitts and Nevis,5,0,0
+Saint Kitts and Nevis,6,0,0
+Saint Kitts and Nevis,7,0,0
+Saint Kitts and Nevis,8,0,0
+Saint Kitts and Nevis,9,0,0
+Saint Kitts and Nevis,10,0,0
+Saint Kitts and Nevis,11,0,0
+Saint Kitts and Nevis,12,0,0
+Saint Kitts and Nevis,13,2,0
+Saint Kitts and Nevis,14,7,0
+Saint Lucia,4,0,0
+Saint Lucia,5,0,0
+Saint Lucia,6,0,0
+Saint Lucia,7,0,0
+Saint Lucia,8,0,0
+Saint Lucia,9,0,0
+Saint Lucia,10,0,0
+Saint Lucia,11,1,0
+Saint Lucia,12,1,0
+Saint Lucia,13,1,0
+Saint Lucia,14,11,0
+Saint Vincent and the Grenadines,4,0,0
+Saint Vincent and the Grenadines,5,0,0
+Saint Vincent and the Grenadines,6,0,0
+Saint Vincent and the Grenadines,7,0,0
+Saint Vincent and the Grenadines,8,0,0
+Saint Vincent and the Grenadines,9,0,0
+Saint Vincent and the Grenadines,10,0,0
+Saint Vincent and the Grenadines,11,1,0
+Saint Vincent and the Grenadines,12,0,0
+Saint Vincent and the Grenadines,13,0,0
+Saint Vincent and the Grenadines,14,6,0
+San Marino,4,0,0
+San Marino,5,0,0
+San Marino,6,0,0
+San Marino,7,0,0
+San Marino,8,0,0
+San Marino,9,1,0
+San Marino,10,22,1
+San Marino,11,57,4
+San Marino,12,64,15
+San Marino,13,80,2
+San Marino,14,35,10
+Saudi Arabia,4,0,0
+Saudi Arabia,5,0,0
+Saudi Arabia,6,0,0
+Saudi Arabia,7,0,0
+Saudi Arabia,8,0,0
+Saudi Arabia,9,0,0
+Saudi Arabia,10,5,0
+Saudi Arabia,11,98,0
+Saudi Arabia,12,289,0
+Saudi Arabia,13,811,4
+Saudi Arabia,14,976,25
+Senegal,4,0,0
+Senegal,5,0,0
+Senegal,6,0,0
+Senegal,7,0,0
+Senegal,8,0,0
+Senegal,9,0,0
+Senegal,10,4,0
+Senegal,11,6,0
+Senegal,12,37,0
+Senegal,13,83,0
+Senegal,14,89,2
+Serbia,4,0,0
+Serbia,5,0,0
+Serbia,6,0,0
+Serbia,7,0,0
+Serbia,8,0,0
+Serbia,9,0,0
+Serbia,10,1,0
+Serbia,11,45,0
+Serbia,12,125,1
+Serbia,13,488,9
+Serbia,14,965,34
+Seychelles,4,0,0
+Seychelles,5,0,0
+Seychelles,6,0,0
+Seychelles,7,0,0
+Seychelles,8,0,0
+Seychelles,9,0,0
+Seychelles,10,0,0
+Seychelles,11,2,0
+Seychelles,12,5,0
+Seychelles,13,1,0
+Seychelles,14,2,0
+Sierra Leone,4,0,0
+Sierra Leone,5,0,0
+Sierra Leone,6,0,0
+Sierra Leone,7,0,0
+Sierra Leone,8,0,0
+Sierra Leone,9,0,0
+Sierra Leone,10,0,0
+Sierra Leone,11,0,0
+Sierra Leone,12,0,0
+Sierra Leone,13,0,0
+Sierra Leone,14,4,0
+Singapore,4,3,0
+Singapore,5,13,0
+Singapore,6,17,0
+Singapore,7,39,0
+Singapore,8,13,0
+Singapore,9,17,0
+Singapore,10,36,0
+Singapore,11,74,0
+Singapore,12,220,2
+Singapore,13,370,0
+Singapore,14,387,4
+Slovakia,4,0,0
+Slovakia,5,0,0
+Slovakia,6,0,0
+Slovakia,7,0,0
+Slovakia,8,0,0
+Slovakia,9,0,0
+Slovakia,10,1,0
+Slovakia,11,43,0
+Slovakia,12,134,1
+Slovakia,13,114,-1
+Slovakia,14,179,1
+Slovenia,4,0,0
+Slovenia,5,0,0
+Slovenia,6,0,0
+Slovenia,7,0,0
+Slovenia,8,0,0
+Slovenia,9,0,0
+Slovenia,10,7,0
+Slovenia,11,174,1
+Slovenia,12,202,0
+Slovenia,13,301,8
+Slovenia,14,293,13
+Somalia,4,0,0
+Somalia,5,0,0
+Somalia,6,0,0
+Somalia,7,0,0
+Somalia,8,0,0
+Somalia,9,0,0
+Somalia,10,0,0
+Somalia,11,0,0
+Somalia,12,1,0
+Somalia,13,2,0
+Somalia,14,4,0
+South Africa,4,0,0
+South Africa,5,0,0
+South Africa,6,0,0
+South Africa,7,0,0
+South Africa,8,0,0
+South Africa,9,0,0
+South Africa,10,1,0
+South Africa,11,37,0
+South Africa,12,202,0
+South Africa,13,947,1
+South Africa,14,398,8
+Spain,4,0,0
+Spain,5,1,0
+Spain,6,0,0
+Spain,7,1,0
+Spain,8,0,0
+Spain,9,43,0
+Spain,10,455,10
+Spain,11,5891,185
+Spain,12,18983,1180
+Spain,13,47861,4607
+Spain,14,52933,5965
+Sri Lanka,4,0,0
+Sri Lanka,5,1,0
+Sri Lanka,6,0,0
+Sri Lanka,7,0,0
+Sri Lanka,8,0,0
+Sri Lanka,9,0,0
+Sri Lanka,10,0,0
+Sri Lanka,11,9,0
+Sri Lanka,12,67,0
+Sri Lanka,13,36,1
+Sri Lanka,14,53,4
+Sudan,4,0,0
+Sudan,5,0,0
+Sudan,6,0,0
+Sudan,7,0,0
+Sudan,8,0,0
+Sudan,9,0,0
+Sudan,10,0,0
+Sudan,11,1,1
+Sudan,12,1,0
+Sudan,13,3,0
+Sudan,14,5,1
+Suriname,4,0,0
+Suriname,5,0,0
+Suriname,6,0,0
+Suriname,7,0,0
+Suriname,8,0,0
+Suriname,9,0,0
+Suriname,10,0,0
+Suriname,11,1,0
+Suriname,12,3,0
+Suriname,13,4,0
+Suriname,14,2,1
+Sweden,4,0,0
+Sweden,5,1,0
+Sweden,6,0,0
+Sweden,7,0,0
+Sweden,8,0,0
+Sweden,9,11,0
+Sweden,10,149,0
+Sweden,11,800,2
+Sweden,12,802,18
+Sweden,13,1684,85
+Sweden,14,2996,268
+Switzerland,4,0,0
+Switzerland,5,0,0
+Switzerland,6,0,0
+Switzerland,7,0,0
+Switzerland,8,0,0
+Switzerland,9,18,0
+Switzerland,10,250,1
+Switzerland,11,1091,12
+Switzerland,12,5216,62
+Switzerland,13,7501,189
+Switzerland,14,6429,402
+Syria,4,0,0
+Syria,5,0,0
+Syria,6,0,0
+Syria,7,0,0
+Syria,8,0,0
+Syria,9,0,0
+Syria,10,0,0
+Syria,11,0,0
+Syria,12,0,0
+Syria,13,5,0
+Syria,14,11,2
+Taiwan*,4,3,0
+Taiwan*,5,7,0
+Taiwan*,6,7,0
+Taiwan*,7,1,0
+Taiwan*,8,8,1
+Taiwan*,9,13,0
+Taiwan*,10,6,0
+Taiwan*,11,8,0
+Taiwan*,12,100,1
+Taiwan*,13,130,0
+Taiwan*,14,72,3
+Tanzania,4,0,0
+Tanzania,5,0,0
+Tanzania,6,0,0
+Tanzania,7,0,0
+Tanzania,8,0,0
+Tanzania,9,0,0
+Tanzania,10,0,0
+Tanzania,11,0,0
+Tanzania,12,6,0
+Tanzania,13,8,0
+Tanzania,14,6,1
+Thailand,4,7,0
+Thailand,5,12,0
+Thailand,6,13,0
+Thailand,7,1,0
+Thailand,8,2,0
+Thailand,9,7,0
+Thailand,10,8,1
+Thailand,11,32,0
+Thailand,12,329,0
+Thailand,13,834,5
+Thailand,14,822,14
+Timor-Leste,4,0,0
+Timor-Leste,5,0,0
+Timor-Leste,6,0,0
+Timor-Leste,7,0,0
+Timor-Leste,8,0,0
+Timor-Leste,9,0,0
+Timor-Leste,10,0,0
+Timor-Leste,11,0,0
+Timor-Leste,12,0,0
+Timor-Leste,13,1,0
+Timor-Leste,14,0,0
+Togo,4,0,0
+Togo,5,0,0
+Togo,6,0,0
+Togo,7,0,0
+Togo,8,0,0
+Togo,9,0,0
+Togo,10,1,0
+Togo,11,0,0
+Togo,12,15,0
+Togo,13,9,1
+Togo,14,16,2
+Trinidad and Tobago,4,0,0
+Trinidad and Tobago,5,0,0
+Trinidad and Tobago,6,0,0
+Trinidad and Tobago,7,0,0
+Trinidad and Tobago,8,0,0
+Trinidad and Tobago,9,0,0
+Trinidad and Tobago,10,0,0
+Trinidad and Tobago,11,2,0
+Trinidad and Tobago,12,47,0
+Trinidad and Tobago,13,25,3
+Trinidad and Tobago,14,29,3
+Tunisia,4,0,0
+Tunisia,5,0,0
+Tunisia,6,0,0
+Tunisia,7,0,0
+Tunisia,8,0,0
+Tunisia,9,0,0
+Tunisia,10,1,0
+Tunisia,11,17,0
+Tunisia,12,42,1
+Tunisia,13,218,7
+Tunisia,14,275,10
+Turkey,4,0,0
+Turkey,5,0,0
+Turkey,6,0,0
+Turkey,7,0,0
+Turkey,8,0,0
+Turkey,9,0,0
+Turkey,10,0,0
+Turkey,11,5,0
+Turkey,12,665,9
+Turkey,13,6732,99
+Turkey,14,16532,393
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,6,0
+US,12,125,0
+US,13,563,4
+US,14,920,40
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,0,0
+US,12,15,0
+US,13,70,2
+US,14,86,3
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,12,0
+US,12,106,1
+US,13,655,14
+US,14,1414,37
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,12,0
+US,12,110,0
+US,13,287,5
+US,14,334,9
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,340,5
+US,12,1024,19
+US,13,3731,86
+US,14,7742,179
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,101,1
+US,12,289,3
+US,13,1350,27
+US,14,2448,80
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,22,0
+US,12,172,4
+US,13,1330,29
+US,14,3752,132
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,6,0
+US,12,39,0
+US,13,169,5
+US,14,379,9
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,10,0
+US,12,67,1
+US,13,227,3
+US,14,598,17
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,76,3
+US,12,583,10
+US,13,3104,41
+US,14,7782,141
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,66,1
+US,12,441,13
+US,13,1859,55
+US,14,3794,132
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,0,0
+US,12,15,0
+US,13,40,1
+US,14,38,3
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,4,0
+US,12,33,0
+US,13,112,0
+US,14,202,3
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,2,0
+US,12,34,0
+US,13,198,4
+US,14,788,6
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,64,0
+US,12,689,6
+US,13,2738,41
+US,14,6866,197
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,16,0
+US,12,112,4
+US,13,1105,27
+US,14,2720,85
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,17,0
+US,12,51,0
+US,13,230,3
+US,14,489,11
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,8,1
+US,12,49,1
+US,13,209,2
+US,14,432,17
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,14,0
+US,12,73,3
+US,13,306,6
+US,14,524,31
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,77,1
+US,12,508,15
+US,13,2730,121
+US,14,9181,272
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,3,0
+US,12,67,0
+US,13,141,1
+US,14,245,9
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,26,0
+US,12,167,2
+US,13,802,3
+US,14,2130,49
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,138,0
+US,12,387,1
+US,13,3732,43
+US,14,7479,172
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,25,0
+US,12,763,5
+US,13,3862,106
+US,14,9575,429
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,21,0
+US,12,117,1
+US,13,303,4
+US,14,424,19
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,6,0
+US,12,134,1
+US,13,523,12
+US,14,792,22
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,4,0
+US,12,70,3
+US,13,762,7
+US,14,1474,23
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,5,0
+US,12,16,0
+US,13,108,1
+US,14,136,5
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,14,0
+US,12,24,0
+US,13,58,2
+US,14,225,4
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,21,0
+US,12,140,2
+US,13,465,8
+US,14,1116,36
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,7,0
+US,12,48,0
+US,13,132,2
+US,14,353,5
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,69,1
+US,12,1258,15
+US,13,9797,124
+US,14,23000,706
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,10,0
+US,12,33,0
+US,13,165,1
+US,14,326,9
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,525,2
+US,12,11185,58
+US,13,40700,668
+US,14,61423,2837
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,24,0
+US,12,229,0
+US,13,767,5
+US,14,1466,29
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,1,0
+US,12,27,0
+US,13,66,1
+US,14,92,2
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,26,0
+US,12,222,3
+US,13,1158,22
+US,14,2333,77
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,4,0
+US,12,49,1
+US,13,324,14
+US,14,784,27
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,32,0
+US,12,82,5
+US,13,365,8
+US,14,420,9
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,47,0
+US,12,349,2
+US,13,2449,32
+US,14,7599,102
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,3,0
+US,12,18,1
+US,13,79,2
+US,14,352,15
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,20,0
+US,12,46,0
+US,13,173,2
+US,14,567,15
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,19,0
+US,12,152,3
+US,13,489,12
+US,14,1257,25
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,9,1
+US,12,5,0
+US,13,54,0
+US,14,144,1
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,32,0
+US,12,339,1
+US,13,1140,6
+US,14,1811,43
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,57,0
+US,12,524,5
+US,13,1874,25
+US,14,4101,86
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,10,0
+US,12,126,0
+US,13,466,1
+US,14,833,7
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,5,0
+US,12,24,2
+US,13,182,10
+US,14,250,8
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,0,0
+US,12,0,0
+US,13,22,0
+US,14,18,0
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,41,1
+US,12,115,1
+US,13,584,11
+US,14,1667,39
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,572,37
+US,12,1221,57
+US,13,2237,94
+US,14,3217,127
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,0,0
+US,12,8,0
+US,13,88,0
+US,14,186,2
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,27,0
+US,12,255,4
+US,13,773,13
+US,14,975,37
+US,4,0,0
+US,5,0,0
+US,6,0,0
+US,7,0,0
+US,8,0,0
+US,9,0,0
+US,10,0,0
+US,11,2,0
+US,12,21,0
+US,13,59,0
+US,14,105,0
+Uganda,4,0,0
+Uganda,5,0,0
+Uganda,6,0,0
+Uganda,7,0,0
+Uganda,8,0,0
+Uganda,9,0,0
+Uganda,10,0,0
+Uganda,11,0,0
+Uganda,12,1,0
+Uganda,13,29,0
+Uganda,14,18,0
+Ukraine,4,0,0
+Ukraine,5,0,0
+Ukraine,6,0,0
+Ukraine,7,0,0
+Ukraine,8,0,0
+Ukraine,9,0,0
+Ukraine,10,1,0
+Ukraine,11,2,1
+Ukraine,12,44,2
+Ukraine,13,309,6
+Ukraine,14,869,23
+United Arab Emirates,4,0,0
+United Arab Emirates,5,4,0
+United Arab Emirates,6,3,0
+United Arab Emirates,7,1,0
+United Arab Emirates,8,5,0
+United Arab Emirates,9,8,0
+United Arab Emirates,10,24,0
+United Arab Emirates,11,40,0
+United Arab Emirates,12,68,2
+United Arab Emirates,13,315,0
+United Arab Emirates,14,1037,8
+United Kingdom,4,0,0
+United Kingdom,5,0,0
+United Kingdom,6,0,0
+United Kingdom,7,0,0
+United Kingdom,8,0,0
+United Kingdom,9,0,0
+United Kingdom,10,0,0
+United Kingdom,11,0,0
+United Kingdom,12,0,0
+United Kingdom,13,2,0
+United Kingdom,14,1,0
+United Kingdom,4,0,0
+United Kingdom,5,0,0
+United Kingdom,6,0,0
+United Kingdom,7,0,0
+United Kingdom,8,0,0
+United Kingdom,9,0,0
+United Kingdom,10,0,0
+United Kingdom,11,0,0
+United Kingdom,12,2,0
+United Kingdom,13,15,0
+United Kingdom,14,18,0
+United Kingdom,4,0,0
+United Kingdom,5,0,0
+United Kingdom,6,0,0
+United Kingdom,7,0,0
+United Kingdom,8,0,0
+United Kingdom,9,0,0
+United Kingdom,10,0,0
+United Kingdom,11,0,0
+United Kingdom,12,0,0
+United Kingdom,13,2,0
+United Kingdom,14,1,0
+United Kingdom,4,0,0
+United Kingdom,5,0,0
+United Kingdom,6,0,0
+United Kingdom,7,0,0
+United Kingdom,8,0,0
+United Kingdom,9,0,0
+United Kingdom,10,0,0
+United Kingdom,11,1,0
+United Kingdom,12,2,1
+United Kingdom,13,5,0
+United Kingdom,14,27,0
+United Kingdom,4,0,0
+United Kingdom,5,0,0
+United Kingdom,6,0,0
+United Kingdom,7,0,0
+United Kingdom,8,0,0
+United Kingdom,9,0,0
+United Kingdom,10,0,0
+United Kingdom,11,2,0
+United Kingdom,12,30,0
+United Kingdom,13,65,1
+United Kingdom,14,165,4
+United Kingdom,4,0,0
+United Kingdom,5,0,0
+United Kingdom,6,0,0
+United Kingdom,7,0,0
+United Kingdom,8,0,0
+United Kingdom,9,0,0
+United Kingdom,10,1,0
+United Kingdom,11,0,0
+United Kingdom,12,9,0
+United Kingdom,13,46,0
+United Kingdom,14,42,0
+United Kingdom,4,0,0
+United Kingdom,5,0,0
+United Kingdom,6,0,0
+United Kingdom,7,0,0
+United Kingdom,8,0,0
+United Kingdom,9,0,0
+United Kingdom,10,0,0
+United Kingdom,11,0,0
+United Kingdom,12,1,0
+United Kingdom,13,31,0
+United Kingdom,14,94,1
+United Kingdom,4,0,0
+United Kingdom,5,0,0
+United Kingdom,6,0,0
+United Kingdom,7,0,0
+United Kingdom,8,0,0
+United Kingdom,9,0,0
+United Kingdom,10,0,0
+United Kingdom,11,0,0
+United Kingdom,12,1,0
+United Kingdom,13,4,0
+United Kingdom,14,1,0
+United Kingdom,4,0,0
+United Kingdom,5,0,0
+United Kingdom,6,0,0
+United Kingdom,7,0,0
+United Kingdom,8,0,0
+United Kingdom,9,0,0
+United Kingdom,10,0,0
+United Kingdom,11,0,0
+United Kingdom,12,0,0
+United Kingdom,13,4,0
+United Kingdom,14,1,0
+United Kingdom,4,0,0
+United Kingdom,5,2,0
+United Kingdom,6,1,0
+United Kingdom,7,6,0
+United Kingdom,8,0,0
+United Kingdom,9,14,0
+United Kingdom,10,183,2
+United Kingdom,11,934,19
+United Kingdom,12,3878,212
+United Kingdom,13,12071,786
+United Kingdom,14,24814,3294
+Uruguay,4,0,0
+Uruguay,5,0,0
+Uruguay,6,0,0
+Uruguay,7,0,0
+Uruguay,8,0,0
+Uruguay,9,0,0
+Uruguay,10,0,0
+Uruguay,11,4,0
+Uruguay,12,106,0
+Uruguay,13,164,0
+Uruguay,14,126,5
+Uzbekistan,4,0,0
+Uzbekistan,5,0,0
+Uzbekistan,6,0,0
+Uzbekistan,7,0,0
+Uzbekistan,8,0,0
+Uzbekistan,9,0,0
+Uzbekistan,10,0,0
+Uzbekistan,11,0,0
+Uzbekistan,12,43,0
+Uzbekistan,13,61,2
+Uzbekistan,14,162,0
+Venezuela,4,0,0
+Venezuela,5,0,0
+Venezuela,6,0,0
+Venezuela,7,0,0
+Venezuela,8,0,0
+Venezuela,9,0,0
+Venezuela,10,0,0
+Venezuela,11,2,0
+Venezuela,12,68,0
+Venezuela,13,49,2
+Venezuela,14,36,5
+Vietnam,4,2,0
+Vietnam,5,4,0
+Vietnam,6,7,0
+Vietnam,7,3,0
+Vietnam,8,0,0
+Vietnam,9,0,0
+Vietnam,10,2,0
+Vietnam,11,35,0
+Vietnam,12,41,0
+Vietnam,13,80,0
+Vietnam,14,66,0
+West Bank and Gaza,4,0,0
+West Bank and Gaza,5,0,0
+West Bank and Gaza,6,0,0
+West Bank and Gaza,7,0,0
+West Bank and Gaza,8,0,0
+West Bank and Gaza,9,0,0
+West Bank and Gaza,10,16,0
+West Bank and Gaza,11,19,0
+West Bank and Gaza,12,13,0
+West Bank and Gaza,13,50,1
+West Bank and Gaza,14,119,0
+Zambia,4,0,0
+Zambia,5,0,0
+Zambia,6,0,0
+Zambia,7,0,0
+Zambia,8,0,0
+Zambia,9,0,0
+Zambia,10,0,0
+Zambia,11,0,0
+Zambia,12,2,0
+Zambia,13,26,0
+Zambia,14,11,1
+Zimbabwe,4,0,0
+Zimbabwe,5,0,0
+Zimbabwe,6,0,0
+Zimbabwe,7,0,0
+Zimbabwe,8,0,0
+Zimbabwe,9,0,0
+Zimbabwe,10,0,0
+Zimbabwe,11,0,0
+Zimbabwe,12,3,0
+Zimbabwe,13,4,1
+Zimbabwe,14,2,0

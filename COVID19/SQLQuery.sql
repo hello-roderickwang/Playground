@@ -1,0 +1,7 @@
+CREATE DATABASE COVID19;
+USE COVID19;
+CREATE TABLE covid19 (Id INT, Province_State VARCHAR(50), Country_Region VARCHAR(50),
+Date DATE, ConfirmedCases INT, Fatalities INT);
+DROP TABLE covid19
+SELECT TOP 10 * FROM covid19;
+SELECT TOP 10 * FROM COVID_19_aggr;
