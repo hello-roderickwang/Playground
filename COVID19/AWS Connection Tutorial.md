@@ -10,7 +10,7 @@ Download [SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssm
 
 1. Start Azure Data Studio
 
-![image-20200413185043531](/Users/xuenan/GitHub/Playground/COVID19/image-20200413185043531.png)
+![image-20200413185043531](./img/image-20200413185043531.png)
 
 2. Use following parameters:
 
@@ -24,9 +24,9 @@ Download [SQL Server Management Studio](https://docs.microsoft.com/en-us/sql/ssm
 
    Password: password
 
-   Database: <Default>
+   Database: \<Default>
 
-   Server group: <Default>
+   Server group: \<Default>
 
    Name (optional): (Whatever you like :stuck_out_tongue_closed_eyes:)
 
@@ -72,11 +72,11 @@ Download [MySQL Workbench](https://dev.mysql.com/downloads/workbench/).
 
 1. Start MySQL Workbench
 
-![image-20200413190910121](/Users/xuenan/GitHub/Playground/COVID19/image-20200413190910121.png)
+![image-20200413190910121](./img/image-20200413190910121.png)
 
 2. Click 'Database' -> 'Manage Connection...' -> 'New'
 
-![image-20200413191025492](/Users/xuenan/GitHub/Playground/COVID19/image-20200413191025492.png)
+![image-20200413191025492](./img/image-20200413191025492.png)
 
 2. Use following parameters:
 
@@ -92,7 +92,7 @@ Download [MySQL Workbench](https://dev.mysql.com/downloads/workbench/).
 
    Password: *Click 'Store in Keychain...' and use* 'password'
 
-   Default Schema: <null>
+   Default Schema: \<null>
 
 3. Click 'Test Connection'
 
