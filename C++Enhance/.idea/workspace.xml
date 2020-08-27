@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="C__Enhance" targetName="C__Enhance" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4241fa21-61bf-499e-8910-288f2b990e7f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../PythonEnhance/PyEnhance.py" beforeDir="false" afterPath="$PROJECT_DIR$/../PythonEnhance/PyEnhance.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1dfPRb8LONmVciM4Hq8dkTDJGMe" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="RunManager">
+    <configuration name="C__Enhance" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="C__Enhance" TARGET_NAME="C__Enhance" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="C__Enhance" RUN_TARGET_NAME="C__Enhance">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4241fa21-61bf-499e-8910-288f2b990e7f" name="Default Changelist" comment="" />
+      <created>1592813166899</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1592813166899</updated>
+      <workItem from="1592813171742" duration="82000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1358" height="193" key="GridCell.Tab.0.bottom" timestamp="1592813252916">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state width="1358" height="193" key="GridCell.Tab.0.bottom/0.23.2560.1417@0.23.2560.1417" timestamp="1592813252916" />
+    <state width="1358" height="193" key="GridCell.Tab.0.center" timestamp="1592813252915">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state width="1358" height="193" key="GridCell.Tab.0.center/0.23.2560.1417@0.23.2560.1417" timestamp="1592813252915" />
+    <state width="1358" height="193" key="GridCell.Tab.0.left" timestamp="1592813252914">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state width="1358" height="193" key="GridCell.Tab.0.left/0.23.2560.1417@0.23.2560.1417" timestamp="1592813252914" />
+    <state width="1358" height="193" key="GridCell.Tab.0.right" timestamp="1592813252916">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state width="1358" height="193" key="GridCell.Tab.0.right/0.23.2560.1417@0.23.2560.1417" timestamp="1592813252916" />
+    <state x="957" y="564" key="com.intellij.ide.util.TipDialog" timestamp="1592813181454">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state x="957" y="564" key="com.intellij.ide.util.TipDialog/0.23.2560.1417@0.23.2560.1417" timestamp="1592813181454" />
+  </component>
+</project>
