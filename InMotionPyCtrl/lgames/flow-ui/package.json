@@ -41,7 +41,7 @@
     "@types/username": "^1.0.28",
     "body-parser": "^1.18.2",
     "dotenv": "^4.0.0",
-    "electron": "^1.7.9",
+    "electron": "^9.4.0",
     "electron-pdf-window": "^1.0.12",
     "express": "^4.16.2",
     "fs-extra": "^4.0.2",
