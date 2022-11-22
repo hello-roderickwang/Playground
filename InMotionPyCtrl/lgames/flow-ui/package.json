@@ -46,7 +46,7 @@
     "express": "^4.16.2",
     "fs-extra": "^4.0.2",
     "mithril": "^1.1.5",
-    "socket.io": "^2.0.4",
+    "socket.io": "^2.5.0",
     "socketio-wildcard": "^2.0.0",
     "ts-node": "^3.3.0",
     "typescript": "2.5.3",
